@@ -93,7 +93,7 @@
     "photoOdometer": "Photographier l'odomètre",
     "photoOdometerNote": "L'IA lit le chiffre à votre place.",
     "pace": "Votre rythme",
-    "paceValue": "{{value}} km / mois · moyenne sur {{count}} relevés",
+    "paceSuffix": "km / mois · moyenne sur {{count}} relevés",
     "projectionTitle": "Projection",
     "projectionLine": "{{task}} à {{km}} km — vers le {{date}}",
     "projectionNote": "Rappel 7 jours avant, puis à la date exacte. La date se recalcule à chaque relevé : si vous roulez moins, elle recule d'elle-même.",

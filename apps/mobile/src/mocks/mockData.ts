@@ -19,7 +19,8 @@ export const mockVehicles = [
   {
     id: 'vehicle-rav4',
     make: 'Toyota',
-    model: 'RAV4 LE',
+    model: 'RAV4',
+    trim: 'LE',
     year: 2021,
     engine: '2,5 L I4',
     odometerKm: 64200,

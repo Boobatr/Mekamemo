@@ -93,7 +93,7 @@
     "photoOdometer": "Photograph the odometer",
     "photoOdometerNote": "The AI reads the number for you.",
     "pace": "Your pace",
-    "paceValue": "{{value}} km / month · average over {{count}} readings",
+    "paceSuffix": "km / month · average over {{count}} readings",
     "projectionTitle": "Projection",
     "projectionLine": "{{task}} at {{km}} km — around {{date}}",
     "projectionNote": "Reminder 7 days before, then on the exact date. The date recalculates with every reading: drive less and it moves back on its own.",
