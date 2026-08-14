@@ -1,0 +1,204 @@
+{
+  "common": {
+    "continue": "Continuer",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "close": "Fermer",
+    "back": "Retour",
+    "loading": "Chargement…",
+    "retry": "Réessayer",
+    "km": "km",
+    "mi": "mi",
+    "language": "Langue de l'application",
+    "french": "Français",
+    "english": "English"
+  },
+  "onboarding": {
+    "step": "Étape {{current}} / {{total}}",
+    "profile": {
+      "title": "Vos informations",
+      "subtitle": "Elles servent à personnaliser les courriels envoyés aux garages et à trouver les ateliers près de vous.",
+      "fullName": "Nom complet",
+      "email": "Courriel",
+      "phone": "Téléphone",
+      "postalCode": "Code postal",
+      "radius": "Rayon",
+      "privacyNote": "Vos données restent sur votre appareil jusqu'à l'envoi d'une demande."
+    },
+    "vehicle": {
+      "title": "Votre véhicule",
+      "vin": "Numéro de série (VIN)",
+      "scan": "Scanner",
+      "altEntry": "Ou saisir la plaque d'immatriculation · Photographier le VIN",
+      "decodedTitle": "Fiche décodée",
+      "decodedBadge": "IA · vérifiée",
+      "make": "Marque",
+      "model": "Modèle",
+      "year": "Année",
+      "engine": "Moteur",
+      "odometer": "Kilométrage",
+      "usage": "Usage",
+      "photoOptional": "Photo du véhicule (facultatif)",
+      "generateCalendar": "Générer le calendrier"
+    }
+  },
+  "dashboard": {
+    "greeting": "Bonjour {{name}}",
+    "title": "Mes véhicules",
+    "nextDue": "Prochaine échéance",
+    "book": "Réserver",
+    "tasksCount_one": "{{count}} tâche",
+    "tasksCount_other": "{{count}} tâches",
+    "fleet": "Flotte",
+    "vehiclesCount": "Véhicules",
+    "upcoming30d": "À venir 30 j",
+    "costThisYear": "Coût {{year}}",
+    "addVehicle": "+ Véhicule",
+    "tabs": {
+      "vehicles": "Véhicules",
+      "calendar": "Calendrier",
+      "garages": "Garages",
+      "settings": "Réglages"
+    }
+  },
+  "calendar": {
+    "title": "Calendrier d'entretien",
+    "generatedByAi": "Généré par l'IA",
+    "source": "Source : {{source}} · révisé {{date}}",
+    "details": "Détails",
+    "modify": "Modifier",
+    "book": "Réserver"
+  },
+  "taskEdit": {
+    "modifiedByYou": "Modifié par vous",
+    "recurring": "Récurrent",
+    "manufacturerNote": "Recommandation du fabricant : tous les {{km}} km ou {{months}} mois.",
+    "intervalKm": "Intervalle km",
+    "intervalMonths": "Intervalle mois",
+    "priority": "Priorité",
+    "priorityLow": "Basse",
+    "priorityNormal": "Normale",
+    "priorityCritical": "Critique",
+    "nextDue": "Prochaine échéance",
+    "notesForGarage": "Notes pour le garage",
+    "groupWith": "Grouper avec la rotation des pneus"
+  },
+  "mileage": {
+    "title": "Kilométrage",
+    "prompt": "Combien affiche l'odomètre aujourd'hui ?",
+    "other": "Autre…",
+    "estimateNote": "Valeurs proposées à partir de votre moyenne. Un seul geste suffit.",
+    "photoOdometer": "Photographier l'odomètre",
+    "photoOdometerNote": "L'IA lit le chiffre à votre place.",
+    "pace": "Votre rythme",
+    "paceValue": "{{value}} km / mois · moyenne sur {{count}} relevés",
+    "projectionTitle": "Projection",
+    "projectionLine": "{{task}} à {{km}} km — vers le {{date}}",
+    "projectionNote": "Rappel 7 jours avant, puis à la date exacte. La date se recalcule à chaque relevé : si vous roulez moins, elle recule d'elle-même.",
+    "autoTrackToggle": "Relevé automatique par les trajets du téléphone",
+    "autoTrackNote": "Optionnel — affine la moyenne sans rien saisir.",
+    "save": "Enregistrer le relevé"
+  },
+  "notifications": {
+    "title": "Rappels",
+    "search": "Chercher",
+    "postpone": "Reporter",
+    "reminderDelays": "Délais de rappel"
+  },
+  "breakdown": {
+    "title": "Un problème ?",
+    "subtitle": "Décrivez-le dans vos mots. Pas besoin de vocabulaire technique — l'application se charge du reste.",
+    "photo": "Photo",
+    "video": "Vidéo",
+    "audio": "Le bruit",
+    "precisionTags": "Quelques précisions",
+    "tags": {
+      "sinceWhen": "Depuis quand",
+      "warningLight": "Témoin allumé",
+      "onBraking": "Au freinage",
+      "visibleLeak": "Fuite visible",
+      "odor": "Odeur"
+    },
+    "urgentNote": "Si c'est urgent, dites-le : l'application cherche un garage qui peut vous prendre aujourd'hui.",
+    "analyze": "Analyser le problème"
+  },
+  "diagnosis": {
+    "title": "Diagnostic",
+    "analyzedIn": "Analyse IA · {{seconds}} s",
+    "mostLikelyCause": "Cause la plus probable",
+    "otherLeads": "Autres pistes",
+    "recommendedDelay": "Délai conseillé",
+    "estimatedCost": "Coût estimé",
+    "disclaimer": "Estimation indicative : le garage confirme au diagnostic.",
+    "availableGarages": "{{count}} garages disponibles cette semaine",
+    "requestQuotes": "Demander 3 soumissions",
+    "addToCalendar": "Ajouter au calendrier",
+    "confidence": {
+      "low": "Faible",
+      "medium": "Moyenne",
+      "high": "Élevée"
+    }
+  },
+  "garageSearch": {
+    "assistant": "Assistant",
+    "placeholder": "Poser une question à l'assistant…",
+    "resultsNear": "{{count}} garages dans {{radius}} km"
+  },
+  "garageProfile": {
+    "certified": "Certifié CAA",
+    "open": "Ouvert",
+    "wait": "Attente",
+    "commute": "Trajet",
+    "warranty": "Garantie",
+    "relevantServices": "Services pertinents",
+    "contactMethod": "Moyen de contact",
+    "detectedByAi": "détecté par l'IA",
+    "emailVerified": "Courriel vérifié",
+    "voiceFallback": "Appel vocal — utilisé seulement sans courriel",
+    "requestAppointment": "Demander un rendez-vous",
+    "viewEmailBeforeSending": "Voir le courriel avant envoi"
+  },
+  "booking": {
+    "title": "Prise de rendez-vous",
+    "garagesRetained_one": "{{count}} garage retenu",
+    "garagesRetained_other": "{{count}} garages retenus",
+    "filteredNote": "Filtrés par distance, prix et disponibilité",
+    "emailsSent": "{{emails}} courriels envoyés · {{calls}} appels vocaux",
+    "onBehalfNote": "En votre nom, avec vos disponibilités · Voir les transcriptions",
+    "responsesReceived_one": "{{count}} réponse reçue",
+    "responsesReceived_other": "{{count}} réponses reçues",
+    "lastReceived": "Dernière il y a {{minutes}} minutes",
+    "awaitingConfirmation": "En attente de votre confirmation",
+    "bestOption": "Meilleure option · plus proche en temps et distance",
+    "confirmedBy": "Confirmé par",
+    "cancellationUntil": "Annulation jusqu'à {{hours}} h",
+    "otherSlots": "Autres plages disponibles",
+    "confirm": "Confirmer ce rendez-vous",
+    "confirmNote": "Rien n'est réservé avant votre confirmation."
+  },
+  "history": {
+    "title": "Historique",
+    "export": "Exporter",
+    "totalThisYear": "Total {{year}}",
+    "interventions": "Interventions",
+    "resaleNote": "Les factures jointes sont réunies dans un dossier de revente.",
+    "open": "Ouvrir"
+  },
+  "settings": {
+    "title": "Réglages",
+    "preferences": "Préférences",
+    "units": "Unités",
+    "autoContact": "Contact automatique des garages",
+    "voiceFallback": "Appels vocaux si aucun courriel",
+    "confirmBeforeBooking": "Confirmer avant chaque réservation",
+    "currentPlan": "Plan actuel",
+    "plusTitle": "MEKAMEMO +",
+    "plusDescription": "Véhicules illimités, appels vocaux de l'assistant, dossier de revente, rappels avancés.",
+    "manageSubscription": "Gérer l'abonnement",
+    "privacy": "Données et confidentialité",
+    "help": "Aide et contact",
+    "logout": "Se déconnecter"
+  }
+}

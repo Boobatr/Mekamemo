@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap">
+<script src="./image-slot.js"></script>
+<style>
+  body { margin: 0; background: #08090b; }
+  a { color: #9cc6ff; text-decoration: none; }
+  a:hover { color: #cfe1ff; }
+  ::selection { background: rgba(29,110,245,.40); }
+</style>
+</helmet>
+
+<section style="position:relative;padding:48px 56px 96px;background:#08090b;min-height:100vh;box-sizing:border-box;font-family:'Barlow',system-ui,sans-serif;color:#ffffff;{{ themeVars }}">
+
+  <div style="position:fixed;inset:0;z-index:0"><image-slot id="board-bg" shape="rect" fit="cover" src="assets/atelier.png" placeholder="photo de véhicule en fond — déposer ici"></image-slot></div>
+  <div style="position:fixed;inset:0;z-index:0;pointer-events:none;background:linear-gradient(180deg,rgba(8,9,11,.78) 0%,rgba(8,9,11,.9) 45%,rgba(8,9,11,.96) 100%)"></div>
+  <div style="position:relative;z-index:1">
+
+  <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:27.2px;border-bottom:1px solid rgba(242,242,243,.22);padding-bottom:20.4px;margin-bottom:41px">
+    <div style="display:flex;flex-direction:column;gap:6.8px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#6fa8ff">Maquette écrans · v2 · mobile iOS + Android (version ordinateur reportée)</div>
+      <h1 style="margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:52px;line-height:.95;letter-spacing:-.01em">MEKAMEMO — Entretien véhicule</h1>
+      <div style="max-width:640px;font-size:15px;line-height:1.5;color:rgba(242,242,243,.72);text-wrap:pretty">Calendrier d'entretien généré par l'IA selon les recommandations du fabricant, rappels, recherche de garages et prise de rendez-vous assistée. Palette dérivée de l’identité MekaMemo.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:10.2px">
+      <div style="display:flex;gap:6.8px;align-items:center">
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#6fa8ff">Affichage</span>
+        <button onClick="{{ setDark }}" style="padding:7px 13.6px;border:1px solid rgba(242,242,243,.28);border-radius:7px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:#ffffff;background:{{ darkBg }}">Sombre</button>
+        <button onClick="{{ setLight }}" style="padding:7px 13.6px;border:1px solid rgba(242,242,243,.28);border-radius:7px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:#ffffff;background:{{ lightBg }}">Clair</button>
+      </div>
+    <div style="display:flex;gap:0;border:1px solid rgba(242,242,243,.28)">
+      <div style="padding:10.2px 13.6px;border-right:1px solid rgba(242,242,243,.28);display:flex;flex-direction:column;gap:2px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#6fa8ff">Écrans</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:22px;line-height:1">15</div>
+      </div>
+      <div style="padding:10.2px 13.6px;border-right:1px solid rgba(242,242,243,.28);display:flex;flex-direction:column;gap:2px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#6fa8ff">Langue</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:22px;line-height:1">FR / EN</div>
+      </div>
+      <div style="padding:10.2px 13.6px;display:flex;flex-direction:column;gap:2px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#6fa8ff">Format</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:22px;line-height:1">390 × 844</div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:56px 44px;align-items:flex-start">
+
+    <!-- 01 ONBOARDING -->
+    <div style="display:flex;flex-direction:column;gap:13.6px;width:390px">
+      <div style="display:flex;align-items:baseline;gap:10.2px"><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.18em;color:#6fa8ff">01</span><span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px;letter-spacing:.04em;text-transform:uppercase">Profil utilisateur</span></div>
+      <div style="position:relative;width:390px">
+        <i style="position:absolute;top:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;top:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <div data-screen-label="01 Profil utilisateur" style="position:relative;width:390px;height:844px;isolation:isolate;background:var(--sbg);border:1px solid var(--sl1);display:flex;flex-direction:column;overflow:hidden;color:var(--sfg);font-family:'Barlow',sans-serif">
+          <img src="assets/atelier-ecran.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:82% 42%;z-index:-1;filter:saturate(1.06)">
+          <div style="position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,var(--sv1),var(--sv2))"></div>
+          <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20.4px;font-size:12px;font-weight:600;flex:0 0 auto">
+            <span>9:41</span>
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:3px;height:6px;background:var(--sfg);display:block"></span><span style="width:3px;height:9px;background:var(--sfg);display:block"></span><span style="width:3px;height:12px;background:var(--sfg);display:block"></span><span style="width:20px;height:10px;border:1px solid var(--sfg);display:block;margin-left:4px"></span></span>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;padding:20.4px;gap:20.4px;overflow:hidden">
+            <div style="display:flex;flex-direction:column;gap:10.2px">
+              <div style="display:flex;gap:6.8px;align-items:center">
+                <span style="width:34px;height:3px;background:var(--sac);display:block"></span>
+                <span style="width:34px;height:3px;background:var(--str);display:block"></span>
+                <span style="width:34px;height:3px;background:var(--str);display:block"></span>
+                <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--sm1);margin-left:6.8px">Étape 1 / 3</span>
+              </div>
+              <h2 style="margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:34px;line-height:1;letter-spacing:-.01em">Vos informations</h2>
+              <p style="margin:0;font-size:15px;line-height:1.45;color:var(--sm1);text-wrap:pretty">Elles servent à personnaliser les courriels envoyés aux garages et à trouver les ateliers près de vous.</p>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:13.6px">
+              <label style="display:flex;flex-direction:column;gap:4px"><span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sm1)">Nom complet</span><span style="border:1px solid var(--sl2);background:var(--sin);padding:11px 10.2px;font-size:15px">Marc Lavoie</span></label>
+              <label style="display:flex;flex-direction:column;gap:4px"><span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sm1)">Courriel</span><span style="border:1px solid var(--sl2);background:var(--sin);padding:11px 10.2px;font-size:15px">marc.lavoie@courriel.ca</span></label>
+              <label style="display:flex;flex-direction:column;gap:4px"><span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sm1)">Téléphone</span><span style="border:1px solid var(--sl2);background:var(--sin);padding:11px 10.2px;font-size:15px">+1 514 555 0142</span></label>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:13.6px">
+                <label style="display:flex;flex-direction:column;gap:4px"><span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sm1)">Code postal</span><span style="border:1px solid var(--sl2);background:var(--sin);padding:11px 10.2px;font-size:15px">H2X 1Y4</span></label>
+                <label style="display:flex;flex-direction:column;gap:4px"><span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sm1)">Rayon</span><span style="border:1px solid var(--sl2);background:var(--sin);padding:11px 10.2px;font-size:15px">15 km</span></label>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6.8px">
+                <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sm1)">Langue de l'application</span>
+                <div style="display:flex;border:1px solid var(--sl2)">
+                  <span style="flex:1;text-align:center;padding:9px;background:var(--sac);color:#ffffff;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:15px;letter-spacing:.08em">FRANÇAIS</span>
+                  <span style="flex:1;text-align:center;padding:9px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:15px;letter-spacing:.08em;color:var(--sm1);border-left:1px solid var(--sl2)">ENGLISH</span>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top:auto;display:flex;flex-direction:column;gap:10.2px">
+              <div style="position:relative">
+                <span style="position:absolute;top:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+                <span style="position:absolute;top:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+                <span style="position:absolute;bottom:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+                <span style="position:absolute;bottom:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+                <button style="width:100%;background:var(--sac);color:#ffffff;border:none;padding:14px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:7px" style-hover="background:var(--sach)">Continuer</button>
+              </div>
+              <div style="text-align:center;font-size:13px;color:var(--sm2)">Vos données restent sur votre appareil jusqu'à l'envoi d'une demande.</div>
+            </div>
+          </div>
+          <div style="height:22px;display:flex;align-items:center;justify-content:center;flex:0 0 auto"><span style="width:120px;height:4px;background:var(--sfg);border-radius:2px;display:block"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 AJOUT VÉHICULE -->
+    <div style="display:flex;flex-direction:column;gap:13.6px;width:390px">
+      <div style="display:flex;align-items:baseline;gap:10.2px"><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.18em;color:#6fa8ff">02</span><span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px;letter-spacing:.04em;text-transform:uppercase">Ajout d'un véhicule</span></div>
+      <div style="position:relative;width:390px">
+        <i style="position:absolute;top:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;top:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <div data-screen-label="02 Ajout véhicule" style="position:relative;width:390px;height:844px;isolation:isolate;background:var(--sbg);border:1px solid var(--sl1);display:flex;flex-direction:column;overflow:hidden;color:var(--sfg);font-family:'Barlow',sans-serif">
+          <img src="assets/atelier-ecran.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:82% 42%;z-index:-1;filter:saturate(1.06)">
+          <div style="position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,var(--sv1),var(--sv2))"></div>
+          <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20.4px;font-size:12px;font-weight:600;flex:0 0 auto">
+            <span>9:41</span>
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:3px;height:6px;background:var(--sfg);display:block"></span><span style="width:3px;height:9px;background:var(--sfg);display:block"></span><span style="width:3px;height:12px;background:var(--sfg);display:block"></span><span style="width:20px;height:10px;border:1px solid var(--sfg);display:block;margin-left:4px"></span></span>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;padding:20.4px;gap:16px;overflow:hidden">
+            <div style="display:flex;flex-direction:column;gap:6.8px">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--sm1)">Étape 2 / 3</div>
+              <h2 style="margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:34px;line-height:1">Votre véhicule</h2>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6.8px">
+              <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sm1)">Numéro de série (VIN)</span>
+              <div style="display:flex;gap:6.8px">
+                <span style="flex:1;border:1px solid var(--sl2);background:var(--sin);padding:11px 10.2px;font-size:15px;letter-spacing:.04em">2T3W1RFV8MW1•••••</span>
+                <button style="border:1px solid var(--sac);background:transparent;color:var(--sact);padding:0 13.6px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:7px" style-hover="background:var(--sf3)">Scanner</button>
+              </div>
+              <div style="font-size:13px;color:var(--sm2)">Ou saisir la plaque d'immatriculation · <span style="color:var(--sact);font-weight:500">Photographier le VIN</span></div>
+            </div>
+            <div style="position:relative;border:1px solid var(--sl2);padding:13.6px">
+              <span style="position:absolute;top:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;top:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;bottom:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;bottom:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10.2px">
+                <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sm1)">Fiche décodée</span>
+                <span style="border:1px solid var(--sac);color:var(--sact);padding:2px 6.8px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase">IA · vérifiée</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--sl3)">
+                <div style="background:var(--sbg);padding:8px 10.2px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--sm2)">Marque</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px">Toyota</div></div>
+                <div style="background:var(--sbg);padding:8px 10.2px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--sm2)">Modèle</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px">RAV4 LE</div></div>
+                <div style="background:var(--sbg);padding:8px 10.2px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--sm2)">Année</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px">2021</div></div>
+                <div style="background:var(--sbg);padding:8px 10.2px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--sm2)">Moteur</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px">2,5 L I4</div></div>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:13.6px">
+              <label style="display:flex;flex-direction:column;gap:4px"><span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sm1)">Kilométrage</span><span style="border:1px solid var(--sl2);background:var(--sin);padding:11px 10.2px;font-size:15px">64 200 km</span></label>
+              <label style="display:flex;flex-direction:column;gap:4px"><span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sm1)">Usage</span><span style="border:1px solid var(--sl2);background:var(--sin);padding:11px 10.2px;font-size:15px">Mixte</span></label>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6.8px">
+              <div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sm1)">Photo du véhicule</span><span style="font-size:12px;color:var(--sm2)">facultatif</span></div>
+              <div style="position:relative;width:100%;height:132px;border:1px solid var(--sl2)">
+                <image-slot id="veh-add" shape="rect" fit="cover" placeholder="photo du véhicule"></image-slot>
+              </div>
+            </div>
+            <div style="margin-top:auto;position:relative">
+              <span style="position:absolute;top:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;top:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;bottom:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;bottom:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <button style="width:100%;background:var(--sac);color:#ffffff;border:none;padding:14px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:7px" style-hover="background:var(--sach)">Générer le calendrier</button>
+            </div>
+          </div>
+          <div style="height:22px;display:flex;align-items:center;justify-content:center;flex:0 0 auto"><span style="width:120px;height:4px;background:var(--sfg);border-radius:2px;display:block"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 TABLEAU DE BORD -->
+    <div style="display:flex;flex-direction:column;gap:13.6px;width:390px">
+      <div style="display:flex;align-items:baseline;gap:10.2px"><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.18em;color:#6fa8ff">03</span><span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px;letter-spacing:.04em;text-transform:uppercase">Tableau de bord · iOS</span></div>
+      <div style="position:relative;width:390px">
+        <i style="position:absolute;top:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;top:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <div data-screen-label="03 Tableau de bord" style="position:relative;width:390px;height:844px;isolation:isolate;background:var(--sbg);border:1px solid var(--sl1);display:flex;flex-direction:column;overflow:hidden;color:var(--sfg);font-family:'Barlow',sans-serif">
+          <img src="assets/atelier-ecran.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:82% 42%;z-index:-1;filter:saturate(1.06)">
+          <div style="position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,var(--sv1),var(--sv2))"></div>
+          <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20.4px;font-size:12px;font-weight:600;flex:0 0 auto">
+            <span>9:41</span>
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:3px;height:6px;background:var(--sfg);display:block"></span><span style="width:3px;height:9px;background:var(--sfg);display:block"></span><span style="width:3px;height:12px;background:var(--sfg);display:block"></span><span style="width:20px;height:10px;border:1px solid var(--sfg);display:block;margin-left:4px"></span></span>
+          </div>
+          <div style="padding:6.8px 20.4px 13.6px;display:flex;align-items:flex-end;justify-content:space-between;border-bottom:1px solid var(--sl3);flex:0 0 auto">
+            <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--sm1)">Bonjour Marc</div><h2 style="margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:30px;line-height:1">Mes véhicules</h2></div>
+            <button style="width:34px;height:34px;border:1px solid var(--sac);background:transparent;color:var(--sact);font-size:20px;line-height:1;cursor:pointer;border-radius:7px;font-family:'Barlow Condensed',sans-serif" style-hover="background:var(--sf3)">+</button>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;padding:16px 20.4px;gap:13.6px;overflow:hidden">
+            <div style="background:#0d2748;color:#ffffff;padding:13.6px;display:flex;align-items:center;justify-content:space-between;gap:10.2px">
+              <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#6fa8ff">Prochaine échéance</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:22px;line-height:1.1">Vidange · RAV4 · dans 9 jours</div></div>
+              <span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:#9cc6ff;white-space:nowrap">Réserver ›</span>
+            </div>
+            <div style="position:relative;border:1px solid var(--sl2);padding:13.6px;display:flex;gap:13.6px">
+              <span style="position:absolute;top:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;top:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;bottom:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;bottom:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <div style="position:relative;width:68px;height:68px;border:1px solid var(--sl2);flex:0 0 auto"><image-slot id="veh-rav4" shape="rect" fit="cover" placeholder="photo"></image-slot></div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:6.8px;min-width:0">
+                <div style="display:flex;align-items:baseline;justify-content:space-between;gap:6.8px"><span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:21px;line-height:1">Toyota RAV4 2021</span><span style="font-size:12px;color:var(--sm2)">64 200 km</span></div>
+                <div style="display:flex;gap:6.8px"><span style="background:var(--sf1);color:var(--sonsoft);padding:2px 6.8px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase">Vidange dans 9 j</span><span style="border:1px solid var(--sl2);color:var(--sm1);padding:2px 6.8px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase">4 tâches</span></div>
+                <div style="height:4px;background:var(--str);display:flex"><span style="width:72%;background:var(--sac);display:block"></span></div>
+              </div>
+            </div>
+            <div style="position:relative;border:1px solid var(--sl2);padding:13.6px;display:flex;gap:13.6px">
+              <span style="position:absolute;top:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;top:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;bottom:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;bottom:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <div style="position:relative;width:68px;height:68px;border:1px solid var(--sl2);flex:0 0 auto"><image-slot id="veh-civic" shape="rect" fit="cover" placeholder="photo"></image-slot></div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:6.8px;min-width:0">
+                <div style="display:flex;align-items:baseline;justify-content:space-between;gap:6.8px"><span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:21px;line-height:1">Honda Civic 2018</span><span style="font-size:12px;color:var(--sm2)">128 940 km</span></div>
+                <div style="display:flex;gap:6.8px"><span style="background:#cfd6de;color:#0b0d10;padding:2px 6.8px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase">Freins en retard</span><span style="border:1px solid var(--sl2);color:var(--sm1);padding:2px 6.8px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase">6 tâches</span></div>
+                <div style="height:4px;background:var(--str);display:flex"><span style="width:38%;background:var(--sac);display:block"></span></div>
+              </div>
+            </div>
+            <div style="position:relative;border:1px solid var(--sl2);padding:13.6px;display:flex;gap:13.6px">
+              <span style="position:absolute;top:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;top:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;bottom:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;bottom:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <div style="position:relative;width:68px;height:68px;border:1px solid var(--sl2);flex:0 0 auto"><image-slot id="veh-transit" shape="rect" fit="cover" placeholder="photo"></image-slot></div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:6.8px;min-width:0">
+                <div style="display:flex;align-items:baseline;justify-content:space-between;gap:6.8px"><span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:21px;line-height:1">Ford Transit 2019</span><span style="font-size:12px;color:var(--sm2)">211 560 km</span></div>
+                <div style="display:flex;gap:6.8px"><span style="border:1px solid var(--sl2);color:var(--sm1);padding:2px 6.8px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase">À jour</span><span style="border:1px solid var(--sl2);color:var(--sm1);padding:2px 6.8px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase">Flotte</span></div>
+                <div style="height:4px;background:var(--str);display:flex"><span style="width:91%;background:var(--sac);display:block"></span></div>
+              </div>
+            </div>
+            <div style="margin-top:auto;display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--sl3)">
+              <div style="background:var(--sbg);padding:10.2px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--sm2)">Véhicules</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:24px;line-height:1">3</div></div>
+              <div style="background:var(--sbg);padding:10.2px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--sm2)">À venir 30 j</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:24px;line-height:1">4</div></div>
+              <div style="background:var(--sbg);padding:10.2px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--sm2)">Coût 2026</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:24px;line-height:1">1 840 $</div></div>
+            </div>
+          </div>
+          <div style="height:68px;border-top:1px solid var(--sl3);display:grid;grid-template-columns:repeat(4,1fr);flex:0 0 auto">
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--sact);border-top:2px solid var(--sac);margin-top:-1px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="10" width="18" height="6"></rect><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M6 10 8 6h8l2 4"></path></svg><span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase">Véhicules</span></div>
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--sm2)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="16"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg><span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase">Calendrier</span></div>
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--sm2)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="9" r="6"></circle><path d="M12 15v6"></path></svg><span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase">Garages</span></div>
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--sm2)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"></circle><circle cx="12" cy="12" r="8"></circle></svg><span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase">Réglages</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 04 ANDROID -->
+    <sc-if value="{{ showAndroid }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;flex-direction:column;gap:13.6px;width:390px">
+      <div style="display:flex;align-items:baseline;gap:10.2px"><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.18em;color:#6fa8ff">04</span><span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px;letter-spacing:.04em;text-transform:uppercase">Tableau de bord · Android</span></div>
+      <div style="position:relative;width:390px">
+        <i style="position:absolute;top:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;top:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <div data-screen-label="04 Tableau de bord Android" style="position:relative;width:390px;height:844px;isolation:isolate;background:var(--sbg);border:1px solid var(--sl1);display:flex;flex-direction:column;overflow:hidden;color:var(--sfg);font-family:'Barlow',sans-serif">
+          <img src="assets/atelier-ecran.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:82% 42%;z-index:-1;filter:saturate(1.06)">
+          <div style="position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,var(--sv1),var(--sv2))"></div>
+          <div style="height:32px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:12px;font-weight:600;flex:0 0 auto">
+            <span>9:41</span>
+            <span style="display:flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border:1px solid var(--sfg);display:block"></span><span style="width:9px;height:9px;border:1px solid var(--sfg);display:block"></span><span style="width:18px;height:9px;background:var(--sfg);display:block"></span></span>
+          </div>
+          <div style="height:56px;display:flex;align-items:center;gap:13.6px;padding:0 16px;border-bottom:1px solid var(--sl3);flex:0 0 auto">
+            <span style="display:flex;flex-direction:column;gap:3px"><span style="width:18px;height:1.5px;background:var(--sfg);display:block"></span><span style="width:18px;height:1.5px;background:var(--sfg);display:block"></span><span style="width:18px;height:1.5px;background:var(--sfg);display:block"></span></span>
+            <span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:22px;flex:1">Mes véhicules</span>
+            <span style="width:20px;height:20px;border:1.5px solid var(--sfg);border-radius:50%;display:block"></span>
+          </div>
+          <div style="flex:1;padding:16px;display:flex;flex-direction:column;gap:13.6px;overflow:hidden">
+            <div style="background:#0d2748;color:#ffffff;padding:13.6px;display:flex;flex-direction:column;gap:4px">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#6fa8ff">Prochaine échéance</div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:22px;line-height:1.1">Vidange · RAV4 · dans 9 jours</div>
+            </div>
+            <div style="position:relative;border:1px solid var(--sl2);padding:13.6px;display:flex;gap:13.6px;box-shadow:0 1px 2px rgba(0,0,0,.6)">
+              <span style="position:absolute;top:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;top:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;bottom:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;bottom:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <div style="position:relative;width:68px;height:68px;border:1px solid var(--sl2);flex:0 0 auto"><image-slot id="veh-rav4-a" shape="rect" fit="cover" placeholder="photo"></image-slot></div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:6.8px;min-width:0">
+                <div style="display:flex;align-items:baseline;justify-content:space-between;gap:6.8px"><span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:21px;line-height:1">Toyota RAV4 2021</span><span style="font-size:12px;color:var(--sm2)">64 200 km</span></div>
+                <div style="display:flex;gap:6.8px"><span style="background:var(--sf1);color:var(--sonsoft);padding:2px 6.8px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase">Vidange dans 9 j</span></div>
+                <div style="height:4px;background:var(--str);display:flex"><span style="width:72%;background:var(--sac);display:block"></span></div>
+              </div>
+            </div>
+            <div style="position:relative;border:1px solid var(--sl2);padding:13.6px;display:flex;gap:13.6px;box-shadow:0 1px 2px rgba(0,0,0,.6)">
+              <span style="position:absolute;top:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;top:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;bottom:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;bottom:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <div style="position:relative;width:68px;height:68px;border:1px solid var(--sl2);flex:0 0 auto"><image-slot id="veh-civic-a" shape="rect" fit="cover" placeholder="photo"></image-slot></div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:6.8px;min-width:0">
+                <div style="display:flex;align-items:baseline;justify-content:space-between;gap:6.8px"><span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:21px;line-height:1">Honda Civic 2018</span><span style="font-size:12px;color:var(--sm2)">128 940 km</span></div>
+                <div style="display:flex;gap:6.8px"><span style="background:#cfd6de;color:#0b0d10;padding:2px 6.8px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase">Freins en retard</span></div>
+                <div style="height:4px;background:var(--str);display:flex"><span style="width:38%;background:var(--sac);display:block"></span></div>
+              </div>
+            </div>
+            <div style="position:relative;align-self:flex-end;margin-top:auto">
+              <span style="position:absolute;top:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;top:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;bottom:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;bottom:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <button style="background:var(--sac);color:#ffffff;border:none;padding:13.6px 20.4px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:16px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:7px;box-shadow:0 3px 10px rgba(0,0,0,.55)" style-hover="background:var(--sach)">+ Véhicule</button>
+            </div>
+          </div>
+          <div style="height:62px;border-top:1px solid var(--sl3);display:grid;grid-template-columns:repeat(4,1fr);flex:0 0 auto">
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--sact)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="10" width="18" height="6"></rect><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M6 10 8 6h8l2 4"></path></svg><span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase">Véhicules</span></div>
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--sm2)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="16"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg><span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase">Calendrier</span></div>
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--sm2)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="9" r="6"></circle><path d="M12 15v6"></path></svg><span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase">Garages</span></div>
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--sm2)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"></circle><circle cx="12" cy="12" r="8"></circle></svg><span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase">Réglages</span></div>
+          </div>
+          <div style="height:20px;display:flex;align-items:center;justify-content:center;gap:34px;flex:0 0 auto;border-top:1px solid var(--sl5)"><span style="width:8px;height:8px;border:1.2px solid var(--sm2);display:block"></span><span style="width:9px;height:9px;border:1.2px solid var(--sm2);border-radius:50%;display:block"></span><span style="width:9px;height:9px;border:1.2px solid var(--sm2);display:block"></span></div>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- 05 CALENDRIER IA -->
+    <div style="display:flex;flex-direction:column;gap:13.6px;width:390px">
+      <div style="display:flex;align-items:baseline;gap:10.2px"><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.18em;color:#6fa8ff">05</span><span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px;letter-spacing:.04em;text-transform:uppercase">Calendrier généré par l'IA</span></div>
+      <div style="position:relative;width:390px">
+        <i style="position:absolute;top:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;top:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <div data-screen-label="05 Calendrier IA" style="position:relative;width:390px;height:844px;isolation:isolate;background:var(--sbg);border:1px solid var(--sl1);display:flex;flex-direction:column;overflow:hidden;color:var(--sfg);font-family:'Barlow',sans-serif">
+          <img src="assets/atelier-ecran.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:82% 42%;z-index:-1;filter:saturate(1.06)">
+          <div style="position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,var(--sv1),var(--sv2))"></div>
+          <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20.4px;font-size:12px;font-weight:600;flex:0 0 auto">
+            <span>9:41</span>
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:3px;height:6px;background:var(--sfg);display:block"></span><span style="width:3px;height:9px;background:var(--sfg);display:block"></span><span style="width:3px;height:12px;background:var(--sfg);display:block"></span><span style="width:20px;height:10px;border:1px solid var(--sfg);display:block;margin-left:4px"></span></span>
+          </div>
+          <div style="padding:6.8px 20.4px 13.6px;border-bottom:1px solid var(--sl3);flex:0 0 auto;display:flex;flex-direction:column;gap:6.8px">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--sm1)">Toyota RAV4 2021 · 64 200 km</div>
+            <h2 style="margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:30px;line-height:1">Calendrier d'entretien</h2>
+            <div style="display:flex;align-items:center;gap:6.8px;flex-wrap:wrap">
+              <span style="background:var(--sf1);color:var(--sonsoft);padding:3px 6.8px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase">Généré par l'IA</span>
+              <span style="font-size:12px;color:var(--sm2)">Source : guide d'entretien Toyota 2021 · révisé 2 août</span>
+            </div>
+          </div>
+          <div style="flex:1;padding:16px 20.4px;display:flex;flex-direction:column;gap:0;overflow:hidden">
+            <div style="display:flex;gap:13.6px">
+              <div style="width:12px;display:flex;flex-direction:column;align-items:center;flex:0 0 auto"><span style="width:9px;height:9px;background:var(--sac);display:block"></span><span style="flex:1;width:1px;background:var(--sl2);display:block"></span></div>
+              <div style="flex:1;padding-bottom:16px;display:flex;flex-direction:column;gap:4px">
+                <div style="display:flex;justify-content:space-between;align-items:baseline;gap:6.8px"><span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:20px;line-height:1.1">Vidange d'huile + filtre</span><span style="border:1px solid var(--sac);color:var(--sact);padding:1px 5px;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap">17 août</span></div>
+                <div style="font-size:13px;color:var(--sm1)">À 66 000 km ou 6 mois · 90 $ – 130 $ estimé</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:13.6px">
+              <div style="width:12px;display:flex;flex-direction:column;align-items:center;flex:0 0 auto"><span style="width:9px;height:9px;border:1px solid var(--sfg);display:block"></span><span style="flex:1;width:1px;background:var(--sl2);display:block"></span></div>
+              <div style="flex:1;padding-bottom:16px;display:flex;flex-direction:column;gap:4px">
+                <div style="display:flex;justify-content:space-between;align-items:baseline;gap:6.8px"><span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:20px;line-height:1.1">Rotation des pneus</span><span style="color:var(--sm2);font-size:12px;white-space:nowrap">17 août</span></div>
+                <div style="font-size:13px;color:var(--sm1)">Groupée avec la vidange · 40 $</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:13.6px">
+              <div style="width:12px;display:flex;flex-direction:column;align-items:center;flex:0 0 auto"><span style="width:9px;height:9px;border:1px solid var(--sfg);display:block"></span><span style="flex:1;width:1px;background:var(--sl2);display:block"></span></div>
+              <div style="flex:1;padding-bottom:16px;display:flex;flex-direction:column;gap:4px">
+                <div style="display:flex;justify-content:space-between;align-items:baseline;gap:6.8px"><span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:20px;line-height:1.1">Filtre à air d'habitacle</span><span style="color:var(--sm2);font-size:12px;white-space:nowrap">Oct. 2026</span></div>
+                <div style="font-size:13px;color:var(--sm1)">À 72 000 km · 55 $</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:13.6px">
+              <div style="width:12px;display:flex;flex-direction:column;align-items:center;flex:0 0 auto"><span style="width:9px;height:9px;border:1px solid var(--sfg);display:block"></span><span style="flex:1;width:1px;background:var(--sl2);display:block"></span></div>
+              <div style="flex:1;padding-bottom:16px;display:flex;flex-direction:column;gap:4px">
+                <div style="display:flex;justify-content:space-between;align-items:baseline;gap:6.8px"><span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:20px;line-height:1.1">Inspection des freins</span><span style="color:var(--sm2);font-size:12px;white-space:nowrap">Janv. 2027</span></div>
+                <div style="font-size:13px;color:var(--sm1)">À 80 000 km ou 24 mois · inspection incluse</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:13.6px">
+              <div style="width:12px;display:flex;flex-direction:column;align-items:center;flex:0 0 auto"><span style="width:9px;height:9px;border:1px solid var(--sfg);display:block"></span></div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+                <div style="display:flex;justify-content:space-between;align-items:baseline;gap:6.8px"><span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:20px;line-height:1.1">Liquide de refroidissement</span><span style="color:var(--sm2);font-size:12px;white-space:nowrap">Mai 2027</span></div>
+                <div style="font-size:13px;color:var(--sm1)">À 96 000 km · 140 $</div>
+              </div>
+            </div>
+            <div style="margin-top:auto;display:flex;flex-direction:column;gap:10.2px">
+              <div style="border:1px solid var(--sl2);padding:10.2px 13.6px;display:flex;align-items:center;justify-content:space-between;gap:10.2px">
+                <div style="font-size:13px;color:var(--sm1);line-height:1.4">Un climat froid et un usage mixte ont été pris en compte.</div>
+                <span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--sact);white-space:nowrap">Détails</span>
+              </div>
+              <div style="display:flex;gap:10.2px">
+                <button style="flex:1;border:1px solid var(--sac);background:transparent;color:var(--sact);padding:12px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:16px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:7px" style-hover="background:var(--sf3)">Modifier</button>
+                <button style="flex:1;background:var(--sac);color:#ffffff;border:none;padding:12px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:16px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:7px" style-hover="background:var(--sach)">Réserver</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 06 ÉDITION TÂCHE -->
+    <div style="display:flex;flex-direction:column;gap:13.6px;width:390px">
+      <div style="display:flex;align-items:baseline;gap:10.2px"><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.18em;color:#6fa8ff">06</span><span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px;letter-spacing:.04em;text-transform:uppercase">Édition d'une tâche</span></div>
+      <div style="position:relative;width:390px">
+        <i style="position:absolute;top:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;top:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <div data-screen-label="06 Édition tâche" style="position:relative;width:390px;height:844px;isolation:isolate;background:var(--sbg);border:1px solid var(--sl1);display:flex;flex-direction:column;overflow:hidden;color:var(--sfg);font-family:'Barlow',sans-serif">
+          <img src="assets/atelier-ecran.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:82% 42%;z-index:-1;filter:saturate(1.06)">
+          <div style="position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,var(--sv1),var(--sv2))"></div>
+          <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20.4px;font-size:12px;font-weight:600;flex:0 0 auto">
+            <span>9:41</span>
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:3px;height:6px;background:var(--sfg);display:block"></span><span style="width:3px;height:9px;background:var(--sfg);display:block"></span><span style="width:3px;height:12px;background:var(--sfg);display:block"></span><span style="width:20px;height:10px;border:1px solid var(--sfg);display:block;margin-left:4px"></span></span>
+          </div>
+          <div style="padding:6.8px 20.4px 13.6px;border-bottom:1px solid var(--sl3);flex:0 0 auto;display:flex;align-items:center;justify-content:space-between">
+            <span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--sact);cursor:pointer;border-radius:7px">‹ Calendrier</span>
+            <span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--sm2)">Supprimer</span>
+          </div>
+          <div style="flex:1;padding:20.4px;display:flex;flex-direction:column;gap:16px;overflow:hidden">
+            <div style="display:flex;flex-direction:column;gap:6.8px">
+              <h2 style="margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:32px;line-height:1">Vidange d'huile + filtre</h2>
+              <div style="display:flex;gap:6.8px"><span style="background:var(--sf1);color:var(--sonsoft);padding:2px 6.8px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase">Modifié par vous</span><span style="border:1px solid var(--sl2);color:var(--sm1);padding:2px 6.8px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase">Récurrent</span></div>
+            </div>
+            <div style="border-left:2px solid var(--sac);padding:6.8px 0 6.8px 10.2px;font-size:13px;line-height:1.45;color:var(--sm1)">Recommandation du fabricant : tous les <strong style="color:var(--sfg);font-weight:600">8 000 km ou 6 mois</strong>. Votre réglage est plus court de 1 000 km.</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:13.6px">
+              <label style="display:flex;flex-direction:column;gap:4px"><span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sm1)">Intervalle km</span><span style="border:1px solid var(--sl2);background:var(--sin);padding:11px 10.2px;font-size:15px">7 000 km</span></label>
+              <label style="display:flex;flex-direction:column;gap:4px"><span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sm1)">Intervalle mois</span><span style="border:1px solid var(--sl2);background:var(--sin);padding:11px 10.2px;font-size:15px">6 mois</span></label>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6.8px">
+              <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sm1)">Priorité</span>
+              <div style="display:flex;border:1px solid var(--sl2)">
+                <span style="flex:1;text-align:center;padding:9px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--sm1)">Basse</span>
+                <span style="flex:1;text-align:center;padding:9px;background:var(--sac);color:#ffffff;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px;letter-spacing:.08em;text-transform:uppercase;border-left:1px solid var(--sl2);border-right:1px solid var(--sl2)">Normale</span>
+                <span style="flex:1;text-align:center;padding:9px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--sm1)">Critique</span>
+              </div>
+            </div>
+            <label style="display:flex;flex-direction:column;gap:4px"><span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sm1)">Prochaine échéance</span><span style="border:1px solid var(--sl2);background:var(--sin);padding:11px 10.2px;font-size:15px">17 août 2026 · 66 000 km</span></label>
+            <label style="display:flex;flex-direction:column;gap:4px"><span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sm1)">Notes pour le garage</span><span style="border:1px solid var(--sl2);background:var(--sin);padding:11px 10.2px;font-size:15px;line-height:1.4;min-height:64px;color:var(--sm1)">Huile synthétique 0W-20. Vérifier le bruit à la suspension avant droite.</span></label>
+            <div style="display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--sl3);padding-top:13.6px">
+              <span style="font-size:15px">Grouper avec la rotation des pneus</span>
+              <span style="width:44px;height:24px;background:var(--sac);display:flex;align-items:center;justify-content:flex-end;padding:2px;box-sizing:border-box"><span style="width:20px;height:20px;background:#eef2f7;display:block"></span></span>
+            </div>
+            <div style="margin-top:auto;position:relative">
+              <span style="position:absolute;top:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;top:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;bottom:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;bottom:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <button style="width:100%;background:var(--sac);color:#ffffff;border:none;padding:14px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:7px" style-hover="background:var(--sach)">Enregistrer</button>
+            </div>
+          </div>
+          <div style="height:22px;display:flex;align-items:center;justify-content:center;flex:0 0 auto"><span style="width:120px;height:4px;background:var(--sfg);border-radius:2px;display:block"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 07 RELEVÉ KILOMÉTRAGE -->
+    <div style="display:flex;flex-direction:column;gap:13.6px;width:390px">
+      <div style="display:flex;align-items:baseline;gap:10.2px"><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.18em;color:#6fa8ff">07</span><span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px;letter-spacing:.04em;text-transform:uppercase">Relevé du kilométrage</span></div>
+      <div style="position:relative;width:390px">
+        <i style="position:absolute;top:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;top:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <div data-screen-label="07 Relevé kilométrage" style="position:relative;width:390px;height:844px;isolation:isolate;background:var(--sbg);border:1px solid var(--sl1);display:flex;flex-direction:column;overflow:hidden;color:var(--sfg);font-family:'Barlow',sans-serif">
+          <img src="assets/atelier-ecran.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:82% 42%;z-index:-1;filter:saturate(1.06)">
+          <div style="position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,var(--sv1),var(--sv2))"></div>
+          <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20.4px;font-size:12px;font-weight:600;flex:0 0 auto">
+            <span>9:41</span>
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:3px;height:6px;background:var(--sfg);display:block"></span><span style="width:3px;height:9px;background:var(--sfg);display:block"></span><span style="width:3px;height:12px;background:var(--sfg);display:block"></span><span style="width:20px;height:10px;border:1px solid var(--sfg);display:block;margin-left:4px"></span></span>
+          </div>
+          <div style="padding:6.8px 20.4px 13.6px;border-bottom:1px solid var(--sl3);flex:0 0 auto;display:flex;align-items:baseline;justify-content:space-between;gap:10.2px">
+            <h2 style="margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:30px;line-height:1">Kilométrage</h2>
+            <span style="font-size:13px;color:var(--sm2)">Toyota RAV4 2021</span>
+          </div>
+          <div style="flex:1;padding:16px 20.4px;display:flex;flex-direction:column;gap:16px;overflow:hidden">
+            <div style="display:flex;flex-direction:column;gap:6.8px">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--sm1)">Combien affiche l'odomètre aujourd'hui ?</div>
+              <div style="display:flex;gap:6.8px;flex-wrap:wrap">
+                <span style="border:1px solid var(--sl2);background:var(--sf4);padding:8px 12px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:17px">64 900</span>
+                <span style="border:1px solid var(--sac);background:var(--sf1);padding:8px 12px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:17px;color:var(--sact)">65 400</span>
+                <span style="border:1px solid var(--sl2);background:var(--sf4);padding:8px 12px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:17px">65 900</span>
+                <span style="border:1px solid var(--sl2);padding:8px 12px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:17px;color:var(--sm1)">Autre…</span>
+              </div>
+              <div style="font-size:13px;color:var(--sm2);line-height:1.4">Valeurs proposées à partir de votre moyenne. Un seul geste suffit.</div>
+            </div>
+            <div style="display:flex;gap:10.2px;align-items:center;border:1px solid var(--sl2);padding:10.2px 13.6px">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--sact)" stroke-width="1.5"><path d="M3 8h3l2-3h8l2 3h3v11H3z"></path><circle cx="12" cy="13" r="3.5"></circle></svg>
+              <div style="flex:1;font-size:14px;line-height:1.35">Photographier l'odomètre<div style="font-size:12px;color:var(--sm2)">L'IA lit le chiffre à votre place.</div></div>
+              <span style="color:var(--sm2);font-size:18px">›</span>
+            </div>
+            <div style="border-top:1px solid var(--sl3);padding-top:13.6px;display:flex;flex-direction:column;gap:10.2px">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--sm1)">Votre rythme</div>
+              <div style="display:flex;align-items:baseline;gap:10.2px"><span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:38px;line-height:1">1 380</span><span style="font-size:14px;color:var(--sm1)">km / mois · moyenne sur 4 relevés</span></div>
+              <div style="height:34px;display:flex;align-items:flex-end;gap:5px">
+                <span style="flex:1;height:56%;background:var(--sf2);display:block"></span>
+                <span style="flex:1;height:74%;background:var(--sf2);display:block"></span>
+                <span style="flex:1;height:64%;background:var(--sf2);display:block"></span>
+                <span style="flex:1;height:88%;background:var(--sac);display:block"></span>
+                <span style="flex:1;height:70%;background:var(--str);display:block"></span>
+                <span style="flex:1;height:70%;background:var(--str);display:block"></span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--sm3);font-family:'Barlow Condensed',sans-serif;letter-spacing:.1em;text-transform:uppercase"><span>Avr</span><span>Mai</span><span>Juin</span><span>Juil</span><span>Août</span><span>Sept</span></div>
+            </div>
+            <div style="position:relative;background:#0d2748;color:#ffffff;padding:13.6px;display:flex;flex-direction:column;gap:6.8px">
+              <span style="position:absolute;top:-6px;left:-4px;font-size:11px;line-height:1;color:#6fa8ff">+</span>
+              <span style="position:absolute;top:-6px;right:-4px;font-size:11px;line-height:1;color:#6fa8ff">+</span>
+              <span style="position:absolute;bottom:-6px;left:-4px;font-size:11px;line-height:1;color:#6fa8ff">+</span>
+              <span style="position:absolute;bottom:-6px;right:-4px;font-size:11px;line-height:1;color:#6fa8ff">+</span>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#6fa8ff">Projection</div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:22px;line-height:1.1">Vidange à 72 000 km — vers le 12 septembre</div>
+              <div style="font-size:13px;line-height:1.5;color:rgba(242,242,243,.78);text-wrap:pretty">Rappel 7 jours avant, puis à la date exacte. La date se recalcule à chaque relevé : si vous roulez moins, elle recule d'elle-même.</div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10.2px"><span style="font-size:15px;flex:1;line-height:1.3">Relevé automatique par les trajets du téléphone<span style="display:block;font-size:12px;color:var(--sm2)">Optionnel — affine la moyenne sans rien saisir.</span></span><span style="width:44px;height:24px;background:var(--str);display:flex;align-items:center;padding:2px;box-sizing:border-box;flex:0 0 auto"><span style="width:20px;height:20px;background:#eef2f7;display:block"></span></span></div>
+            <div style="margin-top:auto;position:relative">
+              <span style="position:absolute;top:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;top:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;bottom:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;bottom:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <button style="width:100%;background:var(--sac);color:#ffffff;border:none;padding:14px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:7px" style-hover="background:var(--sach)">Enregistrer le relevé</button>
+            </div>
+          </div>
+          <div style="height:22px;display:flex;align-items:center;justify-content:center;flex:0 0 auto"><span style="width:120px;height:4px;background:var(--sfg);border-radius:2px;display:block"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 08 NOTIFICATIONS -->
+    <div style="display:flex;flex-direction:column;gap:13.6px;width:390px">
+      <div style="display:flex;align-items:baseline;gap:10.2px"><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.18em;color:#6fa8ff">08</span><span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px;letter-spacing:.04em;text-transform:uppercase">Rappels et notifications</span></div>
+      <div style="position:relative;width:390px">
+        <i style="position:absolute;top:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;top:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <div data-screen-label="08 Notifications" style="position:relative;width:390px;height:844px;isolation:isolate;background:var(--sbg);border:1px solid var(--sl1);display:flex;flex-direction:column;overflow:hidden;color:var(--sfg);font-family:'Barlow',sans-serif">
+          <img src="assets/atelier-ecran.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:82% 42%;z-index:-1;filter:saturate(1.06)">
+          <div style="position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,var(--sv1),var(--sv2))"></div>
+          <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20.4px;font-size:12px;font-weight:600;flex:0 0 auto">
+            <span>9:41</span>
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:3px;height:6px;background:var(--sfg);display:block"></span><span style="width:3px;height:9px;background:var(--sfg);display:block"></span><span style="width:3px;height:12px;background:var(--sfg);display:block"></span><span style="width:20px;height:10px;border:1px solid var(--sfg);display:block;margin-left:4px"></span></span>
+          </div>
+          <div style="padding:6.8px 20.4px 13.6px;border-bottom:1px solid var(--sl3);flex:0 0 auto"><h2 style="margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:30px;line-height:1">Rappels</h2></div>
+          <div style="flex:1;padding:16px 20.4px;display:flex;flex-direction:column;gap:13.6px;overflow:hidden">
+            <div style="border:1px solid var(--sac);background:var(--sf4);padding:13.6px;display:flex;flex-direction:column;gap:6.8px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--sonsoft)">Aujourd'hui · 8:00</span><span style="width:7px;height:7px;background:var(--sac);display:block"></span></div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:20px;line-height:1.1">Civic 2018 — freins en retard de 3 400 km</div>
+              <div style="font-size:14px;color:var(--sm1);line-height:1.4">L'inspection était prévue à 125 500 km. Voulez-vous que je cherche un garage ?</div>
+              <div style="display:flex;gap:6.8px;margin-top:4px"><button style="background:var(--sac);color:#ffffff;border:none;padding:8px 13.6px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:7px" style-hover="background:var(--sach)">Chercher</button><button style="border:1px solid var(--sl2);background:transparent;color:var(--sm1);padding:8px 13.6px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:7px" style-hover="background:var(--sl4)">Reporter</button></div>
+            </div>
+            <div style="border:1px solid var(--sl2);padding:13.6px;display:flex;flex-direction:column;gap:4px">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--sm2)">Hier · 18:30</div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px;line-height:1.1">Garage Précision a répondu</div>
+              <div style="font-size:14px;color:var(--sm1)">Deux plages proposées pour samedi. À confirmer.</div>
+            </div>
+            <div style="border:1px solid var(--sl2);padding:13.6px;display:flex;flex-direction:column;gap:4px">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--sm2)">4 août</div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px;line-height:1.1">RAV4 — vidange dans 14 jours</div>
+              <div style="font-size:14px;color:var(--sm1)">Rappel automatique à 14 jours avant l'échéance.</div>
+            </div>
+            <div style="border:1px solid var(--sl2);padding:13.6px;display:flex;flex-direction:column;gap:4px;opacity:.7">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--sm2)">28 juillet</div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px;line-height:1.1">Transit — inspection annuelle faite</div>
+              <div style="font-size:14px;color:var(--sm1)">Ajoutée à l'historique. Facture jointe.</div>
+            </div>
+            <div style="margin-top:auto;border-top:1px solid var(--sl3);padding-top:13.6px;display:flex;flex-direction:column;gap:10.2px">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sm1)">Délais de rappel</div>
+              <div style="display:flex;gap:6.8px">
+                <span style="flex:1;text-align:center;border:1px solid var(--sac);background:var(--sf2);color:var(--sonsoft);padding:8px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px">30 j</span>
+                <span style="flex:1;text-align:center;border:1px solid var(--sac);background:var(--sf2);color:var(--sonsoft);padding:8px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px">14 j</span>
+                <span style="flex:1;text-align:center;border:1px solid var(--sl2);color:var(--sm2);padding:8px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px">7 j</span>
+                <span style="flex:1;text-align:center;border:1px solid var(--sl2);color:var(--sm2);padding:8px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px">1 j</span>
+              </div>
+            </div>
+          </div>
+          <div style="height:22px;display:flex;align-items:center;justify-content:center;flex:0 0 auto"><span style="width:120px;height:4px;background:var(--sfg);border-radius:2px;display:block"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 09 SIGNALER UN PROBLÈME -->
+    <div style="display:flex;flex-direction:column;gap:13.6px;width:390px">
+      <div style="display:flex;align-items:baseline;gap:10.2px"><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.18em;color:#6fa8ff">09</span><span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px;letter-spacing:.04em;text-transform:uppercase">Signaler une panne</span></div>
+      <div style="position:relative;width:390px">
+        <i style="position:absolute;top:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;top:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <div data-screen-label="09 Signaler une panne" style="position:relative;width:390px;height:844px;isolation:isolate;background:var(--sbg);border:1px solid var(--sl1);display:flex;flex-direction:column;overflow:hidden;color:var(--sfg);font-family:'Barlow',sans-serif">
+          <img src="assets/atelier-ecran.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:82% 42%;z-index:-1;filter:saturate(1.06)">
+          <div style="position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,var(--sv1),var(--sv2))"></div>
+          <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20.4px;font-size:12px;font-weight:600;flex:0 0 auto">
+            <span>9:41</span>
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:3px;height:6px;background:var(--sfg);display:block"></span><span style="width:3px;height:9px;background:var(--sfg);display:block"></span><span style="width:3px;height:12px;background:var(--sfg);display:block"></span><span style="width:20px;height:10px;border:1px solid var(--sfg);display:block;margin-left:4px"></span></span>
+          </div>
+          <div style="padding:6.8px 20.4px 13.6px;border-bottom:1px solid var(--sl3);flex:0 0 auto;display:flex;align-items:baseline;justify-content:space-between;gap:10.2px">
+            <h2 style="margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:30px;line-height:1">Un problème ?</h2>
+            <span style="font-size:13px;color:var(--sm2)">RAV4 · 65 400 km</span>
+          </div>
+          <div style="flex:1;padding:16px 20.4px;display:flex;flex-direction:column;gap:16px;overflow:hidden">
+            <p style="margin:0;font-size:15px;line-height:1.45;color:var(--sm1);text-wrap:pretty">Décrivez-le dans vos mots. Pas besoin de vocabulaire technique — l'application se charge du reste.</p>
+            <div style="border:1px solid var(--sl2);background:var(--sin);padding:13.6px;display:flex;flex-direction:column;gap:10.2px;min-height:150px">
+              <div style="font-size:15px;line-height:1.5;text-wrap:pretty">Bruit de grincement quand je freine à basse vitesse, surtout le matin. Le volant vibre un peu quand je ralentis sur l'autoroute.</div>
+              <span style="width:2px;height:18px;background:var(--sac);display:block"></span>
+            </div>
+            <div style="display:flex;gap:10.2px">
+              <div style="flex:1;border:1px solid var(--sl2);padding:10.2px;display:flex;flex-direction:column;align-items:center;gap:5px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--sact)" stroke-width="1.5"><path d="M3 8h3l2-3h8l2 3h3v11H3z"></path><circle cx="12" cy="13" r="3.5"></circle></svg><span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--sm1)">Photo</span></div>
+              <div style="flex:1;border:1px solid var(--sl2);padding:10.2px;display:flex;flex-direction:column;align-items:center;gap:5px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--sact)" stroke-width="1.5"><rect x="5" y="3" width="14" height="12"></rect><path d="M8 19h8M12 15v4"></path></svg><span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--sm1)">Vidéo</span></div>
+              <div style="flex:1;border:1px solid var(--sac);background:var(--sf1);padding:10.2px;display:flex;flex-direction:column;align-items:center;gap:5px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--sact)" stroke-width="1.5"><rect x="9" y="3" width="6" height="11"></rect><path d="M5 12a7 7 0 0 0 14 0M12 19v2"></path></svg><span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--sact)">Le bruit</span></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10.2px;border-top:1px solid var(--sl3);padding-top:13.6px">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--sm1)">Quelques précisions</div>
+              <div style="display:flex;gap:6.8px;flex-wrap:wrap">
+                <span style="border:1px solid var(--sac);background:var(--sf1);padding:6px 10.2px;font-size:13px;color:var(--sact)">Depuis 2 semaines</span>
+                <span style="border:1px solid var(--sl2);padding:6px 10.2px;font-size:13px;color:var(--sm1)">Témoin allumé</span>
+                <span style="border:1px solid var(--sac);background:var(--sf1);padding:6px 10.2px;font-size:13px;color:var(--sact)">Au freinage</span>
+                <span style="border:1px solid var(--sl2);padding:6px 10.2px;font-size:13px;color:var(--sm1)">Fuite visible</span>
+                <span style="border:1px solid var(--sl2);padding:6px 10.2px;font-size:13px;color:var(--sm1)">Odeur</span>
+              </div>
+            </div>
+            <div style="border:1px solid var(--sl2);padding:10.2px 13.6px;font-size:13px;color:var(--sm1);line-height:1.45;text-wrap:pretty">Si c'est urgent, dites-le : l'application cherche un garage qui peut vous prendre aujourd'hui.</div>
+            <div style="margin-top:auto;position:relative">
+              <span style="position:absolute;top:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;top:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;bottom:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;bottom:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <button style="width:100%;background:var(--sac);color:#ffffff;border:none;padding:14px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:7px" style-hover="background:var(--sach)">Analyser le problème</button>
+            </div>
+          </div>
+          <div style="height:22px;display:flex;align-items:center;justify-content:center;flex:0 0 auto"><span style="width:120px;height:4px;background:var(--sfg);border-radius:2px;display:block"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10 DIAGNOSTIC ET PRISE EN CHARGE -->
+    <div style="display:flex;flex-direction:column;gap:13.6px;width:390px">
+      <div style="display:flex;align-items:baseline;gap:10.2px"><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.18em;color:#6fa8ff">10</span><span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px;letter-spacing:.04em;text-transform:uppercase">Diagnostic et prise en charge</span></div>
+      <div style="position:relative;width:390px">
+        <i style="position:absolute;top:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;top:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <div data-screen-label="10 Diagnostic panne" style="position:relative;width:390px;height:844px;isolation:isolate;background:var(--sbg);border:1px solid var(--sl1);display:flex;flex-direction:column;overflow:hidden;color:var(--sfg);font-family:'Barlow',sans-serif">
+          <img src="assets/atelier-ecran.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:82% 42%;z-index:-1;filter:saturate(1.06)">
+          <div style="position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,var(--sv1),var(--sv2))"></div>
+          <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20.4px;font-size:12px;font-weight:600;flex:0 0 auto">
+            <span>9:41</span>
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:3px;height:6px;background:var(--sfg);display:block"></span><span style="width:3px;height:9px;background:var(--sfg);display:block"></span><span style="width:3px;height:12px;background:var(--sfg);display:block"></span><span style="width:20px;height:10px;border:1px solid var(--sfg);display:block;margin-left:4px"></span></span>
+          </div>
+          <div style="padding:6.8px 20.4px 13.6px;border-bottom:1px solid var(--sl3);flex:0 0 auto;display:flex;align-items:baseline;justify-content:space-between;gap:10.2px">
+            <h2 style="margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:30px;line-height:1">Diagnostic</h2>
+            <span style="font-size:13px;color:var(--sm2)">Analyse IA · 4 s</span>
+          </div>
+          <div style="flex:1;padding:16px 20.4px;display:flex;flex-direction:column;gap:16px;overflow:hidden">
+            <div style="position:relative;border:1px solid var(--sl2);padding:13.6px;display:flex;flex-direction:column;gap:6.8px">
+              <span style="position:absolute;top:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;top:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;bottom:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <span style="position:absolute;bottom:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10.2px">
+                <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--sact)">Cause la plus probable</div>
+                <span style="background:var(--sf1);color:var(--sonsoft);padding:2px 6.8px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase">Élevée</span>
+              </div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:26px;line-height:1.05">Plaquettes de frein avant usées</div>
+              <div style="font-size:14px;line-height:1.45;color:var(--sm1);text-wrap:pretty">Le grincement au freinage et la vibration du volant vont ensemble. Dernier remplacement : 54 800 km, il y a 10 600 km.</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6.8px">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--sm1)">Autres pistes</div>
+              <div style="display:flex;justify-content:space-between;font-size:14px;padding:6.8px 0;border-bottom:1px solid var(--sl4)"><span>Disques voilés</span><span style="color:var(--sm2)">Moyenne</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:14px;padding:6.8px 0;border-bottom:1px solid var(--sl4)"><span>Étrier qui colle</span><span style="color:var(--sm2)">Faible</span></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10.2px">
+              <div style="border:1px solid var(--sl2);padding:10.2px 13.6px"><div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--sm1)">Délai conseillé</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:20px;line-height:1.1">2 semaines</div></div>
+              <div style="border:1px solid var(--sl2);padding:10.2px 13.6px"><div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--sm1)">Coût estimé</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:20px;line-height:1.1">250 – 400 $</div></div>
+            </div>
+            <div style="border-left:none;border:1px solid var(--sl2);background:var(--sf5);padding:10.2px 13.6px;font-size:13px;line-height:1.45;color:var(--sm1);text-wrap:pretty">Vous pouvez rouler, mais évitez les longs trajets et gardez vos distances. Estimation indicative : le garage confirme au diagnostic.</div>
+            <div style="display:flex;flex-direction:column;gap:6.8px;border-top:1px solid var(--sl3);padding-top:13.6px">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--sm1)">3 garages disponibles cette semaine</div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;font-size:14px;padding:5px 0"><span>Garage Précision · 2,1 km</span><span style="color:var(--sm2)">jeu. 14 h</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;font-size:14px;padding:5px 0"><span>Atelier Rosemont · 3,4 km</span><span style="color:var(--sm2)">ven. 9 h</span></div>
+            </div>
+            <div style="margin-top:auto;display:flex;flex-direction:column;gap:10.2px">
+              <div style="position:relative">
+                <span style="position:absolute;top:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+                <span style="position:absolute;top:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+                <span style="position:absolute;bottom:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+                <span style="position:absolute;bottom:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+                <button style="width:100%;background:var(--sac);color:#ffffff;border:none;padding:14px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:7px" style-hover="background:var(--sach)">Demander 3 soumissions</button>
+              </div>
+              <button style="width:100%;background:transparent;color:var(--sfg);border:1px solid var(--sl2);padding:12px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:16px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:7px" style-hover="background:var(--sf5)">Ajouter au calendrier</button>
+            </div>
+          </div>
+          <div style="height:22px;display:flex;align-items:center;justify-content:center;flex:0 0 auto"><span style="width:120px;height:4px;background:var(--sfg);border-radius:2px;display:block"></span></div>
+        </div>
+      </div>
+    </div>
+    <!-- 11 RECHERCHE GARAGES (IA) -->
+    <div style="display:flex;flex-direction:column;gap:13.6px;width:390px">
+      <div style="display:flex;align-items:baseline;gap:10.2px"><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.18em;color:#6fa8ff">11</span><span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px;letter-spacing:.04em;text-transform:uppercase">Recherche de garages · IA</span></div>
+      <div style="position:relative;width:390px">
+        <i style="position:absolute;top:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;top:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <div data-screen-label="11 Recherche garages" style="position:relative;width:390px;height:844px;isolation:isolate;background:var(--sbg);border:1px solid var(--sl1);display:flex;flex-direction:column;overflow:hidden;color:var(--sfg);font-family:'Barlow',sans-serif">
+          <img src="assets/atelier-ecran.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:82% 42%;z-index:-1;filter:saturate(1.06)">
+          <div style="position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,var(--sv1),var(--sv2))"></div>
+          <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20.4px;font-size:12px;font-weight:600;flex:0 0 auto">
+            <span>9:41</span>
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:3px;height:6px;background:var(--sfg);display:block"></span><span style="width:3px;height:9px;background:var(--sfg);display:block"></span><span style="width:3px;height:12px;background:var(--sfg);display:block"></span><span style="width:20px;height:10px;border:1px solid var(--sfg);display:block;margin-left:4px"></span></span>
+          </div>
+          <div style="position:relative;height:210px;flex:0 0 auto;border-bottom:1px solid var(--sl2);background:repeating-linear-gradient(90deg,var(--sf1) 0 1px,transparent 1px 34px),repeating-linear-gradient(0deg,var(--sf1) 0 1px,transparent 1px 34px),var(--smap);overflow:hidden">
+            <span style="position:absolute;left:150px;top:88px;width:14px;height:14px;background:#eef2f7;display:block"></span>
+            <span style="position:absolute;left:82px;top:52px;width:10px;height:10px;border:1.5px solid var(--sac);background:var(--sbg);display:block"></span>
+            <span style="position:absolute;left:246px;top:66px;width:10px;height:10px;border:1.5px solid var(--sac);background:var(--sbg);display:block"></span>
+            <span style="position:absolute;left:196px;top:150px;width:10px;height:10px;border:1.5px solid var(--sac);background:var(--sbg);display:block"></span>
+            <span style="position:absolute;left:106px;top:158px;width:10px;height:10px;border:1.5px solid var(--sac);background:var(--sbg);display:block"></span>
+            <span style="position:absolute;left:14px;bottom:12px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--sact);background:var(--sbg);padding:3px 6px;border:1px solid var(--sl2)">Carte · 5 garages dans 4 km</span>
+          </div>
+          <div style="flex:1;padding:16px 20.4px;display:flex;flex-direction:column;gap:10.2px;overflow:hidden">
+            <div style="align-self:flex-end;max-width:78%;background:#0d2748;color:#ffffff;padding:10.2px 13.6px;font-size:14px;line-height:1.4">Trouve un garage pour la vidange du RAV4, samedi matin si possible.</div>
+            <div style="align-self:flex-start;max-width:86%;display:flex;flex-direction:column;gap:6.8px">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--sact)">Assistant</div>
+              <div style="border:1px solid var(--sl2);padding:10.2px 13.6px;font-size:14px;line-height:1.45">Cinq ateliers certifiés dans 4 km acceptent l'huile 0W-20. Voici les trois plus proches, du moins cher au plus rapide.</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6.8px">
+              <div style="border:1px solid var(--sl2);padding:10.2px 13.6px;display:flex;justify-content:space-between;align-items:center;gap:10.2px" style-hover="background:var(--sf5)">
+                <div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px;line-height:1.1">Garage Précision</div><div style="font-size:13px;color:var(--sm1)">2,4 km · 4,8 ★ · 95 $ · courriel</div></div>
+                <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--sact)">Sam. 9:00</span>
+              </div>
+              <div style="border:1px solid var(--sl2);padding:10.2px 13.6px;display:flex;justify-content:space-between;align-items:center;gap:10.2px" style-hover="background:var(--sf5)">
+                <div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px;line-height:1.1">Atelier Rosemont</div><div style="font-size:13px;color:var(--sm1)">3,1 km · 4,6 ★ · 89 $ · téléphone</div></div>
+                <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--sact)">Sam. 11:30</span>
+              </div>
+              <div style="border:1px solid var(--sl2);padding:10.2px 13.6px;display:flex;justify-content:space-between;align-items:center;gap:10.2px" style-hover="background:var(--sf5)">
+                <div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px;line-height:1.1">Mécanique Papineau</div><div style="font-size:13px;color:var(--sm1)">3,8 km · 4,4 ★ · 110 $ · courriel</div></div>
+                <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--sact)">Lun. 8:00</span>
+              </div>
+            </div>
+            <div style="display:flex;gap:6.8px;flex-wrap:wrap">
+              <span style="border:1px solid var(--sl2);color:var(--sm1);padding:5px 8px;font-size:13px">Le moins cher</span>
+              <span style="border:1px solid var(--sl2);color:var(--sm1);padding:5px 8px;font-size:13px">Ouvert samedi</span>
+              <span style="border:1px solid var(--sl2);color:var(--sm1);padding:5px 8px;font-size:13px">Concessionnaire</span>
+            </div>
+            <div style="margin-top:auto;display:flex;gap:6.8px;align-items:center;border:1px solid var(--sl2);background:var(--sin);padding:10.2px">
+              <span style="flex:1;font-size:14px;color:var(--sm3)">Poser une question à l'assistant…</span>
+              <span style="width:30px;height:30px;background:var(--sac);color:#ffffff;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:600">›</span>
+            </div>
+          </div>
+          <div style="height:22px;display:flex;align-items:center;justify-content:center;flex:0 0 auto"><span style="width:120px;height:4px;background:var(--sfg);border-radius:2px;display:block"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 12 FICHE GARAGE -->
+    <div style="display:flex;flex-direction:column;gap:13.6px;width:390px">
+      <div style="display:flex;align-items:baseline;gap:10.2px"><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.18em;color:#6fa8ff">12</span><span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px;letter-spacing:.04em;text-transform:uppercase">Fiche garage et contact</span></div>
+      <div style="position:relative;width:390px">
+        <i style="position:absolute;top:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;top:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <div data-screen-label="12 Fiche garage" style="position:relative;width:390px;height:844px;isolation:isolate;background:var(--sbg);border:1px solid var(--sl1);display:flex;flex-direction:column;overflow:hidden;color:var(--sfg);font-family:'Barlow',sans-serif">
+          <img src="assets/atelier-ecran.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:82% 42%;z-index:-1;filter:saturate(1.06)">
+          <div style="position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,var(--sv1),var(--sv2))"></div>
+          <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20.4px;font-size:12px;font-weight:600;flex:0 0 auto">
+            <span>9:41</span>
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:3px;height:6px;background:var(--sfg);display:block"></span><span style="width:3px;height:9px;background:var(--sfg);display:block"></span><span style="width:3px;height:12px;background:var(--sfg);display:block"></span><span style="width:20px;height:10px;border:1px solid var(--sfg);display:block;margin-left:4px"></span></span>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;overflow:hidden">
+            <div style="position:relative;height:150px;flex:0 0 auto;border-bottom:1px solid var(--sl2)"><image-slot id="garage-photo" shape="rect" fit="cover" placeholder="photo du garage"></image-slot></div>
+            <div style="padding:16px 20.4px;display:flex;flex-direction:column;gap:16px;flex:1;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:6.8px">
+                <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--sm1)">2,4 km · Rosemont</div>
+                <h2 style="margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:32px;line-height:1">Garage Précision</h2>
+                <div style="display:flex;gap:6.8px;flex-wrap:wrap"><span style="background:var(--sf1);color:var(--sonsoft);padding:2px 6.8px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase">4,8 ★ · 212 avis</span><span style="border:1px solid var(--sl2);color:var(--sm1);padding:2px 6.8px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase">Certifié CAA</span><span style="border:1px solid var(--sl2);color:var(--sm1);padding:2px 6.8px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase">Ouvert · 18:00</span></div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--sl3)">
+                <div style="background:var(--sbg);padding:8px 10.2px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--sm2)">Vidange</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px">95 $</div></div>
+                <div style="background:var(--sbg);padding:8px 10.2px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--sm2)">Attente</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px">2 jours</div></div>
+                <div style="background:var(--sbg);padding:8px 10.2px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--sm2)">Trajet</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px">7 min</div></div>
+                <div style="background:var(--sbg);padding:8px 10.2px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--sm2)">Garantie</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px">12 mois</div></div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6.8px">
+                <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sm1)">Services pertinents</div>
+                <div style="font-size:14px;line-height:1.5;color:var(--sm1);text-wrap:pretty">Vidange synthétique · Rotation et équilibrage · Freins · Inspection préachat · Pneus d'hiver</div>
+              </div>
+              <div style="position:relative;border:1px solid var(--sl2);padding:13.6px;display:flex;flex-direction:column;gap:10.2px">
+                <span style="position:absolute;top:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+                <span style="position:absolute;top:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+                <span style="position:absolute;bottom:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+                <span style="position:absolute;bottom:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+                <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sm1)">Moyen de contact</span><span style="font-size:12px;color:var(--sm2)">détecté par l'IA</span></div>
+                <div style="display:flex;align-items:center;gap:10.2px;font-size:14px"><span style="width:8px;height:8px;background:var(--sac);display:block"></span><span>Courriel vérifié — <span style="color:var(--sm1)">rendezvous@precision.ca</span></span></div>
+                <div style="display:flex;align-items:center;gap:10.2px;font-size:14px;color:var(--sm2)"><span style="width:8px;height:8px;border:1px solid var(--sm3);display:block"></span><span>Appel vocal — utilisé seulement sans courriel</span></div>
+              </div>
+              <div style="margin-top:auto;display:flex;flex-direction:column;gap:6.8px">
+                <div style="position:relative">
+                  <span style="position:absolute;top:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+                  <span style="position:absolute;top:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+                  <span style="position:absolute;bottom:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+                  <span style="position:absolute;bottom:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+                  <button style="width:100%;background:var(--sac);color:#ffffff;border:none;padding:14px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:7px" style-hover="background:var(--sach)">Demander un rendez-vous</button>
+                </div>
+                <button style="width:100%;border:1px solid var(--sac);background:transparent;color:var(--sact);padding:12px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:16px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:7px" style-hover="background:var(--sf3)">Voir le courriel avant envoi</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 13 RÉSERVATION AUTO -->
+    <div style="display:flex;flex-direction:column;gap:13.6px;width:390px">
+      <div style="display:flex;align-items:baseline;gap:10.2px"><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.18em;color:#6fa8ff">13</span><span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px;letter-spacing:.04em;text-transform:uppercase">Réservation · confirmation</span></div>
+      <div style="position:relative;width:390px">
+        <i style="position:absolute;top:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;top:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <div data-screen-label="13 Réservation auto" style="position:relative;width:390px;height:844px;isolation:isolate;background:var(--sbg);border:1px solid var(--sl1);display:flex;flex-direction:column;overflow:hidden;color:var(--sfg);font-family:'Barlow',sans-serif">
+          <img src="assets/atelier-ecran.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:82% 42%;z-index:-1;filter:saturate(1.06)">
+          <div style="position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,var(--sv1),var(--sv2))"></div>
+          <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20.4px;font-size:12px;font-weight:600;flex:0 0 auto">
+            <span>9:41</span>
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:3px;height:6px;background:var(--sfg);display:block"></span><span style="width:3px;height:9px;background:var(--sfg);display:block"></span><span style="width:3px;height:12px;background:var(--sfg);display:block"></span><span style="width:20px;height:10px;border:1px solid var(--sfg);display:block;margin-left:4px"></span></span>
+          </div>
+          <div style="padding:6.8px 20.4px 13.6px;border-bottom:1px solid var(--sl3);flex:0 0 auto"><div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--sm1)">Vidange · RAV4 2021</div><h2 style="margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:30px;line-height:1">Prise de rendez-vous</h2></div>
+          <div style="flex:1;padding:16px 20.4px;display:flex;flex-direction:column;gap:16px;overflow:hidden">
+            <div style="display:flex;flex-direction:column;gap:0">
+              <div style="display:flex;gap:13.6px"><div style="width:12px;display:flex;flex-direction:column;align-items:center;flex:0 0 auto"><span style="width:9px;height:9px;background:var(--sac);display:block"></span><span style="flex:1;width:1px;background:var(--sac);display:block"></span></div><div style="flex:1;padding-bottom:13.6px"><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;line-height:1.1">5 garages retenus</div><div style="font-size:13px;color:var(--sm1)">Filtrés par distance, prix et disponibilité</div></div></div>
+              <div style="display:flex;gap:13.6px"><div style="width:12px;display:flex;flex-direction:column;align-items:center;flex:0 0 auto"><span style="width:9px;height:9px;background:var(--sac);display:block"></span><span style="flex:1;width:1px;background:var(--sac);display:block"></span></div><div style="flex:1;padding-bottom:13.6px"><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;line-height:1.1">3 courriels envoyés · 2 appels vocaux</div><div style="font-size:13px;color:var(--sm1)">En votre nom, avec vos disponibilités · <span style="color:var(--sact);font-weight:500">Voir les transcriptions</span></div></div></div>
+              <div style="display:flex;gap:13.6px"><div style="width:12px;display:flex;flex-direction:column;align-items:center;flex:0 0 auto"><span style="width:9px;height:9px;background:var(--sac);display:block"></span><span style="flex:1;width:1px;background:var(--sl2);display:block"></span></div><div style="flex:1;padding-bottom:13.6px"><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;line-height:1.1">4 réponses reçues</div><div style="font-size:13px;color:var(--sm1)">Dernière il y a 12 minutes</div></div></div>
+              <div style="display:flex;gap:13.6px"><div style="width:12px;display:flex;flex-direction:column;align-items:center;flex:0 0 auto"><span style="width:9px;height:9px;border:1px solid var(--sfg);display:block"></span></div><div style="flex:1"><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;line-height:1.1;color:var(--sm1)">En attente de votre confirmation</div></div></div>
+            </div>
+            <div style="position:relative;background:#0d2748;color:#ffffff;padding:16px;display:flex;flex-direction:column;gap:10.2px">
+              <span style="position:absolute;top:-6px;left:-4px;font-size:11px;line-height:1;color:#6fa8ff">+</span>
+              <span style="position:absolute;top:-6px;right:-4px;font-size:11px;line-height:1;color:#6fa8ff">+</span>
+              <span style="position:absolute;bottom:-6px;left:-4px;font-size:11px;line-height:1;color:#6fa8ff">+</span>
+              <span style="position:absolute;bottom:-6px;right:-4px;font-size:11px;line-height:1;color:#6fa8ff">+</span>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#6fa8ff">Meilleure option · plus proche en temps et distance</div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:28px;line-height:1">Samedi 15 août · 9:00</div>
+              <div style="font-size:14px;color:rgba(242,242,243,.78);line-height:1.45">Garage Précision · 2,4 km · 7 min de trajet · 95 $ · durée 45 min</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(242,242,243,.22);margin-top:4px">
+                <div style="background:#0d2748;padding:8px 10.2px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#6fa8ff">Confirmé par</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:17px">Courriel</div></div>
+                <div style="background:#0d2748;padding:8px 10.2px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#6fa8ff">Annulation</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:17px">Jusqu'à 24 h</div></div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6.8px">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sm1)">Autres plages disponibles</div>
+              <div style="border:1px solid var(--sl2);padding:9px 13.6px;display:flex;justify-content:space-between;font-size:14px"><span>Atelier Rosemont · sam. 11:30</span><span style="color:var(--sm2)">3,1 km · 89 $</span></div>
+              <div style="border:1px solid var(--sl2);padding:9px 13.6px;display:flex;justify-content:space-between;font-size:14px"><span>Mécanique Papineau · lun. 8:00</span><span style="color:var(--sm2)">3,8 km · 110 $</span></div>
+            </div>
+            <div style="margin-top:auto;display:flex;flex-direction:column;gap:6.8px">
+              <div style="position:relative">
+                <span style="position:absolute;top:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+                <span style="position:absolute;top:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+                <span style="position:absolute;bottom:-6px;left:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+                <span style="position:absolute;bottom:-6px;right:-4px;font-size:11px;line-height:1;color:var(--sac)">+</span>
+                <button style="width:100%;background:var(--sac);color:#ffffff;border:none;padding:14px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:7px" style-hover="background:var(--sach)">Confirmer ce rendez-vous</button>
+              </div>
+              <div style="text-align:center;font-size:13px;color:var(--sm2)">Rien n'est réservé avant votre confirmation.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 14 HISTORIQUE -->
+    <div style="display:flex;flex-direction:column;gap:13.6px;width:390px">
+      <div style="display:flex;align-items:baseline;gap:10.2px"><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.18em;color:#6fa8ff">14</span><span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px;letter-spacing:.04em;text-transform:uppercase">Historique d'entretien</span></div>
+      <div style="position:relative;width:390px">
+        <i style="position:absolute;top:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;top:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <div data-screen-label="14 Historique" style="position:relative;width:390px;height:844px;isolation:isolate;background:var(--sbg);border:1px solid var(--sl1);display:flex;flex-direction:column;overflow:hidden;color:var(--sfg);font-family:'Barlow',sans-serif">
+          <img src="assets/atelier-ecran.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:82% 42%;z-index:-1;filter:saturate(1.06)">
+          <div style="position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,var(--sv1),var(--sv2))"></div>
+          <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20.4px;font-size:12px;font-weight:600;flex:0 0 auto">
+            <span>9:41</span>
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:3px;height:6px;background:var(--sfg);display:block"></span><span style="width:3px;height:9px;background:var(--sfg);display:block"></span><span style="width:3px;height:12px;background:var(--sfg);display:block"></span><span style="width:20px;height:10px;border:1px solid var(--sfg);display:block;margin-left:4px"></span></span>
+          </div>
+          <div style="padding:6.8px 20.4px 13.6px;border-bottom:1px solid var(--sl3);flex:0 0 auto;display:flex;align-items:flex-end;justify-content:space-between">
+            <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--sm1)">Toyota RAV4 2021</div><h2 style="margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:30px;line-height:1">Historique</h2></div>
+            <span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--sact)">Exporter</span>
+          </div>
+          <div style="flex:1;padding:16px 20.4px;display:flex;flex-direction:column;gap:13.6px;overflow:hidden">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--sl3)">
+              <div style="background:var(--sbg);padding:10.2px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--sm2)">Total 2026</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:26px;line-height:1">742 $</div></div>
+              <div style="background:var(--sbg);padding:10.2px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--sm2)">Interventions</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:26px;line-height:1">6</div></div>
+            </div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--sm1);border-bottom:1px solid var(--sl3);padding-bottom:4px">2026</div>
+            <div style="display:flex;flex-direction:column">
+              <div style="display:flex;justify-content:space-between;gap:10.2px;padding:10.2px 0;border-bottom:1px solid var(--sl4)"><div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;line-height:1.1">Pneus d'été + équilibrage</div><div style="font-size:13px;color:var(--sm2)">14 avril · 58 900 km · Garage Précision</div></div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;white-space:nowrap">180 $</div></div>
+              <div style="display:flex;justify-content:space-between;gap:10.2px;padding:10.2px 0;border-bottom:1px solid var(--sl4)"><div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;line-height:1.1">Vidange d'huile + filtre</div><div style="font-size:13px;color:var(--sm2)">2 février · 56 100 km · Garage Précision</div></div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;white-space:nowrap">96 $</div></div>
+              <div style="display:flex;justify-content:space-between;gap:10.2px;padding:10.2px 0;border-bottom:1px solid var(--sl4)"><div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;line-height:1.1">Plaquettes avant</div><div style="font-size:13px;color:var(--sm2)">9 janvier · 54 800 km · Atelier Rosemont</div></div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;white-space:nowrap">312 $</div></div>
+            </div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--sm1);border-bottom:1px solid var(--sl3);padding-bottom:4px">2025</div>
+            <div style="display:flex;flex-direction:column">
+              <div style="display:flex;justify-content:space-between;gap:10.2px;padding:10.2px 0;border-bottom:1px solid var(--sl4)"><div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;line-height:1.1">Pneus d'hiver</div><div style="font-size:13px;color:var(--sm2)">21 novembre · 51 200 km</div></div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;white-space:nowrap">175 $</div></div>
+              <div style="display:flex;justify-content:space-between;gap:10.2px;padding:10.2px 0;border-bottom:1px solid var(--sl4)"><div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;line-height:1.1">Inspection 50 000 km</div><div style="font-size:13px;color:var(--sm2)">3 août · 49 700 km</div></div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;white-space:nowrap">210 $</div></div>
+            </div>
+            <div style="margin-top:auto;border:1px solid var(--sl2);padding:10.2px 13.6px;display:flex;justify-content:space-between;align-items:center;gap:10.2px"><div style="font-size:13px;color:var(--sm1);line-height:1.4">Les factures jointes sont réunies dans un dossier de revente.</div><span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--sact);white-space:nowrap">Ouvrir</span></div>
+          </div>
+          <div style="height:22px;display:flex;align-items:center;justify-content:center;flex:0 0 auto"><span style="width:120px;height:4px;background:var(--sfg);border-radius:2px;display:block"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 15 PARAMÈTRES / ABONNEMENT -->
+    <div style="display:flex;flex-direction:column;gap:13.6px;width:390px">
+      <div style="display:flex;align-items:baseline;gap:10.2px"><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.18em;color:#6fa8ff">15</span><span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px;letter-spacing:.04em;text-transform:uppercase">Paramètres et abonnement</span></div>
+      <div style="position:relative;width:390px">
+        <i style="position:absolute;top:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;top:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;left:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <i style="position:absolute;bottom:-8px;right:-5px;font-style:normal;font-size:13px;line-height:1;color:#6fa8ff;z-index:3">+</i>
+        <div data-screen-label="15 Paramètres" style="position:relative;width:390px;height:844px;isolation:isolate;background:var(--sbg);border:1px solid var(--sl1);display:flex;flex-direction:column;overflow:hidden;color:var(--sfg);font-family:'Barlow',sans-serif">
+          <img src="assets/atelier-ecran.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:82% 42%;z-index:-1;filter:saturate(1.06)">
+          <div style="position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,var(--sv1),var(--sv2))"></div>
+          <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20.4px;font-size:12px;font-weight:600;flex:0 0 auto">
+            <span>9:41</span>
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:3px;height:6px;background:var(--sfg);display:block"></span><span style="width:3px;height:9px;background:var(--sfg);display:block"></span><span style="width:3px;height:12px;background:var(--sfg);display:block"></span><span style="width:20px;height:10px;border:1px solid var(--sfg);display:block;margin-left:4px"></span></span>
+          </div>
+          <div style="padding:6.8px 20.4px 13.6px;border-bottom:1px solid var(--sl3);flex:0 0 auto"><h2 style="margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:30px;line-height:1">Réglages</h2></div>
+          <div style="flex:1;padding:16px 20.4px;display:flex;flex-direction:column;gap:16px;overflow:hidden">
+            <div style="display:flex;align-items:center;gap:13.6px;border-bottom:1px solid var(--sl3);padding-bottom:13.6px">
+              <span style="width:44px;height:44px;border:1px solid var(--sl2);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;color:var(--sact)">ML</span>
+              <div style="flex:1"><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:20px;line-height:1.1">Marc Lavoie</div><div style="font-size:13px;color:var(--sm2)">marc.lavoie@courriel.ca</div></div>
+              <span style="color:var(--sm2);font-size:18px">›</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10.2px">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--sm1)">Préférences</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10.2px"><span style="font-size:15px">Langue</span><div style="display:flex;border:1px solid var(--sl2)"><span style="padding:5px 12px;background:var(--sac);color:#ffffff;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px">FR</span><span style="padding:5px 12px;color:var(--sm1);font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px;border-left:1px solid var(--sl2)">EN</span></div></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10.2px"><span style="font-size:15px">Unités</span><div style="display:flex;border:1px solid var(--sl2)"><span style="padding:5px 12px;background:var(--sac);color:#ffffff;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px">KM</span><span style="padding:5px 12px;color:var(--sm1);font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px;border-left:1px solid var(--sl2)">MI</span></div></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10.2px"><span style="font-size:15px;flex:1">Contact automatique des garages</span><span style="width:44px;height:24px;background:var(--sac);display:flex;align-items:center;justify-content:flex-end;padding:2px;box-sizing:border-box;flex:0 0 auto"><span style="width:20px;height:20px;background:#eef2f7;display:block"></span></span></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10.2px"><span style="font-size:15px;flex:1">Appels vocaux si aucun courriel</span><span style="width:44px;height:24px;background:var(--sac);display:flex;align-items:center;justify-content:flex-end;padding:2px;box-sizing:border-box;flex:0 0 auto"><span style="width:20px;height:20px;background:#eef2f7;display:block"></span></span></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10.2px"><span style="font-size:15px;flex:1">Confirmer avant chaque réservation</span><span style="width:44px;height:24px;background:var(--sac);display:flex;align-items:center;justify-content:flex-end;padding:2px;box-sizing:border-box;flex:0 0 auto"><span style="width:20px;height:20px;background:#eef2f7;display:block"></span></span></div>
+            </div>
+            <div style="position:relative;background:#0d2748;color:#ffffff;padding:16px;display:flex;flex-direction:column;gap:10.2px">
+              <span style="position:absolute;top:-6px;left:-4px;font-size:11px;line-height:1;color:#6fa8ff">+</span>
+              <span style="position:absolute;top:-6px;right:-4px;font-size:11px;line-height:1;color:#6fa8ff">+</span>
+              <span style="position:absolute;bottom:-6px;left:-4px;font-size:11px;line-height:1;color:#6fa8ff">+</span>
+              <span style="position:absolute;bottom:-6px;right:-4px;font-size:11px;line-height:1;color:#6fa8ff">+</span>
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10.2px">
+                <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#6fa8ff">Plan actuel</div>
+                <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:20px">{{ planPrice }}</div>
+              </div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:26px;line-height:1">MEKAMEMO +</div>
+              <div style="font-size:14px;line-height:1.5;color:rgba(242,242,243,.78);text-wrap:pretty">Véhicules illimités, appels vocaux de l'assistant, dossier de revente, rappels avancés.</div>
+              <button style="align-self:flex-start;border:1px solid rgba(242,242,243,.5);background:transparent;color:#ffffff;padding:9px 13.6px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:7px;margin-top:4px" style-hover="background:rgba(242,242,243,.12)">Gérer l'abonnement</button>
+            </div>
+            <div style="margin-top:auto;display:flex;flex-direction:column;gap:10.2px;border-top:1px solid var(--sl3);padding-top:13.6px">
+              <div style="display:flex;justify-content:space-between;font-size:15px;color:var(--sm1)"><span>Données et confidentialité</span><span>›</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:15px;color:var(--sm1)"><span>Aide et contact</span><span>›</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:15px;color:var(--sm1)"><span>Se déconnecter</span><span>›</span></div>
+            </div>
+          </div>
+          <div style="height:22px;display:flex;align-items:center;justify-content:center;flex:0 0 auto"><span style="width:120px;height:4px;background:var(--sfg);border-radius:2px;display:block"></span></div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+  <div style="margin-top:56px;border-top:1px solid rgba(242,242,243,.22);padding-top:20.4px;display:flex;flex-wrap:wrap;gap:41px;font-size:13px;color:rgba(242,242,243,.66);line-height:1.5">
+    <div style="max-width:300px"><div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#6fa8ff;margin-bottom:4px">Photos</div>Chaque emplacement photo accepte une image déposée par l'utilisateur. Aucune image générée.</div>
+    <div style="max-width:300px"><div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#6fa8ff;margin-bottom:4px">Bilingue</div>L'interface est présentée en français ; le sélecteur FR / EN apparaît à l'onboarding et dans les réglages.</div>
+    <div style="max-width:300px"><div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#6fa8ff;margin-bottom:4px">Handoff</div>Un écran par section, mesures 390 × 844, prêt pour la reprise du backend dans Claude Code.</div>
+  </div>
+
+  </div>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Sombre&quot;,&quot;Clair&quot;],&quot;default&quot;:&quot;Sombre&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Affichage&quot;},&quot;showAndroid&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Écrans&quot;},&quot;planPrice&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;4,99 $ / mois&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Contenu&quot;}}">
+class Component extends DCLogic {
+  state = { theme: null };
+  renderVals() {
+    const t = this.state.theme || this.props.theme || "Sombre";
+    const dark = t !== "Clair";
+    const D = "--sbg:rgba(15,19,23,.5);--sv1:rgba(11,14,18,.62);--sv2:rgba(11,14,18,.86);--sfg:#e8edf3;--sm1:#9aa6b3;--sm2:#7e8894;--sm3:#6d7783;--sin:rgba(23,29,36,.62);--str:#2b333c;--smap:rgba(20,26,33,.5);--sac:#1d6ef5;--sach:#4a8dff;--sact:#5fa2ff;--sonsoft:#bcd9ff;--sl1:rgba(232,237,243,.22);--sl2:rgba(232,237,243,.16);--sl3:rgba(232,237,243,.12);--sl4:rgba(232,237,243,.09);--sl5:rgba(232,237,243,.07);--sf1:rgba(29,110,245,.22);--sf2:rgba(29,110,245,.2);--sf3:rgba(29,110,245,.18);--sf4:rgba(29,110,245,.14);--sf5:rgba(29,110,245,.12)";
+    const L = "--sbg:#f4f6f9;--sv1:#f4f6f9;--sv2:#eceff4;--sfg:#141a22;--sm1:#55606d;--sm2:#78838f;--sm3:#9aa4b0;--sin:#ffffff;--str:#d4d4d7;--smap:#e3e8ef;--sac:#1d6ef5;--sach:#1558c8;--sact:#1558c8;--sonsoft:#17457f;--sl1:rgba(29,44,64,.32);--sl2:rgba(29,44,64,.22);--sl3:rgba(29,44,64,.15);--sl4:rgba(29,44,64,.11);--sl5:rgba(29,44,64,.08);--sf1:rgba(29,110,245,.14);--sf2:rgba(29,110,245,.12);--sf3:rgba(29,110,245,.1);--sf4:rgba(29,110,245,.08);--sf5:rgba(29,110,245,.06)";
+    return {
+      showAndroid: this.props.showAndroid ?? true,
+      planPrice: this.props.planPrice ?? "4,99 $ / mois",
+      themeVars: dark ? D : L,
+      darkBg: dark ? "#1d6ef5" : "transparent",
+      lightBg: dark ? "transparent" : "#1d6ef5",
+      setDark: () => this.setState({ theme: "Sombre" }),
+      setLight: () => this.setState({ theme: "Clair" })
+    };
+  }
+}
+</script>
+</body>
+</html>

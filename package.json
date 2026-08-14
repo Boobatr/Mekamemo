@@ -1,0 +1,20 @@
+{
+  "name": "mekamemo",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "backend:dev": "npm run start:dev --workspace=apps/backend",
+    "backend:test": "npm run test --workspace=apps/backend",
+    "backend:test:e2e": "npm run test:e2e --workspace=apps/backend",
+    "mobile:start": "npm run start --workspace=apps/mobile",
+    "mobile:web": "npm run web --workspace=apps/mobile",
+    "mobile:test": "npm run test --workspace=apps/mobile"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
