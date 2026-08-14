@@ -18,7 +18,7 @@ describe('platform-specific chrome', () => {
     await renderWithProviders(<FabAndroid onPress={onPress} testID="fab" />, {
       withNavigationContainer: false,
     });
-    fireEvent.press(screen.getByTestId('fab'));
+    await fireEvent.press(screen.getByTestId('fab'));
     expect(onPress).toHaveBeenCalledTimes(1);
   });
 
@@ -37,7 +37,7 @@ describe('platform-specific chrome', () => {
       { withNavigationContainer: false },
     );
     expect(screen.getByText('Mes véhicules')).toBeTruthy();
-    fireEvent.press(screen.getByLabelText('menu'));
+    await fireEvent.press(screen.getByLabelText('menu'));
     expect(onMenuPress).toHaveBeenCalledTimes(1);
   });
 });

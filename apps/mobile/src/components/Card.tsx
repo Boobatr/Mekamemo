@@ -9,10 +9,11 @@ interface CardProps {
   style?: ViewStyle;
   withMarks?: boolean;
   accentPanel?: boolean;
+  testID?: string;
 }
 
 /** Sharp-cornered card. Android gets the two-layer shadow per README; iOS/light stay flat. */
-export function Card({ children, style, withMarks = true, accentPanel = false }: CardProps) {
+export function Card({ children, style, withMarks = true, accentPanel = false, testID }: CardProps) {
   const { colors } = useTheme();
 
   const backgroundColor = accentPanel ? colors.accentPanelSolid : colors.fieldBackground;
@@ -20,6 +21,7 @@ export function Card({ children, style, withMarks = true, accentPanel = false }:
 
   return (
     <View
+      testID={testID}
       style={[
         styles.card,
         {

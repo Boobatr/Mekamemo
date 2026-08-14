@@ -16,7 +16,7 @@ describe('design system components', () => {
       </ThemeProvider>,
     );
     expect(screen.getByText('CONTINUER')).toBeTruthy();
-    fireEvent.press(screen.getByTestId('cta'));
+    await fireEvent.press(screen.getByTestId('cta'));
     expect(onPress).toHaveBeenCalledTimes(1);
   });
 
@@ -27,7 +27,7 @@ describe('design system components', () => {
         <Button label="CONTINUER" onPress={onPress} loading testID="cta" />
       </ThemeProvider>,
     );
-    fireEvent.press(screen.getByTestId('cta'));
+    await fireEvent.press(screen.getByTestId('cta'));
     expect(onPress).not.toHaveBeenCalled();
   });
 

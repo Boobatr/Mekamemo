@@ -34,13 +34,13 @@ describe('ThemeProvider', () => {
         <Probe />
       </ThemeProvider>,
     );
-    fireEvent.press(getByTestId('toggle'));
+    await fireEvent.press(getByTestId('toggle'));
     await waitFor(() => {
       expect(getByTestId('mode').props.children).toBe('light');
       expect(getByTestId('accent').props.children).toBe(lightTheme.accent);
     });
 
-    fireEvent.press(getByTestId('toggle'));
+    await fireEvent.press(getByTestId('toggle'));
     await waitFor(() => {
       expect(getByTestId('mode').props.children).toBe('dark');
     });
