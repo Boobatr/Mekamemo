@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "mekamemo-mobile-web",
+      "runtimeExecutable": "D:\\Scripts\\MekaMemo\\Mekamemo\\scripts\\run-mobile-web.cmd",
+      "runtimeArgs": [],
+      "port": 8081
+    }
+  ]
+}

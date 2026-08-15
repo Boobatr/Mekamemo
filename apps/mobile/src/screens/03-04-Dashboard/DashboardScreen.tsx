@@ -79,11 +79,16 @@ export function DashboardScreen({
             <Text style={[textStyles.sectionLabel, { color: colors.accentPanelMark, marginBottom: spacing.xs }]}>
               {t('dashboard.nextDue')}
             </Text>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Text style={[textStyles.cardTitle, { color: '#ffffff', flexShrink: 1 }]}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Text style={[textStyles.cardTitle, { color: '#ffffff', flex: 1, fontSize: 20 }]}>
                 {nextDue.taskName} · {nextDue.vehicleLabel} · dans {nextDue.daysUntilDue} jours
               </Text>
-              <Text style={[textStyles.button, { color: colors.accentPanelMark, fontSize: 13 }]}>
+              <Text
+                style={[
+                  textStyles.button,
+                  { color: colors.accentPanelMark, fontSize: 13, flexShrink: 0, marginLeft: spacing.md },
+                ]}
+              >
                 {t('dashboard.book')} ›
               </Text>
             </View>

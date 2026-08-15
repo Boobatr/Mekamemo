@@ -202,7 +202,26 @@ export const mockDiagnosis = {
   ],
 };
 
-export const mockGarages = [
+export interface MockGarage {
+  id: string;
+  name: string;
+  neighbourhood: string;
+  distanceKm: number;
+  rating: number;
+  reviewCount: number;
+  priceCents: number;
+  contactMethod: 'email' | 'voice';
+  slotLabel: string;
+  certifiedCaa?: boolean;
+  openUntil?: string;
+  waitDays?: number;
+  commuteMinutes?: number;
+  warrantyMonths?: number;
+  services?: string[];
+  email?: string;
+}
+
+export const mockGarages: MockGarage[] = [
   {
     id: 'garage-precision',
     name: 'Garage Précision',
