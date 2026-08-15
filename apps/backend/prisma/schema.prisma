@@ -122,6 +122,7 @@ model User {
   units                Units    @default(km)
   autoContactGarages   Boolean  @default(true)
   voiceFallbackEnabled Boolean  @default(false)
+  pushToken            String?
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
 
@@ -266,6 +267,9 @@ model Notification {
   vehicleId     String?
   vehicle       Vehicle?         @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
   type          NotificationType
+  /// Points at the MaintenanceTask, Booking, etc. this notification is about —
+  /// lets a scheduler upsert-by-relation instead of duplicating reminders.
+  relatedEntityId String?
   payload       Json
   scheduledFor  DateTime
   sentAt        DateTime?
@@ -274,6 +278,7 @@ model Notification {
   createdAt     DateTime         @default(now())
 
   @@index([userId, scheduledFor])
+  @@index([type, relatedEntityId])
   @@map("notifications")
 }
 

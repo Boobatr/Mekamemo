@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { CreateMileageReadingDto } from './dto/create-mileage-reading.dto';
 import {
   buildMonthlyBars,
@@ -11,7 +12,10 @@ import {
 
 @Injectable()
 export class MileageService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notificationsService: NotificationsService,
+  ) {}
 
   async recordReading(vehicleId: string, dto: CreateMileageReadingDto) {
     await this.assertVehicleExists(vehicleId);
@@ -76,6 +80,8 @@ export class MileageService {
           data: { status: 'upcoming' },
         });
       }
+
+      await this.notificationsService.upsertMaintenanceReminders(task.id);
     }
   }
 
