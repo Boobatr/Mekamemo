@@ -1,0 +1,448 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Language {
+  fr
+  en
+}
+
+enum Units {
+  km
+  mi
+}
+
+enum UsageType {
+  city
+  highway
+  mixed
+}
+
+enum MileageSource {
+  manual
+  ocr
+  estimate_tap
+  gps
+}
+
+enum TaskPriority {
+  low
+  normal
+  critical
+}
+
+enum TaskStatus {
+  upcoming
+  done
+  skipped
+  overdue
+}
+
+enum Confidence {
+  low
+  medium
+  high
+}
+
+enum AttachmentType {
+  photo
+  video
+  audio
+  invoice
+}
+
+enum AttachmentOwnerType {
+  breakdown_report
+  vehicle
+  invoice
+}
+
+enum ContactMethod {
+  email
+  voice
+}
+
+enum QuoteRequestStatus {
+  draft
+  sent
+  responded
+  confirmed
+  cancelled
+}
+
+enum GarageResponseChannel {
+  email
+  voice_transcript
+}
+
+enum BookingStatus {
+  pending_user_confirmation
+  confirmed
+  cancelled
+}
+
+enum NotificationType {
+  mileage_prompt
+  maintenance_reminder_7d
+  maintenance_reminder_due
+  garage_response
+}
+
+enum Plan {
+  free
+  mekamemo_plus
+}
+
+enum Store {
+  apple
+  google
+}
+
+enum SubscriptionStatus {
+  active
+  expired
+  trialing
+  none
+}
+
+model User {
+  id                   String   @id @default(uuid())
+  email                String   @unique
+  passwordHash         String
+  phone                String
+  fullName             String
+  postalCode           String
+  searchRadiusKm       Int      @default(15)
+  language             Language @default(fr)
+  units                Units    @default(km)
+  autoContactGarages   Boolean  @default(true)
+  voiceFallbackEnabled Boolean  @default(false)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  subscription     Subscription?
+  vehicles         Vehicle[]
+  notifications    Notification[]
+  quoteRequests    QuoteRequest[]
+  bookingsConfirmed Booking[]     @relation("BookingConfirmedBy")
+
+  @@map("users")
+}
+
+model Subscription {
+  id                   String              @id @default(uuid())
+  userId               String              @unique
+  user                 User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan                 Plan                @default(free)
+  store                Store?
+  revenueCatCustomerId String?
+  status               SubscriptionStatus  @default(none)
+  currentPeriodEnd     DateTime?
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+
+  @@map("subscriptions")
+}
+
+model Vehicle {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vin         String?
+  make        String
+  model       String
+  trim        String?
+  year        Int
+  engine      String?
+  usageType   UsageType @default(mixed)
+  photoUrl    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  maintenanceTasks  MaintenanceTask[]
+  mileageReadings   MileageReading[]
+  breakdownReports  BreakdownReport[]
+  quoteRequests     QuoteRequest[]
+  bookings          Booking[]
+  serviceHistory    ServiceHistoryEntry[]
+  invoices          Invoice[]
+  notifications     Notification[]
+
+  @@index([userId])
+  @@map("vehicles")
+}
+
+model MaintenanceScheduleTemplate {
+  id          String   @id @default(uuid())
+  make        String
+  model       String
+  yearRangeStart Int
+  yearRangeEnd   Int
+  source      String   @default("oem_db")
+  version     Int      @default(1)
+  createdAt   DateTime @default(now())
+
+  tasks MaintenanceTaskTemplateItem[]
+
+  @@index([make, model])
+  @@map("maintenance_schedule_templates")
+}
+
+model MaintenanceTaskTemplateItem {
+  id             String                      @id @default(uuid())
+  templateId     String
+  template       MaintenanceScheduleTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  name           String
+  description    String?
+  intervalKm     Int?
+  intervalMonths Int?
+  isRecurring    Boolean                     @default(true)
+  estimatedCostMinCents Int?
+  estimatedCostMaxCents Int?
+
+  @@map("maintenance_task_template_items")
+}
+
+model MaintenanceTask {
+  id                    String       @id @default(uuid())
+  vehicleId             String
+  vehicle               Vehicle      @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  templateTaskId        String?
+  name                  String
+  description           String?
+  intervalKm            Int?
+  intervalMonths        Int?
+  priority              TaskPriority @default(normal)
+  isRecurring           Boolean      @default(true)
+  editedByUser          Boolean      @default(false)
+  notesForGarage        String?
+  groupWithTaskId        String?
+  status                TaskStatus   @default(upcoming)
+  estimatedCostMinCents Int?
+  estimatedCostMaxCents Int?
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
+
+  projection TaskProjection?
+
+  @@index([vehicleId])
+  @@map("maintenance_tasks")
+}
+
+model MileageReading {
+  id          String        @id @default(uuid())
+  vehicleId   String
+  vehicle     Vehicle       @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  valueKm     Int
+  source      MileageSource
+  recordedAt  DateTime
+  createdAt   DateTime      @default(now())
+
+  @@index([vehicleId, recordedAt])
+  @@map("mileage_readings")
+}
+
+model TaskProjection {
+  id                  String   @id @default(uuid())
+  taskId              String   @unique
+  task                MaintenanceTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  projectedDueDate    DateTime?
+  projectedDueKm      Int?
+  avgKmPerMonthUsed   Float?
+  lastRecalculatedAt  DateTime @default(now())
+
+  @@map("task_projections")
+}
+
+model Notification {
+  id            String           @id @default(uuid())
+  userId        String
+  user          User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vehicleId     String?
+  vehicle       Vehicle?         @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  type          NotificationType
+  payload       Json
+  scheduledFor  DateTime
+  sentAt        DateTime?
+  readAt        DateTime?
+  locale        Language
+  createdAt     DateTime         @default(now())
+
+  @@index([userId, scheduledFor])
+  @@map("notifications")
+}
+
+model BreakdownReport {
+  id              String   @id @default(uuid())
+  vehicleId       String
+  vehicle         Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  descriptionText String
+  tags            String[]
+  urgent          Boolean  @default(false)
+  createdAt       DateTime @default(now())
+
+  attachments Attachment[]
+  diagnosis   Diagnosis?
+
+  @@map("breakdown_reports")
+}
+
+model Attachment {
+  id               String              @id @default(uuid())
+  ownerType        AttachmentOwnerType
+  breakdownReportId String?
+  breakdownReport  BreakdownReport?    @relation(fields: [breakdownReportId], references: [id], onDelete: Cascade)
+  type             AttachmentType
+  url              String
+  transcribedText  String?
+  createdAt        DateTime            @default(now())
+
+  @@index([breakdownReportId])
+  @@map("attachments")
+}
+
+model Diagnosis {
+  id               String     @id @default(uuid())
+  reportId         String     @unique
+  report           BreakdownReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  primaryCause     String
+  confidence       Confidence
+  secondaryCauses  Json
+  recommendedDelay String
+  costMinCents     Int
+  costMaxCents     Int
+  safetyNote       String
+  disclaimer       String
+  modelVersion     String
+  createdAt        DateTime   @default(now())
+
+  @@map("diagnoses")
+}
+
+model Garage {
+  id              String   @id @default(uuid())
+  name            String
+  address         String
+  lat             Float
+  lng             Float
+  phone           String?
+  email           String?
+  specialties     String[]
+  rating          Float?
+  reviewCount     Int?
+  hours           Json?
+  certifications  String[]
+  source          String   @default("manual")
+  externalPlaceId String?
+  createdAt       DateTime @default(now())
+
+  quoteRequestGarages QuoteRequestGarage[]
+  bookings            Booking[]
+
+  @@map("garages")
+}
+
+model QuoteRequest {
+  id           String             @id @default(uuid())
+  userId       String
+  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vehicleId    String
+  vehicle      Vehicle            @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  taskId       String?
+  diagnosisId  String?
+  status       QuoteRequestStatus @default(draft)
+  createdAt    DateTime           @default(now())
+
+  garages  QuoteRequestGarage[]
+  bookings Booking[]
+
+  @@map("quote_requests")
+}
+
+model QuoteRequestGarage {
+  id             String        @id @default(uuid())
+  quoteRequestId String
+  quoteRequest   QuoteRequest  @relation(fields: [quoteRequestId], references: [id], onDelete: Cascade)
+  garageId       String
+  garage         Garage        @relation(fields: [garageId], references: [id], onDelete: Cascade)
+  contactMethod  ContactMethod
+  sentAt         DateTime?
+  messageContent String?
+  language       Language
+
+  responses GarageResponse[]
+
+  @@index([quoteRequestId])
+  @@map("quote_request_garages")
+}
+
+model GarageResponse {
+  id                   String                 @id @default(uuid())
+  quoteRequestGarageId String
+  quoteRequestGarage   QuoteRequestGarage     @relation(fields: [quoteRequestGarageId], references: [id], onDelete: Cascade)
+  rawContent           String
+  parsedSlots          Json
+  priceCents           Int?
+  receivedAt           DateTime
+  channel              GarageResponseChannel
+
+  @@map("garage_responses")
+}
+
+/// A booking may only ever leave `pending_user_confirmation` via an explicit
+/// user action (see BookingsService.confirm) — never a scheduled job.
+model Booking {
+  id                     String        @id @default(uuid())
+  quoteRequestId         String
+  quoteRequest           QuoteRequest  @relation(fields: [quoteRequestId], references: [id], onDelete: Cascade)
+  garageId               String
+  garage                 Garage        @relation(fields: [garageId], references: [id], onDelete: Cascade)
+  vehicleId              String
+  vehicle                Vehicle       @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  confirmedSlotAt        DateTime
+  priceCents             Int
+  durationMinutes        Int
+  status                 BookingStatus @default(pending_user_confirmation)
+  confirmedByUserId      String?
+  confirmedByUser        User?         @relation("BookingConfirmedBy", fields: [confirmedByUserId], references: [id])
+  confirmedByUserAt      DateTime?
+  cancellationDeadlineAt DateTime?
+  createdAt              DateTime      @default(now())
+
+  @@map("bookings")
+}
+
+model ServiceHistoryEntry {
+  id               String   @id @default(uuid())
+  vehicleId        String
+  vehicle          Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  taskName         String
+  performedAt      DateTime
+  mileageAtServiceKm Int
+  garageId         String?
+  costCents        Int
+  createdAt        DateTime @default(now())
+
+  invoices Invoice[]
+
+  @@index([vehicleId])
+  @@map("service_history_entries")
+}
+
+model Invoice {
+  id                  String               @id @default(uuid())
+  vehicleId           String
+  vehicle             Vehicle              @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  serviceHistoryEntryId String?
+  serviceHistoryEntry ServiceHistoryEntry? @relation(fields: [serviceHistoryEntryId], references: [id], onDelete: SetNull)
+  fileUrl             String
+  ocrExtracted        Json?
+  uploadedAt          DateTime             @default(now())
+
+  @@map("invoices")
+}
