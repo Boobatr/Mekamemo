@@ -1,29 +1,40 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, View } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from './types';
 import { MainTabs } from './MainTabs';
-import { ProfileScreen } from '../screens/01-Profile/ProfileScreen';
-import { AddVehicleScreen } from '../screens/02-AddVehicle/AddVehicleScreen';
-import { EditTaskScreen, EditableTask } from '../screens/06-EditTask/EditTaskScreen';
-import { MileageReadingScreen } from '../screens/07-MileageReading/MileageReadingScreen';
-import { NotificationsScreen } from '../screens/08-Notifications/NotificationsScreen';
-import { ReportBreakdownScreen } from '../screens/09-ReportBreakdown/ReportBreakdownScreen';
-import { DiagnosisScreen } from '../screens/10-Diagnosis/DiagnosisScreen';
-import { GarageProfileScreen } from '../screens/12-GarageProfile/GarageProfileScreen';
-import { BookingConfirmationScreen } from '../screens/13-BookingConfirmation/BookingConfirmationScreen';
-import { HistoryScreen } from '../screens/14-History/HistoryScreen';
-import { mockMaintenanceTasks } from '../mocks/mockData';
+import { getStoredToken } from '../services/auth-storage';
+import { ProfileContainer } from '../screens/01-Profile/ProfileContainer';
+import { AddVehicleContainer } from '../screens/02-AddVehicle/AddVehicleContainer';
+import { EditTaskContainer } from '../screens/06-EditTask/EditTaskContainer';
+import { MileageReadingContainer } from '../screens/07-MileageReading/MileageReadingContainer';
+import { NotificationsContainer } from '../screens/08-Notifications/NotificationsContainer';
+import { ReportBreakdownContainer } from '../screens/09-ReportBreakdown/ReportBreakdownContainer';
+import { DiagnosisContainer } from '../screens/10-Diagnosis/DiagnosisContainer';
+import { GarageProfileContainer } from '../screens/12-GarageProfile/GarageProfileContainer';
+import { BookingConfirmationContainer } from '../screens/13-BookingConfirmation/BookingConfirmationContainer';
+import { HistoryContainer } from '../screens/14-History/HistoryContainer';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-/**
- * Mock-data phase wiring: every screen still reads from src/mocks/mockData.
- * Task #12 (end-to-end backend wiring) replaces each of these with a
- * TanStack Query hook against the NestJS API — the navigation shape itself
- * does not change.
- */
 export function RootNavigator() {
+  const [authChecked, setAuthChecked] = useState(false);
   const [onboarded, setOnboarded] = useState(false);
+
+  useEffect(() => {
+    getStoredToken().then((token) => {
+      setOnboarded(Boolean(token));
+      setAuthChecked(true);
+    });
+  }, []);
+
+  if (!authChecked) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -31,101 +42,81 @@ export function RootNavigator() {
         <>
           <Stack.Screen name="OnboardingProfile">
             {({ navigation }) => (
-              <ProfileScreen onContinue={() => navigation.navigate('OnboardingVehicle')} />
+              <ProfileContainer onContinue={() => navigation.navigate('OnboardingVehicle')} />
             )}
           </Stack.Screen>
           <Stack.Screen name="OnboardingVehicle">
-            {() => (
-              <AddVehicleScreen
-                decodeVin={async () => ({
-                  make: 'Toyota',
-                  model: 'RAV4 LE',
-                  year: 2021,
-                  engine: '2,5 L I4',
-                })}
-                onGenerateCalendar={() => setOnboarded(true)}
-              />
-            )}
+            {() => <AddVehicleContainer onDone={() => setOnboarded(true)} />}
           </Stack.Screen>
         </>
       ) : (
         <>
           <Stack.Screen name="MainTabs" component={MainTabs} />
           <Stack.Screen name="AddVehicle">
-            {() => (
-              <AddVehicleScreen
-                decodeVin={async () => ({
-                  make: 'Toyota',
-                  model: 'RAV4 LE',
-                  year: 2021,
-                  engine: '2,5 L I4',
-                })}
-                onGenerateCalendar={() => {}}
-              />
-            )}
+            {({ navigation }) => <AddVehicleContainer onDone={() => navigation.goBack()} />}
           </Stack.Screen>
           <Stack.Screen name="EditTask">
             {({ route, navigation }) => (
-              <EditTaskScreen
-                task={taskById(route.params.taskId)}
+              <EditTaskContainer
+                task={route.params.task}
+                vehicleId={route.params.vehicleId}
                 onBack={() => navigation.goBack()}
-                onDelete={() => navigation.goBack()}
-                onSave={() => navigation.goBack()}
+                onDeleted={() => navigation.goBack()}
+                onSaved={() => navigation.goBack()}
               />
             )}
           </Stack.Screen>
           <Stack.Screen name="MileageReading">
-            {({ navigation }) => <MileageReadingScreen onSave={() => navigation.goBack()} />}
+            {({ route, navigation }) => (
+              <MileageReadingContainer vehicleId={route.params.vehicleId} onSaved={() => navigation.goBack()} />
+            )}
           </Stack.Screen>
-          <Stack.Screen name="Notifications" component={NotificationsScreen} />
+          <Stack.Screen name="Notifications" component={NotificationsContainer} />
           <Stack.Screen name="ReportBreakdown">
-            {({ navigation }) => (
-              <ReportBreakdownScreen onAnalyze={() => navigation.navigate('Diagnosis', { reportId: 'mock' })} />
+            {({ route, navigation }) => (
+              <ReportBreakdownContainer
+                vehicleId={route.params.vehicleId}
+                onAnalyzed={(reportId) => navigation.navigate('Diagnosis', { reportId })}
+              />
             )}
           </Stack.Screen>
           <Stack.Screen name="Diagnosis">
-            {({ navigation }) => (
-              <DiagnosisScreen
-                onRequestQuotes={() => navigation.navigate('BookingConfirmation', { quoteRequestId: 'mock' })}
+            {({ route, navigation }) => (
+              <DiagnosisContainer
+                reportId={route.params.reportId}
+                onRequestQuotes={() =>
+                  navigation.navigate('MainTabs', { screen: 'Garages' } as never)
+                }
                 onAddToCalendar={() => navigation.navigate('MainTabs')}
               />
             )}
           </Stack.Screen>
           <Stack.Screen name="GarageProfile">
-            {({ navigation }) => (
-              <GarageProfileScreen
-                onRequestAppointment={() =>
-                  navigation.navigate('BookingConfirmation', { quoteRequestId: 'mock' })
+            {({ route, navigation }) => (
+              <GarageProfileContainer
+                garageId={route.params.garageId}
+                vehicleId={route.params.vehicleId}
+                taskId={route.params.taskId}
+                diagnosisId={route.params.diagnosisId}
+                onRequestedAppointment={(quoteRequestId) =>
+                  navigation.navigate('BookingConfirmation', { quoteRequestId })
                 }
               />
             )}
           </Stack.Screen>
           <Stack.Screen name="BookingConfirmation">
-            {({ navigation }) => (
-              <BookingConfirmationScreen onConfirm={() => navigation.navigate('MainTabs')} />
+            {({ route, navigation }) => (
+              <BookingConfirmationContainer
+                quoteRequestId={route.params.quoteRequestId}
+                onConfirmed={() => navigation.navigate('MainTabs')}
+              />
             )}
           </Stack.Screen>
-          <Stack.Screen name="History" component={HistoryScreen} />
+          <Stack.Screen name="History">
+            {({ route }) => <HistoryContainer vehicleId={route.params.vehicleId} />}
+          </Stack.Screen>
         </>
       )}
     </Stack.Navigator>
   );
-}
-
-function taskById(taskId: string): EditableTask {
-  const task = mockMaintenanceTasks.find((t) => t.id === taskId) ?? mockMaintenanceTasks[0];
-  return {
-    id: task.id,
-    name: task.name,
-    editedByUser: 'editedByUser' in task ? Boolean(task.editedByUser) : false,
-    isRecurring: true,
-    manufacturerIntervalKm: task.intervalKm ?? 8000,
-    manufacturerIntervalMonths: task.intervalMonths ?? 6,
-    intervalKm: 'userIntervalKm' in task ? Number(task.userIntervalKm) : (task.intervalKm ?? 8000),
-    intervalMonths: task.intervalMonths ?? 6,
-    priority: 'priority' in task ? (task.priority as EditableTask['priority']) : 'normal',
-    nextDueLabel: task.dueDateLabel,
-    notesForGarage: 'notesForGarage' in task ? String(task.notesForGarage) : '',
-    groupWithTireRotation: Boolean('groupWithTaskId' in task && task.groupWithTaskId),
-  };
 }

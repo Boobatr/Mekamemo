@@ -11,7 +11,8 @@ interface DecodedVehicle {
   make: string;
   model: string;
   year: number;
-  engine: string;
+  engine: string | null;
+  trim?: string | null;
 }
 
 interface AddVehicleScreenProps {
@@ -93,7 +94,7 @@ export function AddVehicleScreen({ decodeVin, onGenerateCalendar }: AddVehicleSc
           <ReadOnlyRow label={t('onboarding.vehicle.make')} value={decoded.make} />
           <ReadOnlyRow label={t('onboarding.vehicle.model')} value={decoded.model} />
           <ReadOnlyRow label={t('onboarding.vehicle.year')} value={String(decoded.year)} />
-          <ReadOnlyRow label={t('onboarding.vehicle.engine')} value={decoded.engine} />
+          <ReadOnlyRow label={t('onboarding.vehicle.engine')} value={decoded.engine ?? '—'} />
           <Field
             label={t('onboarding.vehicle.odometer')}
             value={odometerKm}

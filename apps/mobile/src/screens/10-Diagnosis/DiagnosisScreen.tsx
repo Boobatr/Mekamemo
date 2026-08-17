@@ -8,8 +8,23 @@ import { spacing } from '../../theme/spacing';
 import { formatCentsRange } from '../../utils/format';
 import { mockDiagnosis } from '../../mocks/mockData';
 
+export interface DiagnosisData {
+  id: string;
+  analyzedInSeconds: number;
+  primaryCause: string;
+  confidence: 'low' | 'medium' | 'high';
+  explanation: string;
+  secondaryCauses: { cause: string; confidence: 'low' | 'medium' | 'high' }[];
+  recommendedDelay: string;
+  costMinCents: number;
+  costMaxCents: number;
+  safetyNote: string;
+  disclaimer: string;
+  availableGarages: { id: string; name: string; distanceKm: number; slotLabel: string }[];
+}
+
 interface DiagnosisScreenProps {
-  diagnosis?: typeof mockDiagnosis;
+  diagnosis?: DiagnosisData;
   onRequestQuotes?: () => void;
   onAddToCalendar?: () => void;
 }

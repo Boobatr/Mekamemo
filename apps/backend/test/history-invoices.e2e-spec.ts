@@ -137,6 +137,13 @@ describe('History, invoices, task completion, resale dossier (e2e)', () => {
 
     expect(exportRes.headers['content-type']).toContain('application/pdf');
     expect(exportRes.body.length).toBeGreaterThan(100);
+
+    // Also reachable via ?access_token=, so the OS file viewer can open it directly.
+    const exportViaQueryRes = await request(app.getHttpServer())
+      .get(`/vehicles/${vehicleId}/history/export`)
+      .query({ access_token: accessToken })
+      .expect(200);
+    expect(exportViaQueryRes.headers['content-type']).toContain('application/pdf');
   });
 
   it('forbids another user from reading this vehicle’s history', async () => {

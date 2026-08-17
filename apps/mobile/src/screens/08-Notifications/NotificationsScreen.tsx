@@ -7,8 +7,17 @@ import { textStyles } from '../../theme/typography';
 import { spacing } from '../../theme/spacing';
 import { mockNotifications } from '../../mocks/mockData';
 
+export interface NotificationItem {
+  id: string;
+  type: 'mileage_prompt' | 'maintenance_reminder_7d' | 'maintenance_reminder_due' | 'garage_response';
+  dateLabel: string;
+  title: string;
+  body: string;
+  actions: string[];
+}
+
 interface NotificationsScreenProps {
-  notifications?: typeof mockNotifications;
+  notifications?: NotificationItem[];
   reminderDelayDays?: number[];
   onAction?: (notificationId: string, action: string) => void;
 }

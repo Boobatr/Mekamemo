@@ -31,6 +31,6 @@ export function ScreenBackground({ children }: { children: React.ReactNode }) {
 const styles = StyleSheet.create({
   fill: { flex: 1 },
   image: { opacity: 1 },
-  veil: { ...StyleSheet.absoluteFillObject },
+  veil: StyleSheet.absoluteFill,
   content: { flex: 1 },
 });
