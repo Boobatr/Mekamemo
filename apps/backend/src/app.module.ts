@@ -12,6 +12,8 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { MileageModule } from './mileage/mileage.module';
 import { VinDecodeModule } from './vin-decode/vin-decode.module';
 import { MaintenanceScheduleModule } from './maintenance-schedule/maintenance-schedule.module';
+import { MediaModule } from './media/media.module';
+import { BreakdownModule } from './breakdown/breakdown.module';
 
 @Module({
   imports: [
@@ -26,6 +28,8 @@ import { MaintenanceScheduleModule } from './maintenance-schedule/maintenance-sc
     MileageModule,
     VinDecodeModule,
     MaintenanceScheduleModule,
+    MediaModule,
+    BreakdownModule,
   ],
   controllers: [AppController],
   providers: [AppService],
