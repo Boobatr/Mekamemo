@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, ForbiddenException, Get, Param, Post, Res, UseGuards } from '@nestjs/common';
 import type { Response } from 'express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import type { AuthenticatedUser } from '../common/decorators/current-user.decorator';
+import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 import { HistoryService } from './history.service';
 import { ResaleDossierService } from './resale-dossier.service';
 import { CreateHistoryEntryDto } from './dto/create-history-entry.dto';
@@ -14,6 +15,7 @@ export class HistoryController {
   constructor(
     private readonly historyService: HistoryService,
     private readonly resaleDossierService: ResaleDossierService,
+    private readonly subscriptionsService: SubscriptionsService,
   ) {}
 
   @Get('vehicles/:vehicleId/history')
@@ -39,12 +41,18 @@ export class HistoryController {
     return this.historyService.attachInvoice(user.id, entryId, dto);
   }
 
+  /** MEKAMEMO+ exclusive — free plan users see the history list but not the export. */
   @Get('vehicles/:vehicleId/history/export')
   async export(
     @CurrentUser() user: AuthenticatedUser,
     @Param('vehicleId') vehicleId: string,
     @Res() res: Response,
   ) {
+    const isPlus = await this.subscriptionsService.isPlus(user.id);
+    if (!isPlus) {
+      throw new ForbiddenException('Le dossier de revente est réservé au plan MEKAMEMO+.');
+    }
+
     const pdf = await this.resaleDossierService.build(user.id, vehicleId);
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="dossier-revente-${vehicleId}.pdf"`);

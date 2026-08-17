@@ -118,6 +118,18 @@ describe('History, invoices, task completion, resale dossier (e2e)', () => {
       .send({ fileUrl: uploadRes.body.url })
       .expect(201);
 
+    // Resale dossier export is a MEKAMEMO+ feature — blocked on the free plan.
+    await request(app.getHttpServer())
+      .get(`/vehicles/${vehicleId}/history/export`)
+      .set('Authorization', `Bearer ${accessToken}`)
+      .expect(403);
+
+    const user = await prisma.user.findUniqueOrThrow({ where: { email } });
+    await prisma.subscription.update({
+      where: { userId: user.id },
+      data: { plan: 'mekamemo_plus', status: 'active' },
+    });
+
     const exportRes = await request(app.getHttpServer())
       .get(`/vehicles/${vehicleId}/history/export`)
       .set('Authorization', `Bearer ${accessToken}`)

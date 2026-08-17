@@ -20,6 +20,7 @@ import { BookingsModule } from './bookings/bookings.module';
 import { QuotesModule } from './quotes/quotes.module';
 import { MaintenanceTasksModule } from './maintenance-tasks/maintenance-tasks.module';
 import { HistoryModule } from './history/history.module';
+import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { HistoryModule } from './history/history.module';
     JobsModule,
     AuthModule,
     UsersModule,
+    SubscriptionsModule,
     VehiclesModule,
     NotificationsModule,
     MileageModule,

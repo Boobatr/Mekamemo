@@ -2,6 +2,7 @@ import { ForbiddenException, Inject, Injectable, NotFoundException } from '@nest
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { BookingsService } from '../bookings/bookings.service';
+import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 import { EMAIL_PROVIDER } from './email-provider.interface';
 import type { EmailProvider } from './email-provider.interface';
 import { VOICE_PROVIDER } from './voice-provider.interface';
@@ -14,6 +15,7 @@ export class QuotesService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly bookingsService: BookingsService,
+    private readonly subscriptionsService: SubscriptionsService,
     @Inject(EMAIL_PROVIDER) private readonly emailProvider: EmailProvider,
     @Inject(VOICE_PROVIDER) private readonly voiceProvider: VoiceProvider,
   ) {}
@@ -46,8 +48,9 @@ export class QuotesService {
       include: { garages: { include: { garage: true } } },
     });
 
+    const isPlus = await this.subscriptionsService.isPlus(userId);
     for (const link of quoteRequest.garages) {
-      await this.dispatch(link, user);
+      await this.dispatch(link, user, isPlus);
     }
 
     return quoteRequest;
@@ -66,6 +69,7 @@ export class QuotesService {
   private async dispatch(
     link: { id: string; contactMethod: string; messageContent: string | null; garage: { email: string | null; phone: string | null; name: string } },
     user: { voiceFallbackEnabled: boolean; language: string; phone: string },
+    isPlus: boolean,
   ) {
     if (link.contactMethod === 'email' && link.garage.email) {
       await this.emailProvider.send({
@@ -76,7 +80,8 @@ export class QuotesService {
       return;
     }
 
-    if (user.voiceFallbackEnabled && link.garage.phone) {
+    // Voice-call fallback is a MEKAMEMO+ feature, on top of the user's own toggle.
+    if (isPlus && user.voiceFallbackEnabled && link.garage.phone) {
       await this.voiceProvider.call({
         toPhoneNumber: link.garage.phone,
         message: link.messageContent ?? '',

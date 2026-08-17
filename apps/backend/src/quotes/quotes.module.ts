@@ -9,9 +9,10 @@ import { LoggingEmailProvider } from './logging-email.provider';
 import { TwilioVoiceProvider } from './twilio-voice.provider';
 import { LoggingVoiceProvider } from './logging-voice.provider';
 import { BookingsModule } from '../bookings/bookings.module';
+import { SubscriptionsModule } from '../subscriptions/subscriptions.module';
 
 @Module({
-  imports: [ConfigModule, BookingsModule],
+  imports: [ConfigModule, BookingsModule, SubscriptionsModule],
   providers: [
     QuotesService,
     ResendEmailProvider,

@@ -1,13 +1,29 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 
+const FREE_PLAN_VEHICLE_LIMIT = 1;
+
 @Injectable()
 export class VehiclesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly subscriptionsService: SubscriptionsService,
+  ) {}
 
   async create(userId: string, dto: CreateVehicleDto) {
+    const isPlus = await this.subscriptionsService.isPlus(userId);
+    if (!isPlus) {
+      const existingCount = await this.prisma.vehicle.count({ where: { userId } });
+      if (existingCount >= FREE_PLAN_VEHICLE_LIMIT) {
+        throw new ForbiddenException(
+          'Le plan gratuit est limité à un véhicule. Passez à MEKAMEMO+ pour en ajouter davantage.',
+        );
+      }
+    }
+
     return this.prisma.vehicle.create({
       data: {
         userId,
