@@ -1,6 +1,7 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { MileageService } from '../mileage/mileage.service';
+import { VehiclesService } from '../vehicles/vehicles.service';
 import { UpdateMaintenanceTaskDto } from './dto/update-maintenance-task.dto';
 import { CompleteMaintenanceTaskDto } from './dto/complete-maintenance-task.dto';
 
@@ -9,7 +10,17 @@ export class MaintenanceTasksService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly mileageService: MileageService,
+    private readonly vehiclesService: VehiclesService,
   ) {}
+
+  async listForVehicle(userId: string, vehicleId: string) {
+    await this.vehiclesService.getOwned(userId, vehicleId);
+    return this.prisma.maintenanceTask.findMany({
+      where: { vehicleId },
+      include: { projection: true },
+      orderBy: { createdAt: 'asc' },
+    });
+  }
 
   private async getOwned(userId: string, taskId: string) {
     const task = await this.prisma.maintenanceTask.findUnique({
