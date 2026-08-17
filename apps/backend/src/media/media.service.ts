@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { STORAGE_PROVIDER, StorageProvider } from './storage-provider.interface';
+import { STORAGE_PROVIDER } from './storage-provider.interface';
+import type { StorageProvider } from './storage-provider.interface';
 
 const EXTENSION_BY_MIME: Record<string, string> = {
   'image/jpeg': 'jpg',

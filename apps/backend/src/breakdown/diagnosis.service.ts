@@ -1,7 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { BreakdownService } from './breakdown.service';
-import { DIAGNOSIS_PROVIDER, DiagnosisProvider } from './diagnosis-provider.interface';
+import { DIAGNOSIS_PROVIDER } from './diagnosis-provider.interface';
+import type { DiagnosisProvider } from './diagnosis-provider.interface';
 
 const DISCLAIMER = {
   fr: 'Estimation indicative : le garage confirme au diagnostic.',
@@ -46,7 +48,7 @@ export class DiagnosisService {
         reportId,
         primaryCause: result.primaryCause,
         confidence: result.confidence,
-        secondaryCauses: result.secondaryCauses,
+        secondaryCauses: result.secondaryCauses as unknown as Prisma.InputJsonValue,
         recommendedDelay: result.recommendedDelay,
         costMinCents: result.costMinCents,
         costMaxCents: result.costMaxCents,
@@ -57,7 +59,7 @@ export class DiagnosisService {
       update: {
         primaryCause: result.primaryCause,
         confidence: result.confidence,
-        secondaryCauses: result.secondaryCauses,
+        secondaryCauses: result.secondaryCauses as unknown as Prisma.InputJsonValue,
         recommendedDelay: result.recommendedDelay,
         costMinCents: result.costMinCents,
         costMaxCents: result.costMaxCents,

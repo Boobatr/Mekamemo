@@ -1,11 +1,8 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { MileageService } from '../mileage/mileage.service';
-import {
-  MAINTENANCE_FALLBACK_PROVIDER,
-  MaintenanceFallbackProvider,
-  TaskSuggestion,
-} from './maintenance-fallback.interface';
+import { MAINTENANCE_FALLBACK_PROVIDER } from './maintenance-fallback.interface';
+import type { MaintenanceFallbackProvider, TaskSuggestion } from './maintenance-fallback.interface';
 
 @Injectable()
 export class MaintenanceScheduleService {

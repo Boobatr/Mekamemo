@@ -1,6 +1,8 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
-import { PUSH_PROVIDER, PushProvider } from './push-provider.interface';
+import { PUSH_PROVIDER } from './push-provider.interface';
+import type { PushProvider } from './push-provider.interface';
 import { LoggingPushProvider } from './logging-push.provider';
 
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
@@ -81,10 +83,12 @@ export class NotificationsService {
       where: { relatedEntityId: params.relatedEntityId, type: params.type, sentAt: null },
     });
 
+    const payload = params.payload as Prisma.InputJsonValue;
+
     if (existing) {
       await this.prisma.notification.update({
         where: { id: existing.id },
-        data: { scheduledFor: params.scheduledFor, payload: params.payload },
+        data: { scheduledFor: params.scheduledFor, payload },
       });
     } else {
       await this.prisma.notification.create({
@@ -95,7 +99,7 @@ export class NotificationsService {
           type: params.type,
           scheduledFor: params.scheduledFor,
           locale: params.locale,
-          payload: params.payload,
+          payload,
         },
       });
     }

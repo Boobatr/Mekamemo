@@ -32,6 +32,6 @@ export class PgBossService implements OnModuleInit, OnModuleDestroy {
   }
 
   async onModuleDestroy() {
-    if (this._boss) await this._boss.stop({ graceful: false, wait: false });
+    if (this._boss) await this._boss.stop({ graceful: false, close: true });
   }
 }
