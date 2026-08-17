@@ -18,6 +18,8 @@ import { GeocodingModule } from './geocoding/geocoding.module';
 import { GaragesModule } from './garages/garages.module';
 import { BookingsModule } from './bookings/bookings.module';
 import { QuotesModule } from './quotes/quotes.module';
+import { MaintenanceTasksModule } from './maintenance-tasks/maintenance-tasks.module';
+import { HistoryModule } from './history/history.module';
 
 @Module({
   imports: [
@@ -38,6 +40,8 @@ import { QuotesModule } from './quotes/quotes.module';
     GaragesModule,
     BookingsModule,
     QuotesModule,
+    MaintenanceTasksModule,
+    HistoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
