@@ -67,6 +67,11 @@
     "title": "Calendrier d'entretien",
     "generatedByAi": "Généré par l'IA",
     "source": "Source : {{source}} · révisé {{date}}",
+    "sourceLabel": {
+      "oem_db": "guide d'entretien du fabricant",
+      "ai_estimate": "estimation IA",
+      "generic_estimate": "intervalles standards de l'industrie"
+    },
     "details": "Détails",
     "modify": "Modifier",
     "book": "Réserver"
@@ -195,7 +200,9 @@
     "confirmBeforeBooking": "Confirmer avant chaque réservation",
     "currentPlan": "Plan actuel",
     "plusTitle": "MEKAMEMO +",
+    "freeTitle": "Gratuit",
     "plusDescription": "Véhicules illimités, appels vocaux de l'assistant, dossier de revente, rappels avancés.",
+    "freeDescription": "Un véhicule, calendrier d'entretien, recherche de garages. Passez à MEKAMEMO+ pour plus de véhicules, les appels vocaux et le dossier de revente.",
     "manageSubscription": "Gérer l'abonnement",
     "privacy": "Données et confidentialité",
     "help": "Aide et contact",

@@ -54,9 +54,15 @@ describe('SettingsScreen', () => {
       withNavigationContainer: false,
     });
 
-    expect(screen.getByText(/Véhicules illimités/)).toBeTruthy();
+    expect(screen.getByText(/MEKAMEMO\+/)).toBeTruthy();
     await fireEvent.press(screen.getByTestId('manage-subscription-button'));
     expect(onManageSubscription).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows the plan feature list when already on MEKAMEMO+', async () => {
+    await renderWithProviders(<SettingsScreen isPlus />, { withNavigationContainer: false });
+
+    expect(screen.getByText(/Véhicules illimités/)).toBeTruthy();
   });
 
   it('triggers logout', async () => {

@@ -11,6 +11,8 @@ import { mockMaintenanceTasks, mockVehicles } from '../../mocks/mockData';
 interface AiCalendarScreenProps {
   vehicleLabel?: string;
   odometerKm?: number;
+  scheduleSource?: string;
+  scheduleGeneratedAt?: string;
   tasks?: typeof mockMaintenanceTasks;
   onOpenTask?: (taskId: string) => void;
   onBook?: () => void;
@@ -19,12 +21,23 @@ interface AiCalendarScreenProps {
 export function AiCalendarScreen({
   vehicleLabel = `${mockVehicles[0].make.toUpperCase()} ${mockVehicles[0].model.toUpperCase()} ${mockVehicles[0].year}`,
   odometerKm = mockVehicles[0].odometerKm,
+  scheduleSource = 'oem_db',
+  scheduleGeneratedAt,
   tasks = mockMaintenanceTasks,
   onOpenTask = () => {},
   onBook = () => {},
 }: AiCalendarScreenProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { colors } = useTheme();
+  const sourceLabel = t(`calendar.sourceLabel.${scheduleSource}`, {
+    defaultValue: t('calendar.sourceLabel.oem_db'),
+  });
+  const generatedDateLabel = scheduleGeneratedAt
+    ? new Date(scheduleGeneratedAt).toLocaleDateString(i18n.language === 'fr' ? 'fr-CA' : 'en-CA', {
+        day: 'numeric',
+        month: 'long',
+      })
+    : '—';
 
   return (
     <Screen>
@@ -34,7 +47,7 @@ export function AiCalendarScreen({
         trailing={<Tag label={t('calendar.generatedByAi')} tone="accent" />}
       />
       <Text style={[textStyles.bodySecondary, { color: colors.textMuted, marginBottom: spacing.xxl }]}>
-        {t('calendar.source', { source: "guide d'entretien Toyota 2021", date: '2 août' })}
+        {t('calendar.source', { source: sourceLabel, date: generatedDateLabel })}
       </Text>
 
       {tasks.map((task) => (

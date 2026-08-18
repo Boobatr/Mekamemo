@@ -11,6 +11,9 @@ export interface Vehicle {
   engine: string | null;
   usageType: 'city' | 'highway' | 'mixed';
   photoUrl: string | null;
+  scheduleSource: string | null;
+  scheduleGeneratedAt: string | null;
+  latestOdometerKm: number | null;
   createdAt: string;
 }
 

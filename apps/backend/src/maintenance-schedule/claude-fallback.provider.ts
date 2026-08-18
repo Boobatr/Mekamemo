@@ -36,6 +36,8 @@ const SUGGEST_SCHEDULE_TOOL: Anthropic.Tool = {
 /** Used for vehicles with no curated template in our database. */
 @Injectable()
 export class ClaudeFallbackProvider implements MaintenanceFallbackProvider {
+  readonly providerName = 'ai_estimate' as const;
+
   constructor(@Inject(ANTHROPIC_CLIENT) private readonly client: Anthropic | null) {}
 
   async suggest(vehicle: VehicleForSchedule): Promise<TaskSuggestion[]> {

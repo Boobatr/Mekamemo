@@ -34,7 +34,9 @@ export function AiCalendarContainer({ onOpenTask, onBook }: AiCalendarContainerP
   return (
     <AiCalendarScreen
       vehicleLabel={`${primaryVehicle.make.toUpperCase()} ${primaryVehicle.model.toUpperCase()} ${primaryVehicle.year}`}
-      odometerKm={0}
+      odometerKm={primaryVehicle.latestOdometerKm ?? 0}
+      scheduleSource={primaryVehicle.scheduleSource ?? 'oem_db'}
+      scheduleGeneratedAt={primaryVehicle.scheduleGeneratedAt ?? undefined}
       tasks={
         (isLoading
           ? []

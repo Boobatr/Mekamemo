@@ -162,6 +162,8 @@ model Vehicle {
   engine      String?
   usageType   UsageType @default(mixed)
   photoUrl    String?
+  scheduleSource      String?   @default("oem_db")
+  scheduleGeneratedAt DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 

@@ -12,6 +12,8 @@ import {
  */
 @Injectable()
 export class GenericFallbackProvider implements MaintenanceFallbackProvider {
+  readonly providerName = 'generic_estimate' as const;
+
   async suggest(_vehicle: VehicleForSchedule): Promise<TaskSuggestion[]> {
     const isFr = _vehicle.language === 'fr';
     return [

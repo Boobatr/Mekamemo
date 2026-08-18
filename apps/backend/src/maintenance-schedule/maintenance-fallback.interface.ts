@@ -17,5 +17,6 @@ export interface VehicleForSchedule {
 export const MAINTENANCE_FALLBACK_PROVIDER = 'MAINTENANCE_FALLBACK_PROVIDER';
 
 export interface MaintenanceFallbackProvider {
+  readonly providerName: 'ai_estimate' | 'generic_estimate';
   suggest(vehicle: VehicleForSchedule): Promise<TaskSuggestion[]>;
 }

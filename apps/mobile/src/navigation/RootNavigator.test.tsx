@@ -32,6 +32,9 @@ const mockVehicle = {
   engine: '2,5 L I4',
   usageType: 'mixed' as const,
   photoUrl: null,
+  scheduleSource: 'oem_db',
+  scheduleGeneratedAt: NOW.toISOString(),
+  latestOdometerKm: 64200,
   createdAt: NOW.toISOString(),
 };
 

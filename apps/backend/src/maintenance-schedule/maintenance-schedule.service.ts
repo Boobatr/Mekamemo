@@ -46,6 +46,12 @@ export class MaintenanceScheduleService {
           language,
         });
 
+    const scheduleSource = template ? template.source : this.fallback.providerName;
+    await this.prisma.vehicle.update({
+      where: { id: vehicleId },
+      data: { scheduleSource, scheduleGeneratedAt: new Date() },
+    });
+
     const pace = await this.mileageService.getPaceSummary(vehicleId);
 
     const createdTasks = await this.prisma.$transaction(

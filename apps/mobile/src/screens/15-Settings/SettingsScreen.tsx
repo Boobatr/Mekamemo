@@ -27,7 +27,7 @@ export function SettingsScreen({
   userName = mockUser.fullName,
   userEmail = mockUser.email,
   isPlus = false,
-  planPriceLabel = 'Gratuit',
+  planPriceLabel,
   onEditProfile = () => {},
   onChangeLanguage = () => {},
   onChangeUnits = () => {},
@@ -145,10 +145,10 @@ export function SettingsScreen({
       </Text>
       <Card>
         <Text style={[textStyles.cardTitle, { color: colors.textPrimary, marginBottom: spacing.sm }]}>
-          {isPlus ? t('settings.plusTitle') : planPriceLabel}
+          {isPlus ? t('settings.plusTitle') : planPriceLabel ?? t('settings.freeTitle')}
         </Text>
         <Text style={[textStyles.bodySecondary, { color: colors.textSecondary, marginBottom: spacing.lg }]}>
-          {t('settings.plusDescription')}
+          {isPlus ? t('settings.plusDescription') : t('settings.freeDescription')}
         </Text>
         <Button label={t('settings.manageSubscription')} testID="manage-subscription-button" onPress={onManageSubscription} />
       </Card>

@@ -19,7 +19,6 @@ export function SettingsContainer({ onLoggedOut }: SettingsContainerProps) {
       userName={profile?.fullName}
       userEmail={profile?.email}
       isPlus={subscription?.plan === 'mekamemo_plus'}
-      planPriceLabel={subscription?.plan === 'mekamemo_plus' ? undefined : 'Gratuit'}
       onChangeLanguage={(language) => updateProfile.mutate({ language })}
       onChangeUnits={(units) => updateProfile.mutate({ units })}
       onToggleAutoContact={(value) => updateProfile.mutate({ autoContactGarages: value })}

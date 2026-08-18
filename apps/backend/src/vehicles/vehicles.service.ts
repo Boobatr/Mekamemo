@@ -6,6 +6,11 @@ import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 
 const FREE_PLAN_VEHICLE_LIMIT = 1;
 
+function withLatestOdometerKm<T extends { mileageReadings: { valueKm: number }[] }>(vehicle: T) {
+  const { mileageReadings, ...rest } = vehicle;
+  return { ...rest, latestOdometerKm: mileageReadings[0]?.valueKm ?? null };
+}
+
 @Injectable()
 export class VehiclesService {
   constructor(
@@ -46,17 +51,22 @@ export class VehiclesService {
   }
 
   async listForUser(userId: string) {
-    return this.prisma.vehicle.findMany({
+    const vehicles = await this.prisma.vehicle.findMany({
       where: { userId },
       orderBy: { createdAt: 'asc' },
+      include: { mileageReadings: { orderBy: { recordedAt: 'desc' }, take: 1 } },
     });
+    return vehicles.map(withLatestOdometerKm);
   }
 
   async getOwned(userId: string, vehicleId: string) {
-    const vehicle = await this.prisma.vehicle.findUnique({ where: { id: vehicleId } });
+    const vehicle = await this.prisma.vehicle.findUnique({
+      where: { id: vehicleId },
+      include: { mileageReadings: { orderBy: { recordedAt: 'desc' }, take: 1 } },
+    });
     if (!vehicle) throw new NotFoundException('Véhicule introuvable.');
     if (vehicle.userId !== userId) throw new ForbiddenException();
-    return vehicle;
+    return withLatestOdometerKm(vehicle);
   }
 
   async update(userId: string, vehicleId: string, dto: UpdateVehicleDto) {
