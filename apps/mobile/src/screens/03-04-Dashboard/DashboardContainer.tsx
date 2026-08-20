@@ -13,6 +13,7 @@ interface DashboardContainerProps {
   onSelectVehicle: (vehicleId: string) => void;
   onAddVehicle: () => void;
   onBookNextDue: (vehicleId: string, taskId: string) => void;
+  onOpenNotifications: () => void;
 }
 
 function earliestUpcoming(tasks: MaintenanceTask[]) {
@@ -31,6 +32,7 @@ export function DashboardContainer({
   onSelectVehicle,
   onAddVehicle,
   onBookNextDue,
+  onOpenNotifications,
 }: DashboardContainerProps) {
   const { t } = useTranslation();
   const { data: vehicles = [] } = useVehicles();
@@ -116,6 +118,7 @@ export function DashboardContainer({
       fleetSummary={{ vehiclesCount: vehicles.length, upcoming30d, costThisYearCents: 0 }}
       onSelectVehicle={onSelectVehicle}
       onAddVehicle={onAddVehicle}
+      onOpenNotifications={onOpenNotifications}
       onBookNextDue={() => {
         if (globalNextVehicle && globalNextTask) onBookNextDue(globalNextVehicle.id, globalNextTask.id);
       }}

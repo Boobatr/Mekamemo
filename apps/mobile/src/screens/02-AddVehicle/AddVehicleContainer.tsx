@@ -6,15 +6,17 @@ import { useGenerateCalendar } from '../../hooks/useMaintenance';
 
 interface AddVehicleContainerProps {
   onDone: (vehicleId: string) => void;
+  onBack?: () => void;
 }
 
-export function AddVehicleContainer({ onDone }: AddVehicleContainerProps) {
+export function AddVehicleContainer({ onDone, onBack }: AddVehicleContainerProps) {
   const decodeVinMutation = useDecodeVin();
   const createVehicle = useCreateVehicle();
   const generateCalendar = useGenerateCalendar();
 
   return (
     <AddVehicleScreen
+      onBack={onBack}
       decodeVin={async (vin) => {
         try {
           return await decodeVinMutation.mutateAsync(vin);

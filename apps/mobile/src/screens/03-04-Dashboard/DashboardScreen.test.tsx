@@ -51,4 +51,26 @@ describe('DashboardScreen', () => {
     await fireEvent.press(screen.getByTestId('next-due-panel'));
     expect(onBookNextDue).toHaveBeenCalledTimes(1);
   });
+
+  it('opens notifications from the iOS header bell', async () => {
+    setPlatform('ios');
+    const onOpenNotifications = jest.fn();
+    await renderWithProviders(<DashboardScreen onOpenNotifications={onOpenNotifications} />, {
+      withNavigationContainer: false,
+    });
+
+    await fireEvent.press(screen.getByTestId('open-notifications'));
+    expect(onOpenNotifications).toHaveBeenCalledTimes(1);
+  });
+
+  it('opens notifications from the Android app bar bell', async () => {
+    setPlatform('android');
+    const onOpenNotifications = jest.fn();
+    await renderWithProviders(<DashboardScreen onOpenNotifications={onOpenNotifications} />, {
+      withNavigationContainer: false,
+    });
+
+    await fireEvent.press(screen.getByTestId('open-notifications'));
+    expect(onOpenNotifications).toHaveBeenCalledTimes(1);
+  });
 });

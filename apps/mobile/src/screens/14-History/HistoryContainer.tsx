@@ -7,9 +7,17 @@ import { getResaleDossierExportUrl } from '../../services/history';
 
 interface HistoryContainerProps {
   vehicleId: string;
+  onReportBreakdown: (vehicleId: string) => void;
+  onUpdateMileage: (vehicleId: string) => void;
+  onBack?: () => void;
 }
 
-export function HistoryContainer({ vehicleId }: HistoryContainerProps) {
+export function HistoryContainer({
+  vehicleId,
+  onReportBreakdown,
+  onUpdateMileage,
+  onBack,
+}: HistoryContainerProps) {
   const { data: vehicle } = useVehicle(vehicleId);
   const { data: entries = [] } = useHistory(vehicleId);
 
@@ -37,6 +45,7 @@ export function HistoryContainer({ vehicleId }: HistoryContainerProps) {
 
   return (
     <HistoryScreen
+      onBack={onBack}
       history={{
         vehicleLabel: vehicle ? `${vehicle.make.toUpperCase()} ${vehicle.model.toUpperCase()} ${vehicle.year}` : '',
         totalThisYearCents,
@@ -55,6 +64,8 @@ export function HistoryContainer({ vehicleId }: HistoryContainerProps) {
         const url = await getResaleDossierExportUrl(vehicleId);
         await Linking.openURL(url);
       }}
+      onReportBreakdown={() => onReportBreakdown(vehicleId)}
+      onUpdateMileage={() => onUpdateMileage(vehicleId)}
     />
   );
 }

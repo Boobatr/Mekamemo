@@ -27,18 +27,30 @@ interface DiagnosisScreenProps {
   diagnosis?: DiagnosisData;
   onRequestQuotes?: () => void;
   onAddToCalendar?: () => void;
+  onBack?: () => void;
 }
 
 export function DiagnosisScreen({
   diagnosis = mockDiagnosis,
   onRequestQuotes = () => {},
   onAddToCalendar = () => {},
+  onBack,
 }: DiagnosisScreenProps) {
   const { t } = useTranslation();
   const { colors } = useTheme();
 
   return (
     <Screen>
+      {onBack ? (
+        <Text
+          onPress={onBack}
+          testID="screen-back-button"
+          accessibilityRole="button"
+          style={[textStyles.button, { color: colors.textSecondary, fontSize: 13, marginBottom: spacing.lg }]}
+        >
+          ‹ {t('common.back')}
+        </Text>
+      ) : null}
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: spacing.xxl }}>
         <Text style={[textStyles.screenTitle, { color: colors.textPrimary }]}>{t('diagnosis.title')}</Text>
         <Text style={[textStyles.bodySecondary, { color: colors.textMuted }]}>

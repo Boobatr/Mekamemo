@@ -13,18 +13,30 @@ interface GarageProfileScreenProps {
   garage?: Garage;
   onRequestAppointment?: () => void;
   onViewEmailBeforeSending?: () => void;
+  onBack?: () => void;
 }
 
 export function GarageProfileScreen({
   garage = mockGarages[0],
   onRequestAppointment = () => {},
   onViewEmailBeforeSending = () => {},
+  onBack,
 }: GarageProfileScreenProps) {
   const { t } = useTranslation();
   const { colors } = useTheme();
 
   return (
     <Screen>
+      {onBack ? (
+        <Text
+          onPress={onBack}
+          testID="screen-back-button"
+          accessibilityRole="button"
+          style={[textStyles.button, { color: colors.textSecondary, fontSize: 13, marginBottom: spacing.lg }]}
+        >
+          ‹ {t('common.back')}
+        </Text>
+      ) : null}
       <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.sm }]}>
         {garage.distanceKm} KM · {garage.neighbourhood.toUpperCase()}
       </Text>

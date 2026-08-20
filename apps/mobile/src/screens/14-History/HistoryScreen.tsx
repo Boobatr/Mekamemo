@@ -12,12 +12,18 @@ interface HistoryScreenProps {
   history?: typeof mockHistory;
   onExport?: () => void;
   onOpenResaleDossier?: () => void;
+  onReportBreakdown?: () => void;
+  onUpdateMileage?: () => void;
+  onBack?: () => void;
 }
 
 export function HistoryScreen({
   history = mockHistory,
   onExport = () => {},
   onOpenResaleDossier = () => {},
+  onReportBreakdown = () => {},
+  onUpdateMileage = () => {},
+  onBack,
 }: HistoryScreenProps) {
   const { t } = useTranslation();
   const { colors } = useTheme();
@@ -27,6 +33,7 @@ export function HistoryScreen({
       <ScreenHeader
         eyebrow={history.vehicleLabel}
         title={t('history.title')}
+        onBack={onBack}
         trailing={
           <Text onPress={onExport} testID="export-history-button" style={[textStyles.button, { color: colors.accentOnBackground, fontSize: 13 }]}>
             {t('history.export')}
@@ -54,6 +61,23 @@ export function HistoryScreen({
           </View>
         </View>
       </Card>
+
+      <View style={{ flexDirection: 'row', marginBottom: spacing.xl }}>
+        <Text
+          onPress={onUpdateMileage}
+          testID="update-mileage-button"
+          style={[textStyles.button, { color: colors.accentOnBackground, fontSize: 13, marginRight: spacing.xl }]}
+        >
+          {t('history.updateMileage')}
+        </Text>
+        <Text
+          onPress={onReportBreakdown}
+          testID="report-breakdown-button"
+          style={[textStyles.button, { color: colors.accentOnBackground, fontSize: 13 }]}
+        >
+          {t('history.reportBreakdown')}
+        </Text>
+      </View>
 
       {history.entriesByYear.map((yearGroup) => (
         <View key={yearGroup.year} style={{ marginBottom: spacing.xl }}>

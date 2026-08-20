@@ -15,6 +15,8 @@ interface SettingsScreenProps {
   onEditProfile?: () => void;
   onChangeLanguage?: (language: 'fr' | 'en') => void;
   onChangeUnits?: (units: 'km' | 'mi') => void;
+  themeMode?: 'dark' | 'light';
+  onChangeTheme?: (mode: 'dark' | 'light') => void;
   onToggleAutoContact?: (value: boolean) => void;
   onToggleVoiceFallback?: (value: boolean) => void;
   onManageSubscription?: () => void;
@@ -31,6 +33,8 @@ export function SettingsScreen({
   onEditProfile = () => {},
   onChangeLanguage = () => {},
   onChangeUnits = () => {},
+  themeMode = 'dark',
+  onChangeTheme = () => {},
   onToggleAutoContact = () => {},
   onToggleVoiceFallback = () => {},
   onManageSubscription = () => {},
@@ -84,6 +88,17 @@ export function SettingsScreen({
         {t('settings.preferences')}
       </Text>
       <Card>
+        <SettingRow label={t('settings.theme')}>
+          <TwoWayToggle
+            leftLabel={t('settings.dark').toUpperCase()}
+            rightLabel={t('settings.light').toUpperCase()}
+            value={themeMode}
+            leftValue="dark"
+            rightValue="light"
+            onChange={onChangeTheme}
+            testIDPrefix="theme"
+          />
+        </SettingRow>
         <SettingRow label={t('common.language')}>
           <TwoWayToggle
             leftLabel="FR"

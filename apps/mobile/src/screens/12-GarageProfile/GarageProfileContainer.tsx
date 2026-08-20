@@ -11,6 +11,7 @@ interface GarageProfileContainerProps {
   taskId?: string;
   diagnosisId?: string;
   onRequestedAppointment: (quoteRequestId: string) => void;
+  onBack?: () => void;
 }
 
 export function GarageProfileContainer({
@@ -19,6 +20,7 @@ export function GarageProfileContainer({
   taskId,
   diagnosisId,
   onRequestedAppointment,
+  onBack,
 }: GarageProfileContainerProps) {
   const { data: garage, isLoading } = useGarage(garageId);
   const createQuoteRequest = useCreateQuoteRequest();
@@ -35,6 +37,7 @@ export function GarageProfileContainer({
 
   return (
     <GarageProfileScreen
+      onBack={onBack}
       garage={{
         id: g.id,
         name: g.name,

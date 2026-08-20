@@ -23,9 +23,10 @@ interface AddVehicleScreenProps {
     decoded: DecodedVehicle;
     odometerKm: number;
   }) => void;
+  onBack?: () => void;
 }
 
-export function AddVehicleScreen({ decodeVin, onGenerateCalendar }: AddVehicleScreenProps) {
+export function AddVehicleScreen({ decodeVin, onGenerateCalendar, onBack }: AddVehicleScreenProps) {
   const { t } = useTranslation();
   const { colors } = useTheme();
 
@@ -47,9 +48,20 @@ export function AddVehicleScreen({ decodeVin, onGenerateCalendar }: AddVehicleSc
 
   return (
     <Screen>
-      <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.md }]}>
-        {t('onboarding.step', { current: 2, total: 3 })}
-      </Text>
+      {onBack ? (
+        <Text
+          onPress={onBack}
+          testID="screen-back-button"
+          accessibilityRole="button"
+          style={[textStyles.button, { color: colors.textSecondary, fontSize: 13, marginBottom: spacing.lg }]}
+        >
+          ‹ {t('common.back')}
+        </Text>
+      ) : (
+        <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.md }]}>
+          {t('onboarding.step', { current: 2, total: 3 })}
+        </Text>
+      )}
       <Text style={[textStyles.onboardingTitle, { color: colors.textPrimary, marginBottom: spacing.xxl }]}>
         {t('onboarding.vehicle.title')}
       </Text>

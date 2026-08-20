@@ -14,6 +14,7 @@ interface MileageReadingScreenProps {
   /** Mocked odometer-photo OCR — Task #7 replaces this with a real capture + Claude-vision read. */
   onPhotographOdometer?: () => Promise<number | null>;
   onSave?: (input: { valueKm: number; source: 'manual' | 'ocr' | 'estimate_tap'; autoTrackEnabled: boolean }) => void;
+  onBack?: () => void;
 }
 
 export function MileageReadingScreen({
@@ -21,6 +22,7 @@ export function MileageReadingScreen({
   pace = mockMileagePace,
   onPhotographOdometer = async () => null,
   onSave = () => {},
+  onBack,
 }: MileageReadingScreenProps) {
   const { t } = useTranslation();
   const { colors } = useTheme();
@@ -54,6 +56,16 @@ export function MileageReadingScreen({
 
   return (
     <Screen>
+      {onBack ? (
+        <Text
+          onPress={onBack}
+          testID="screen-back-button"
+          accessibilityRole="button"
+          style={[textStyles.button, { color: colors.textSecondary, fontSize: 13, marginBottom: spacing.lg }]}
+        >
+          ‹ {t('common.back')}
+        </Text>
+      ) : null}
       <Text style={[textStyles.screenTitle, { color: colors.textPrimary }]}>{t('mileage.title')}</Text>
       <Text style={[textStyles.body, { color: colors.textSecondary, marginBottom: spacing.xxl }]}>
         {vehicleLabel}

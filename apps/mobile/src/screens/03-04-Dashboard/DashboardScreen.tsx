@@ -1,7 +1,7 @@
 import React from 'react';
 import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Plus } from 'lucide-react-native';
+import { Bell, Plus } from 'lucide-react-native';
 import { Screen, Card, Tag } from '../../components';
 import { AndroidAppBar } from '../../navigation/AndroidAppBar';
 import { FabAndroid } from '../../navigation/FabAndroid';
@@ -26,6 +26,7 @@ interface DashboardScreenProps {
   onSelectVehicle?: (vehicleId: string) => void;
   onAddVehicle?: () => void;
   onBookNextDue?: () => void;
+  onOpenNotifications?: () => void;
 }
 
 export function DashboardScreen({
@@ -36,6 +37,7 @@ export function DashboardScreen({
   onSelectVehicle = () => {},
   onAddVehicle = () => {},
   onBookNextDue = () => {},
+  onOpenNotifications = () => {},
 }: DashboardScreenProps) {
   const { t } = useTranslation();
   const { colors } = useTheme();
@@ -44,7 +46,11 @@ export function DashboardScreen({
   return (
     <View style={{ flex: 1 }}>
       {isAndroid ? (
-        <AndroidAppBar title={t('dashboard.title')} onMenuPress={() => {}} />
+        <AndroidAppBar
+          title={t('dashboard.title')}
+          onMenuPress={() => {}}
+          onNotificationsPress={onOpenNotifications}
+        />
       ) : null}
       <Screen edges={isAndroid ? ['bottom'] : ['top', 'bottom']}>
         {!isAndroid ? (
@@ -57,15 +63,26 @@ export function DashboardScreen({
                 {t('dashboard.title')}
               </Text>
             </View>
-            <TouchableOpacity
-              accessibilityRole="button"
-              accessibilityLabel={t('dashboard.addVehicle')}
-              testID="add-vehicle-inline"
-              onPress={onAddVehicle}
-              hitSlop={12}
-            >
-              <Plus size={22} strokeWidth={1.5} color={colors.accentOnBackground} />
-            </TouchableOpacity>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.lg }}>
+              <TouchableOpacity
+                accessibilityRole="button"
+                accessibilityLabel={t('dashboard.notifications')}
+                testID="open-notifications"
+                onPress={onOpenNotifications}
+                hitSlop={12}
+              >
+                <Bell size={20} strokeWidth={1.5} color={colors.textPrimary} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                accessibilityRole="button"
+                accessibilityLabel={t('dashboard.addVehicle')}
+                testID="add-vehicle-inline"
+                onPress={onAddVehicle}
+                hitSlop={12}
+              >
+                <Plus size={22} strokeWidth={1.5} color={colors.accentOnBackground} />
+              </TouchableOpacity>
+            </View>
           </View>
         ) : null}
 

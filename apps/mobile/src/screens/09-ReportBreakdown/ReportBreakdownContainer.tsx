@@ -10,9 +10,10 @@ import { usePace } from '../../hooks/useMileage';
 interface ReportBreakdownContainerProps {
   vehicleId: string;
   onAnalyzed: (reportId: string) => void;
+  onBack?: () => void;
 }
 
-export function ReportBreakdownContainer({ vehicleId, onAnalyzed }: ReportBreakdownContainerProps) {
+export function ReportBreakdownContainer({ vehicleId, onAnalyzed, onBack }: ReportBreakdownContainerProps) {
   const { data: vehicle } = useVehicle(vehicleId);
   const { data: pace } = usePace(vehicleId);
   const uploadMedia = useUploadMedia();
@@ -25,6 +26,7 @@ export function ReportBreakdownContainer({ vehicleId, onAnalyzed }: ReportBreakd
 
   return (
     <ReportBreakdownScreen
+      onBack={onBack}
       vehicleLabel={vehicle ? `${vehicle.make} ${vehicle.model}` : ''}
       odometerKm={pace?.currentKm ?? 0}
       onCapturePhoto={async () => {

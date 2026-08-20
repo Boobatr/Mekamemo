@@ -13,13 +13,18 @@ function formatDateLabel(iso: string, locale: 'fr' | 'en'): string {
   });
 }
 
-export function NotificationsContainer() {
+interface NotificationsContainerProps {
+  onBack?: () => void;
+}
+
+export function NotificationsContainer({ onBack }: NotificationsContainerProps) {
   const { i18n } = useTranslation();
   const { data: notifications = [] } = useNotifications();
   const markRead = useMarkNotificationRead();
 
   return (
     <NotificationsScreen
+      onBack={onBack}
       notifications={notifications.map((n) => ({
         id: n.id,
         type: n.type,

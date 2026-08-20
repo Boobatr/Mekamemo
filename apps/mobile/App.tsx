@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import React from 'react';
-import { ActivityIndicator, useColorScheme, View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -16,7 +16,6 @@ initI18n(detectDeviceLanguage());
 
 export default function App() {
   const [fontsLoaded] = useAppFonts();
-  const colorScheme = useColorScheme();
 
   if (!fontsLoaded) {
     return (
@@ -30,7 +29,7 @@ export default function App() {
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
         <I18nextProvider i18n={i18n}>
-          <ThemeProvider initialMode={colorScheme === 'light' ? 'light' : 'dark'}>
+          <ThemeProvider initialMode="dark">
             <NavigationContainer>
               <RootNavigator />
             </NavigationContainer>

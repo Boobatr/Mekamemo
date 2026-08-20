@@ -20,18 +20,30 @@ interface NotificationsScreenProps {
   notifications?: NotificationItem[];
   reminderDelayDays?: number[];
   onAction?: (notificationId: string, action: string) => void;
+  onBack?: () => void;
 }
 
 export function NotificationsScreen({
   notifications = mockNotifications,
   reminderDelayDays = [30, 14, 7, 1],
   onAction = () => {},
+  onBack,
 }: NotificationsScreenProps) {
   const { t } = useTranslation();
   const { colors } = useTheme();
 
   return (
     <Screen>
+      {onBack ? (
+        <Text
+          onPress={onBack}
+          testID="screen-back-button"
+          accessibilityRole="button"
+          style={[textStyles.button, { color: colors.textSecondary, fontSize: 13, marginBottom: spacing.lg }]}
+        >
+          ‹ {t('common.back')}
+        </Text>
+      ) : null}
       <Text style={[textStyles.screenTitle, { color: colors.textPrimary, marginBottom: spacing.xxl }]}>
         {t('notifications.title')}
       </Text>

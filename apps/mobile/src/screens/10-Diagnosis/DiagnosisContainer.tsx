@@ -8,9 +8,10 @@ interface DiagnosisContainerProps {
   reportId: string;
   onRequestQuotes: (diagnosisId: string) => void;
   onAddToCalendar: () => void;
+  onBack?: () => void;
 }
 
-export function DiagnosisContainer({ reportId, onRequestQuotes, onAddToCalendar }: DiagnosisContainerProps) {
+export function DiagnosisContainer({ reportId, onRequestQuotes, onAddToCalendar, onBack }: DiagnosisContainerProps) {
   const analyze = useAnalyzeBreakdownReport();
   const [diagnosis, setDiagnosis] = useState<Diagnosis | null>(null);
 
@@ -29,6 +30,7 @@ export function DiagnosisContainer({ reportId, onRequestQuotes, onAddToCalendar 
 
   return (
     <DiagnosisScreen
+      onBack={onBack}
       diagnosis={{
         id: diagnosis.id,
         analyzedInSeconds: 4,

@@ -40,6 +40,7 @@ export function MainTabs() {
               onSelectVehicle={(vehicleId) => nav.navigate('History', { vehicleId })}
               onAddVehicle={() => nav.navigate('AddVehicle')}
               onBookNextDue={() => nav.navigate('MainTabs', { screen: 'Garages' } as never)}
+              onOpenNotifications={() => nav.navigate('Notifications')}
             />
           );
         }}

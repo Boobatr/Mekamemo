@@ -53,7 +53,9 @@ export function RootNavigator() {
         <>
           <Stack.Screen name="MainTabs" component={MainTabs} />
           <Stack.Screen name="AddVehicle">
-            {({ navigation }) => <AddVehicleContainer onDone={() => navigation.goBack()} />}
+            {({ navigation }) => (
+              <AddVehicleContainer onDone={() => navigation.goBack()} onBack={() => navigation.goBack()} />
+            )}
           </Stack.Screen>
           <Stack.Screen name="EditTask">
             {({ route, navigation }) => (
@@ -68,15 +70,22 @@ export function RootNavigator() {
           </Stack.Screen>
           <Stack.Screen name="MileageReading">
             {({ route, navigation }) => (
-              <MileageReadingContainer vehicleId={route.params.vehicleId} onSaved={() => navigation.goBack()} />
+              <MileageReadingContainer
+                vehicleId={route.params.vehicleId}
+                onSaved={() => navigation.goBack()}
+                onBack={() => navigation.goBack()}
+              />
             )}
           </Stack.Screen>
-          <Stack.Screen name="Notifications" component={NotificationsContainer} />
+          <Stack.Screen name="Notifications">
+            {({ navigation }) => <NotificationsContainer onBack={() => navigation.goBack()} />}
+          </Stack.Screen>
           <Stack.Screen name="ReportBreakdown">
             {({ route, navigation }) => (
               <ReportBreakdownContainer
                 vehicleId={route.params.vehicleId}
                 onAnalyzed={(reportId) => navigation.navigate('Diagnosis', { reportId })}
+                onBack={() => navigation.goBack()}
               />
             )}
           </Stack.Screen>
@@ -88,6 +97,7 @@ export function RootNavigator() {
                   navigation.navigate('MainTabs', { screen: 'Garages' } as never)
                 }
                 onAddToCalendar={() => navigation.navigate('MainTabs')}
+                onBack={() => navigation.goBack()}
               />
             )}
           </Stack.Screen>
@@ -101,6 +111,7 @@ export function RootNavigator() {
                 onRequestedAppointment={(quoteRequestId) =>
                   navigation.navigate('BookingConfirmation', { quoteRequestId })
                 }
+                onBack={() => navigation.goBack()}
               />
             )}
           </Stack.Screen>
@@ -109,11 +120,19 @@ export function RootNavigator() {
               <BookingConfirmationContainer
                 quoteRequestId={route.params.quoteRequestId}
                 onConfirmed={() => navigation.navigate('MainTabs')}
+                onBack={() => navigation.goBack()}
               />
             )}
           </Stack.Screen>
           <Stack.Screen name="History">
-            {({ route }) => <HistoryContainer vehicleId={route.params.vehicleId} />}
+            {({ route, navigation }) => (
+              <HistoryContainer
+                vehicleId={route.params.vehicleId}
+                onReportBreakdown={(vehicleId) => navigation.navigate('ReportBreakdown', { vehicleId })}
+                onUpdateMileage={(vehicleId) => navigation.navigate('MileageReading', { vehicleId })}
+                onBack={() => navigation.goBack()}
+              />
+            )}
           </Stack.Screen>
         </>
       )}

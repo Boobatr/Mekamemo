@@ -25,4 +25,19 @@ describe('HistoryScreen', () => {
     expect(onExport).toHaveBeenCalledTimes(1);
     expect(onOpenResaleDossier).toHaveBeenCalledTimes(1);
   });
+
+  it('triggers report-breakdown and update-mileage callbacks', async () => {
+    const onReportBreakdown = jest.fn();
+    const onUpdateMileage = jest.fn();
+    await renderWithProviders(
+      <HistoryScreen onReportBreakdown={onReportBreakdown} onUpdateMileage={onUpdateMileage} />,
+      { withNavigationContainer: false },
+    );
+
+    await fireEvent.press(screen.getByTestId('report-breakdown-button'));
+    await fireEvent.press(screen.getByTestId('update-mileage-button'));
+
+    expect(onReportBreakdown).toHaveBeenCalledTimes(1);
+    expect(onUpdateMileage).toHaveBeenCalledTimes(1);
+  });
 });

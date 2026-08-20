@@ -61,4 +61,22 @@ describe('design system components', () => {
     expect(screen.getByText('TOYOTA RAV4 2021')).toBeTruthy();
     expect(screen.getByText("Calendrier d'entretien")).toBeTruthy();
   });
+
+  it('ScreenHeader shows a back link only when onBack is provided', async () => {
+    const onBack = jest.fn();
+    const { rerender } = await render(
+      <ThemeProvider>
+        <ScreenHeader title="Historique" />
+      </ThemeProvider>,
+    );
+    expect(screen.queryByTestId('screen-back-button')).toBeNull();
+
+    await rerender(
+      <ThemeProvider>
+        <ScreenHeader title="Historique" onBack={onBack} />
+      </ThemeProvider>,
+    );
+    await fireEvent.press(screen.getByTestId('screen-back-button'));
+    expect(onBack).toHaveBeenCalledTimes(1);
+  });
 });

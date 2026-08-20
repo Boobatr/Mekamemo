@@ -56,6 +56,7 @@
     "upcoming30d": "À venir 30 j",
     "costThisYear": "Coût {{year}}",
     "addVehicle": "+ Véhicule",
+    "notifications": "Notifications",
     "tabs": {
       "vehicles": "Véhicules",
       "calendar": "Calendrier",
@@ -189,11 +190,16 @@
     "totalThisYear": "Total {{year}}",
     "interventions": "Interventions",
     "resaleNote": "Les factures jointes sont réunies dans un dossier de revente.",
-    "open": "Ouvrir"
+    "open": "Ouvrir",
+    "reportBreakdown": "Signaler une panne",
+    "updateMileage": "Mettre à jour le kilométrage"
   },
   "settings": {
     "title": "Réglages",
     "preferences": "Préférences",
+    "theme": "Thème",
+    "dark": "Sombre",
+    "light": "Clair",
     "units": "Unités",
     "autoContact": "Contact automatique des garages",
     "voiceFallback": "Appels vocaux si aucun courriel",

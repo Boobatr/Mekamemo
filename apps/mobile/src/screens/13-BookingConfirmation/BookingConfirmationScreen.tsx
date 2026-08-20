@@ -11,11 +11,13 @@ interface BookingConfirmationScreenProps {
   booking?: typeof mockBooking;
   /** Fires ONLY on explicit user tap — nothing above this ever auto-confirms a booking. */
   onConfirm?: (bookingId: string) => void;
+  onBack?: () => void;
 }
 
 export function BookingConfirmationScreen({
   booking = mockBooking,
   onConfirm = () => {},
+  onBack,
 }: BookingConfirmationScreenProps) {
   const { t } = useTranslation();
   const { colors } = useTheme();
@@ -23,6 +25,16 @@ export function BookingConfirmationScreen({
 
   return (
     <Screen>
+      {onBack ? (
+        <Text
+          onPress={onBack}
+          testID="screen-back-button"
+          accessibilityRole="button"
+          style={[textStyles.button, { color: colors.textSecondary, fontSize: 13, marginBottom: spacing.lg }]}
+        >
+          ‹ {t('common.back')}
+        </Text>
+      ) : null}
       <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.sm }]}>
         {booking.taskName.toUpperCase()} · {booking.vehicleLabel}
       </Text>

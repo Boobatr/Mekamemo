@@ -8,9 +8,10 @@ import { useVehicle } from '../../hooks/useVehicles';
 interface MileageReadingContainerProps {
   vehicleId: string;
   onSaved: () => void;
+  onBack?: () => void;
 }
 
-export function MileageReadingContainer({ vehicleId, onSaved }: MileageReadingContainerProps) {
+export function MileageReadingContainer({ vehicleId, onSaved, onBack }: MileageReadingContainerProps) {
   const { data: vehicle } = useVehicle(vehicleId);
   const { data: pace } = usePace(vehicleId);
   const recordReading = useRecordReading(vehicleId);
@@ -18,6 +19,7 @@ export function MileageReadingContainer({ vehicleId, onSaved }: MileageReadingCo
 
   return (
     <MileageReadingScreen
+      onBack={onBack}
       vehicleLabel={vehicle ? `${vehicle.make} ${vehicle.model} ${vehicle.year}` : ''}
       pace={
         pace

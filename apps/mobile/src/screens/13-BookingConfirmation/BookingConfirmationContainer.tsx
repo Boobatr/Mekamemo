@@ -7,11 +7,13 @@ import { useConfirmBooking } from '../../hooks/useBookings';
 interface BookingConfirmationContainerProps {
   quoteRequestId: string;
   onConfirmed: () => void;
+  onBack?: () => void;
 }
 
 export function BookingConfirmationContainer({
   quoteRequestId,
   onConfirmed,
+  onBack,
 }: BookingConfirmationContainerProps) {
   const { data: quoteRequest, isLoading } = useQuoteRequest(quoteRequestId);
   const confirmBooking = useConfirmBooking();
@@ -55,6 +57,7 @@ export function BookingConfirmationContainer({
 
   return (
     <BookingConfirmationScreen
+      onBack={onBack}
       booking={{
         id: pendingBooking?.id ?? '',
         vehicleLabel: '',

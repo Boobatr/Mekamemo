@@ -32,6 +32,16 @@ describe('SettingsScreen', () => {
     expect(onChangeUnits).toHaveBeenCalledWith('mi');
   });
 
+  it('switches theme and forwards the change', async () => {
+    const onChangeTheme = jest.fn();
+    await renderWithProviders(<SettingsScreen themeMode="dark" onChangeTheme={onChangeTheme} />, {
+      withNavigationContainer: false,
+    });
+
+    await fireEvent.press(screen.getByTestId('theme-light'));
+    expect(onChangeTheme).toHaveBeenCalledWith('light');
+  });
+
   it('toggles auto-contact and voice-fallback switches independently', async () => {
     const onToggleAutoContact = jest.fn();
     const onToggleVoiceFallback = jest.fn();

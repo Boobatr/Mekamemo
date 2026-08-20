@@ -56,6 +56,7 @@
     "upcoming30d": "Upcoming 30 d",
     "costThisYear": "Cost {{year}}",
     "addVehicle": "+ Vehicle",
+    "notifications": "Notifications",
     "tabs": {
       "vehicles": "Vehicles",
       "calendar": "Calendar",
@@ -189,11 +190,16 @@
     "totalThisYear": "Total {{year}}",
     "interventions": "Interventions",
     "resaleNote": "Attached invoices are gathered into a resale dossier.",
-    "open": "Open"
+    "open": "Open",
+    "reportBreakdown": "Report a breakdown",
+    "updateMileage": "Update mileage"
   },
   "settings": {
     "title": "Settings",
     "preferences": "Preferences",
+    "theme": "Theme",
+    "dark": "Dark",
+    "light": "Light",
     "units": "Units",
     "autoContact": "Automatic garage contact",
     "voiceFallback": "Voice calls if no email",

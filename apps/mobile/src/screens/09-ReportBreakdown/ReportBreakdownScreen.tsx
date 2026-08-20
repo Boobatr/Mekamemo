@@ -23,6 +23,7 @@ interface ReportBreakdownScreenProps {
   onCaptureVideo?: () => Promise<boolean>;
   onCaptureAudio?: () => Promise<boolean>;
   onAnalyze?: (submission: BreakdownSubmission) => void;
+  onBack?: () => void;
 }
 
 export function ReportBreakdownScreen({
@@ -32,6 +33,7 @@ export function ReportBreakdownScreen({
   onCaptureVideo = async () => true,
   onCaptureAudio = async () => true,
   onAnalyze = () => {},
+  onBack,
 }: ReportBreakdownScreenProps) {
   const { t } = useTranslation();
   const { colors } = useTheme();
@@ -55,6 +57,16 @@ export function ReportBreakdownScreen({
 
   return (
     <Screen>
+      {onBack ? (
+        <Text
+          onPress={onBack}
+          testID="screen-back-button"
+          accessibilityRole="button"
+          style={[textStyles.button, { color: colors.textSecondary, fontSize: 13, marginBottom: spacing.lg }]}
+        >
+          ‹ {t('common.back')}
+        </Text>
+      ) : null}
       <Text style={[textStyles.screenTitle, { color: colors.textPrimary }]}>{t('breakdown.title')}</Text>
       <Text style={[textStyles.body, { color: colors.textSecondary, marginBottom: spacing.md }]}>
         {vehicleLabel} · {odometerKm.toLocaleString('fr-CA')} km
