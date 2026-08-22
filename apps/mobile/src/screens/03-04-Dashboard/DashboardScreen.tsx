@@ -136,7 +136,7 @@ export function DashboardScreen({
                       {vehicle.odometerKm.toLocaleString('fr-CA')} km
                     </Text>
                   </View>
-                  <View style={{ flexDirection: 'row' }}>
+                  <View style={{ flexDirection: 'row', marginBottom: vehicle.progressRatio != null ? spacing.md : 0 }}>
                     <Tag
                       label={vehicle.statusLabel}
                       tone={vehicle.isOverdue ? 'warning' : vehicle.tasksCount > 0 ? 'accent' : 'neutral'}
@@ -145,6 +145,18 @@ export function DashboardScreen({
                       <Tag label={t('dashboard.tasksCount', { count: vehicle.tasksCount })} />
                     ) : null}
                   </View>
+                  {vehicle.progressRatio != null ? (
+                    <View style={{ height: 4, backgroundColor: colors.hairlines[3] }}>
+                      <View
+                        testID={`vehicle-progress-${vehicle.id}`}
+                        style={{
+                          width: `${Math.round(vehicle.progressRatio * 100)}%`,
+                          height: 4,
+                          backgroundColor: colors.accent,
+                        }}
+                      />
+                    </View>
+                  ) : null}
                 </View>
               </View>
             </Card>

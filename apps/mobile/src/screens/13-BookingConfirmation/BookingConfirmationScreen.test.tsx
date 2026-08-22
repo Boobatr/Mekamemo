@@ -33,4 +33,14 @@ describe('BookingConfirmationScreen', () => {
     expect(screen.getByText(/Atelier Rosemont/)).toBeTruthy();
     expect(screen.getByText(/Mécanique Papineau/)).toBeTruthy();
   });
+
+  it('forwards the view-transcripts tap', async () => {
+    const onViewTranscripts = jest.fn();
+    await renderWithProviders(<BookingConfirmationScreen onViewTranscripts={onViewTranscripts} />, {
+      withNavigationContainer: false,
+    });
+
+    await fireEvent.press(screen.getByTestId('view-transcripts-link'));
+    expect(onViewTranscripts).toHaveBeenCalledTimes(1);
+  });
 });

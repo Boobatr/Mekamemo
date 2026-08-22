@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Screen, Card, ScreenHeader, Button } from '../../components';
+import { Screen, Card, ScreenHeader } from '../../components';
 import { useTheme } from '../../theme';
 import { textStyles } from '../../theme/typography';
 import { spacing } from '../../theme/spacing';
@@ -103,10 +103,29 @@ export function HistoryScreen({
         </View>
       ))}
 
-      <Text style={[textStyles.bodySecondary, { color: colors.textMuted, marginBottom: spacing.xl }]}>
-        {t('history.resaleNote')}
-      </Text>
-      <Button label={t('history.open')} testID="open-resale-dossier-button" onPress={onOpenResaleDossier} />
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          borderWidth: 1,
+          borderColor: colors.hairlines[2],
+          padding: spacing.lg,
+          gap: spacing.md,
+        }}
+      >
+        <Text style={[textStyles.bodySecondary, { color: colors.textMuted, flex: 1 }]}>
+          {t('history.resaleNote')}
+        </Text>
+        <Text
+          onPress={onOpenResaleDossier}
+          testID="open-resale-dossier-button"
+          accessibilityRole="button"
+          style={[textStyles.button, { color: colors.accentOnBackground, fontSize: 12, flexShrink: 0 }]}
+        >
+          {t('history.open')}
+        </Text>
+      </View>
     </Screen>
   );
 }

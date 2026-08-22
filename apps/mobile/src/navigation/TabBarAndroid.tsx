@@ -23,7 +23,7 @@ export function TabBarAndroid({ state, descriptors, navigation }: BottomTabBarPr
       style={[
         styles.bar,
         {
-          backgroundColor: colors.mode === 'dark' ? colors.veilBottom : colors.fieldBackground,
+          backgroundColor: colors.mode !== 'light' ? colors.veilBottom : colors.fieldBackground,
           paddingBottom: Math.max(insets.bottom, 12),
         },
       ]}

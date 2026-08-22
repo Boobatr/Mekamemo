@@ -127,9 +127,18 @@ export function ReportBreakdownScreen({
         ))}
       </View>
 
-      <Text style={[textStyles.bodySecondary, { color: colors.textMuted, marginBottom: spacing.xxl }]}>
-        {t('breakdown.urgentNote')}
-      </Text>
+      <View
+        style={{
+          borderWidth: 1,
+          borderColor: colors.hairlines[2],
+          padding: spacing.lg,
+          marginBottom: spacing.xxl,
+        }}
+      >
+        <Text style={[textStyles.bodySecondary, { color: colors.textMuted }]}>
+          {t('breakdown.urgentNote')}
+        </Text>
+      </View>
 
       <Button
         label={t('breakdown.analyze')}

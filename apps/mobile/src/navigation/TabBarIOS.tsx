@@ -23,7 +23,7 @@ export function TabBarIOS({ state, descriptors, navigation }: BottomTabBarProps)
       style={[
         styles.bar,
         {
-          backgroundColor: colors.mode === 'dark' ? colors.veilBottom : colors.screenBackground,
+          backgroundColor: colors.mode !== 'light' ? colors.veilBottom : colors.screenBackground,
           borderTopColor: colors.hairlines[2],
           paddingBottom: Math.max(insets.bottom, 8),
         },

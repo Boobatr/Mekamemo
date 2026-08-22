@@ -11,12 +11,14 @@ interface BookingConfirmationScreenProps {
   booking?: typeof mockBooking;
   /** Fires ONLY on explicit user tap — nothing above this ever auto-confirms a booking. */
   onConfirm?: (bookingId: string) => void;
+  onViewTranscripts?: () => void;
   onBack?: () => void;
 }
 
 export function BookingConfirmationScreen({
   booking = mockBooking,
   onConfirm = () => {},
+  onViewTranscripts = () => {},
   onBack,
 }: BookingConfirmationScreenProps) {
   const { t } = useTranslation();
@@ -43,29 +45,41 @@ export function BookingConfirmationScreen({
       </Text>
 
       <Card withMarks={false}>
-        <Text style={[textStyles.body, { color: colors.textPrimary, marginBottom: spacing.xs }]}>
-          {t('booking.garagesRetained', { count: booking.garagesRetainedCount })}
-        </Text>
-        <Text style={[textStyles.bodySecondary, { color: colors.textMuted, marginBottom: spacing.lg }]}>
-          {t('booking.filteredNote')}
-        </Text>
+        <TimelineStep done>
+          <Text style={[textStyles.body, { color: colors.textPrimary, marginBottom: spacing.xs }]}>
+            {t('booking.garagesRetained', { count: booking.garagesRetainedCount })}
+          </Text>
+          <Text style={[textStyles.bodySecondary, { color: colors.textMuted }]}>
+            {t('booking.filteredNote')}
+          </Text>
+        </TimelineStep>
 
-        <Text style={[textStyles.body, { color: colors.textPrimary, marginBottom: spacing.xs }]}>
-          {t('booking.emailsSent', { emails: booking.emailsSent, calls: booking.voiceCalls })}
-        </Text>
-        <Text style={[textStyles.bodySecondary, { color: colors.textMuted, marginBottom: spacing.lg }]}>
-          {t('booking.onBehalfNote')}
-        </Text>
+        <TimelineStep done>
+          <Text style={[textStyles.body, { color: colors.textPrimary, marginBottom: spacing.xs }]}>
+            {t('booking.emailsSent', { emails: booking.emailsSent, calls: booking.voiceCalls })}
+          </Text>
+          <Text style={[textStyles.bodySecondary, { color: colors.textMuted }]}>
+            {t('booking.onBehalfNote')}{' '}
+            <Text onPress={onViewTranscripts} testID="view-transcripts-link" style={{ color: colors.accentOnBackground }}>
+              {t('booking.viewTranscripts')}
+            </Text>
+          </Text>
+        </TimelineStep>
 
-        <Text style={[textStyles.body, { color: colors.textPrimary, marginBottom: spacing.xs }]}>
-          {t('booking.responsesReceived', { count: booking.responsesReceivedCount })}
-        </Text>
-        <Text style={[textStyles.bodySecondary, { color: colors.textMuted, marginBottom: spacing.xs }]}>
-          {t('booking.lastReceived', { minutes: booking.lastReceivedMinutesAgo })}
-        </Text>
-        <Text style={[textStyles.button, { color: colors.accentOnBackground, fontSize: 12 }]}>
-          {t('booking.awaitingConfirmation')}
-        </Text>
+        <TimelineStep done>
+          <Text style={[textStyles.body, { color: colors.textPrimary, marginBottom: spacing.xs }]}>
+            {t('booking.responsesReceived', { count: booking.responsesReceivedCount })}
+          </Text>
+          <Text style={[textStyles.bodySecondary, { color: colors.textMuted }]}>
+            {t('booking.lastReceived', { minutes: booking.lastReceivedMinutesAgo })}
+          </Text>
+        </TimelineStep>
+
+        <TimelineStep>
+          <Text style={[textStyles.button, { color: colors.accentOnBackground, fontSize: 12 }]}>
+            {t('booking.awaitingConfirmation')}
+          </Text>
+        </TimelineStep>
       </Card>
 
       <Card accentPanel testID="best-option-panel">
@@ -76,8 +90,8 @@ export function BookingConfirmationScreen({
           {best.dateLabel}
         </Text>
         <Text style={[textStyles.body, { color: colors.textOnAccentTint, marginBottom: spacing.lg }]}>
-          {best.garageName} · {best.distanceKm} km
-          {best.commuteMinutes != null ? ` · ${best.commuteMinutes} min de trajet` : ''} ·{' '}
+          {best.garageName} · {best.distanceKm} km ·{' '}
+          {best.commuteMinutes != null ? `${best.commuteMinutes} min` : '—'} {t('booking.commuteSuffix')} ·{' '}
           {(best.priceCents / 100).toFixed(0)} $ · durée {best.durationMinutes} min
         </Text>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -102,7 +116,18 @@ export function BookingConfirmationScreen({
         {t('booking.otherSlots')}
       </Text>
       {booking.otherSlots.map((slot) => (
-        <View key={slot.garageId} style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: spacing.md }}>
+        <View
+          key={slot.garageId}
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderWidth: 1,
+            borderColor: colors.hairlines[2],
+            padding: spacing.lg,
+            marginBottom: spacing.md,
+          }}
+        >
           <Text style={[textStyles.body, { color: colors.textPrimary }]}>
             {slot.garageName} · {slot.dateLabel}
           </Text>
@@ -123,5 +148,26 @@ export function BookingConfirmationScreen({
         {t('booking.confirmNote')}
       </Text>
     </Screen>
+  );
+}
+
+function TimelineStep({ done = false, children }: { done?: boolean; children: React.ReactNode }) {
+  const { colors } = useTheme();
+  return (
+    <View style={{ flexDirection: 'row', marginBottom: spacing.lg }}>
+      <View
+        style={{
+          width: 9,
+          height: 9,
+          borderRadius: 5,
+          marginTop: 5,
+          marginRight: spacing.md,
+          backgroundColor: done ? colors.accent : 'transparent',
+          borderWidth: done ? 0 : 1.5,
+          borderColor: colors.accent,
+        }}
+      />
+      <View style={{ flex: 1 }}>{children}</View>
+    </View>
   );
 }

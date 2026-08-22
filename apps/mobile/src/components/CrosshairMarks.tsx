@@ -8,7 +8,7 @@ import { useTheme } from '../theme';
  */
 export function CrosshairMarks() {
   const { colors } = useTheme();
-  const color = colors.mode === 'dark' ? colors.accentOnBackground : colors.accent;
+  const color = colors.mode !== 'light' ? colors.accentOnBackground : colors.accent;
 
   return (
     <>

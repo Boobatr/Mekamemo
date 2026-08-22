@@ -76,22 +76,37 @@ export function DashboardContainer({
             : t('dashboard.tabs.vehicles') === 'Vehicles'
               ? 'UP TO DATE'
               : 'À JOUR';
+        const progressTask = overdue ?? nextTask;
+        const currentKm = paceQueries[i]?.data?.currentKm ?? 0;
+        const progressRatio =
+          overdue
+            ? 1
+            : progressTask?.intervalKm && progressTask.projection?.projectedDueKm
+              ? Math.min(
+                  1,
+                  Math.max(
+                    0,
+                    1 - (progressTask.projection.projectedDueKm - currentKm) / progressTask.intervalKm,
+                  ),
+                )
+              : null;
         return {
           id: vehicle.id,
           make: vehicle.make,
           model: vehicle.model,
           year: vehicle.year,
           engine: vehicle.engine,
-          odometerKm: paceQueries[i]?.data?.currentKm ?? 0,
+          odometerKm: currentKm,
           usageType: vehicle.usageType,
           statusLabel,
           isOverdue: Boolean(overdue),
+          progressRatio,
           tasksCount: tasks.filter((task) => task.status === 'upcoming' || task.status === 'overdue')
             .length,
           photoUrl: vehicle.photoUrl,
         };
       }),
-    [vehicles, taskQueries, t],
+    [vehicles, taskQueries, paceQueries, t],
   );
 
   const allTasks = taskQueries.flatMap((q) => q.data ?? []);

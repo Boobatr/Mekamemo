@@ -74,10 +74,16 @@ export function DiagnosisScreen({
       <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.md }]}>
         {t('diagnosis.otherLeads')}
       </Text>
-      {diagnosis.secondaryCauses.map((cause) => (
+      {diagnosis.secondaryCauses.map((cause, index) => (
         <View
           key={cause.cause}
-          style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: spacing.md }}
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            paddingVertical: spacing.md,
+            borderBottomWidth: index < diagnosis.secondaryCauses.length - 1 ? 1 : 0,
+            borderBottomColor: colors.hairlines[3],
+          }}
         >
           <Text style={[textStyles.body, { color: colors.textPrimary }]}>{cause.cause}</Text>
           <Text style={[textStyles.bodySecondary, { color: colors.textTertiary }]}>
@@ -86,14 +92,14 @@ export function DiagnosisScreen({
         </View>
       ))}
 
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: spacing.xxl }}>
-        <View>
+      <View style={{ flexDirection: 'row', marginVertical: spacing.xxl }}>
+        <View style={{ flex: 1, borderWidth: 1, borderColor: colors.hairlines[2], padding: spacing.lg, marginRight: spacing.md }}>
           <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.xs }]}>
             {t('diagnosis.recommendedDelay')}
           </Text>
           <Text style={[textStyles.cardTitle, { color: colors.textPrimary }]}>{diagnosis.recommendedDelay}</Text>
         </View>
-        <View>
+        <View style={{ flex: 1, borderWidth: 1, borderColor: colors.hairlines[2], padding: spacing.lg }}>
           <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.xs }]}>
             {t('diagnosis.estimatedCost')}
           </Text>

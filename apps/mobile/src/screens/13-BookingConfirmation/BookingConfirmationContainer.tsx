@@ -16,7 +16,7 @@ export function BookingConfirmationContainer({
   onConfirmed,
   onBack,
 }: BookingConfirmationContainerProps) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const locale = i18n.language === 'fr' ? 'fr-CA' : 'en-CA';
   const { data: quoteRequest, isLoading } = useQuoteRequest(quoteRequestId);
   const confirmBooking = useConfirmBooking();
@@ -34,7 +34,7 @@ export function BookingConfirmationContainer({
           garage: { name: string };
           contactMethod: string;
           sentAt: string | null;
-          responses: unknown[];
+          responses: { rawContent: string }[];
         }[];
         bookings: {
           id: string;
@@ -111,6 +111,13 @@ export function BookingConfirmationContainer({
         } catch (err) {
           Alert.alert('Erreur', err instanceof Error ? err.message : 'Une erreur est survenue.');
         }
+      }}
+      onViewTranscripts={() => {
+        const transcripts = qr.garages.flatMap((g) => g.responses.map((r) => `${g.garage.name}:\n${r.rawContent}`));
+        Alert.alert(
+          t('booking.viewTranscripts'),
+          transcripts.length > 0 ? transcripts.join('\n\n') : t('booking.noTranscriptsYet'),
+        );
       }}
     />
   );

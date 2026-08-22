@@ -24,7 +24,7 @@ export function AndroidAppBar({ title, onMenuPress, onNotificationsPress }: Andr
         {
           height: screenGeometry.androidAppBar + insets.top,
           paddingTop: insets.top,
-          backgroundColor: colors.mode === 'dark' ? colors.veilTop : colors.screenBackground,
+          backgroundColor: colors.mode !== 'light' ? colors.veilTop : colors.screenBackground,
         },
       ]}
     >

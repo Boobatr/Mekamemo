@@ -53,29 +53,38 @@ export function GarageProfileScreen({
       <Text style={[textStyles.onboardingTitle, { color: colors.textPrimary, marginBottom: spacing.sm }]}>
         {garage.name}
       </Text>
-      <Text style={[textStyles.body, { color: colors.textSecondary, marginBottom: spacing.lg }]}>
-        {garage.rating} ★ · {garage.reviewCount} avis
-      </Text>
-      <View style={{ flexDirection: 'row', marginBottom: spacing.xxl }}>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: spacing.xxl }}>
+        <Tag label={`${garage.rating} ★ · ${garage.reviewCount} ${t('garageProfile.reviews')}`} tone="accent" />
         {garage.certifiedCaa ? <Tag label={t('garageProfile.certified')} tone="accent" /> : null}
         {garage.openUntil ? <Tag label={`${t('garageProfile.open')} · ${garage.openUntil}`} /> : null}
       </View>
 
-      {garage.waitDays != null || garage.commuteMinutes != null || garage.warrantyMonths != null ? (
-        <Card withMarks={false}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            {garage.waitDays != null ? (
-              <Stat label={t('garageProfile.wait')} value={`${garage.waitDays} j`} />
-            ) : null}
-            {garage.commuteMinutes != null ? (
-              <Stat label={t('garageProfile.commute')} value={`${garage.commuteMinutes} min`} />
-            ) : null}
-            {garage.warrantyMonths != null ? (
-              <Stat label={t('garageProfile.warranty')} value={`${garage.warrantyMonths} m`} />
-            ) : null}
-          </View>
-        </Card>
-      ) : null}
+      <Card withMarks={false} style={{ padding: 0, overflow: 'hidden' }}>
+        <View style={{ flexDirection: 'row' }}>
+          <StatCell
+            label={t('garageProfile.price')}
+            value={garage.priceCents ? `${(garage.priceCents / 100).toFixed(0)} $` : '—'}
+            border={colors.hairlines[3]}
+          />
+          <StatCell
+            label={t('garageProfile.wait')}
+            value={garage.waitDays != null ? `${garage.waitDays} j` : '—'}
+            border={colors.hairlines[3]}
+          />
+        </View>
+        <View style={{ flexDirection: 'row', borderTopWidth: 1, borderTopColor: colors.hairlines[3] }}>
+          <StatCell
+            label={t('garageProfile.commute')}
+            value={garage.commuteMinutes != null ? `${garage.commuteMinutes} min` : '—'}
+            border={colors.hairlines[3]}
+          />
+          <StatCell
+            label={t('garageProfile.warranty')}
+            value={garage.warrantyMonths != null ? `${garage.warrantyMonths} m` : '—'}
+          />
+        </View>
+      </Card>
+      <View style={{ marginBottom: spacing.xxl }} />
 
       <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.md }]}>
         {t('garageProfile.relevantServices')}
@@ -114,10 +123,17 @@ export function GarageProfileScreen({
   );
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
+function StatCell({ label, value, border }: { label: string; value: string; border?: string }) {
   const { colors } = useTheme();
   return (
-    <View>
+    <View
+      style={{
+        flex: 1,
+        padding: spacing.lg,
+        borderRightWidth: border ? 1 : 0,
+        borderRightColor: border,
+      }}
+    >
       <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.xs, fontSize: 10 }]}>
         {label}
       </Text>

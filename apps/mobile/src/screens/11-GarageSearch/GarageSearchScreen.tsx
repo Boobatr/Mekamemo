@@ -55,15 +55,19 @@ export function GarageSearchScreen({
         {t('garageSearch.resultsNear', { count: results.length, radius: radiusKm }).toUpperCase()}
       </Text>
 
-      <Card withMarks={false}>
-        <Text style={[textStyles.body, { color: colors.textPrimary }]}>{userQuery}</Text>
-      </Card>
+      <View style={{ alignItems: 'flex-end', marginBottom: spacing.lg }}>
+        <View style={{ maxWidth: '82%', backgroundColor: colors.accentPanelSolid, padding: spacing.lg }}>
+          <Text style={[textStyles.body, { color: '#ffffff' }]}>{userQuery}</Text>
+        </View>
+      </View>
 
-      <View style={{ marginBottom: spacing.xl }}>
-        <Text style={[textStyles.sectionLabel, { color: colors.accentOnBackground, marginBottom: spacing.sm }]}>
-          {t('garageSearch.assistant')}
-        </Text>
-        <Text style={[textStyles.body, { color: colors.textSecondary }]}>{assistantSummary}</Text>
+      <View style={{ alignItems: 'flex-start', marginBottom: spacing.xl }}>
+        <View style={{ maxWidth: '88%', borderWidth: 1, borderColor: colors.hairlines[2], padding: spacing.lg }}>
+          <Text style={[textStyles.sectionLabel, { color: colors.accentOnBackground, marginBottom: spacing.sm }]}>
+            {t('garageSearch.assistant')}
+          </Text>
+          <Text style={[textStyles.body, { color: colors.textSecondary }]}>{assistantSummary}</Text>
+        </View>
       </View>
 
       {results.map((garage) => (
@@ -78,16 +82,20 @@ export function GarageSearchScreen({
           activeOpacity={0.85}
         >
           <Card style={garage.id === highlightedId ? { borderColor: colors.accent } : undefined}>
-            <Text style={[textStyles.cardTitle, { color: colors.textPrimary, marginBottom: spacing.xs }]}>
-              {garage.name}
-            </Text>
-            <Text style={[textStyles.bodySecondary, { color: colors.textSecondary }]}>
-              {garage.distanceKm} km · {garage.rating} ★ · {(garage.priceCents / 100).toFixed(0)} $ ·{' '}
-              {garage.contactMethod === 'email' ? 'courriel' : 'téléphone'}
-            </Text>
-            <Text style={[textStyles.button, { color: colors.accentOnBackground, fontSize: 12, marginTop: spacing.sm }]}>
-              {garage.slotLabel}
-            </Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: spacing.md }}>
+              <View style={{ flex: 1 }}>
+                <Text style={[textStyles.cardTitle, { color: colors.textPrimary, marginBottom: spacing.xs }]}>
+                  {garage.name}
+                </Text>
+                <Text style={[textStyles.bodySecondary, { color: colors.textSecondary }]}>
+                  {garage.distanceKm} km · {garage.rating} ★ · {(garage.priceCents / 100).toFixed(0)} $ ·{' '}
+                  {garage.contactMethod === 'email' ? 'courriel' : 'téléphone'}
+                </Text>
+              </View>
+              <Text style={[textStyles.button, { color: colors.accentOnBackground, fontSize: 12, flexShrink: 0 }]}>
+                {garage.slotLabel}
+              </Text>
+            </View>
           </Card>
         </TouchableOpacity>
       ))}

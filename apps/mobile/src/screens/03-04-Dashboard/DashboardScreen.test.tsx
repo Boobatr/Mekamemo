@@ -80,4 +80,13 @@ describe('DashboardScreen', () => {
 
     expect(screen.getByText('+ Véhicule')).toBeTruthy();
   });
+
+  it('renders a completion bar for a vehicle with a progress ratio, none for one without', async () => {
+    await renderWithProviders(<DashboardScreen />, { withNavigationContainer: false });
+
+    // vehicle-rav4 has progressRatio: 0.72 in mock data.
+    expect(screen.getByTestId('vehicle-progress-vehicle-rav4')).toBeTruthy();
+    // vehicle-transit has no progressRatio (up to date, no tracked task).
+    expect(screen.queryByTestId('vehicle-progress-vehicle-transit')).toBeNull();
+  });
 });

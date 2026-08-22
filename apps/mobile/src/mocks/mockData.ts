@@ -28,6 +28,7 @@ export const mockVehicles = [
     statusLabel: 'VIDANGE DANS 9 J',
     tasksCount: 4,
     isOverdue: false,
+    progressRatio: 0.72 as number | null,
     photoUrl: null,
   },
   {
