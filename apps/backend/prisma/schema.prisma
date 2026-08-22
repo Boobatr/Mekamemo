@@ -318,6 +318,7 @@ model Diagnosis {
   reportId         String     @unique
   report           BreakdownReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
   primaryCause     String
+  explanation      String   @default("")
   confidence       Confidence
   secondaryCauses  Json
   recommendedDelay String
@@ -350,6 +351,7 @@ model Garage {
 
   quoteRequestGarages QuoteRequestGarage[]
   bookings            Booking[]
+  serviceHistoryEntries ServiceHistoryEntry[]
 
   @@map("garages")
 }
@@ -432,6 +434,7 @@ model ServiceHistoryEntry {
   performedAt      DateTime
   mileageAtServiceKm Int
   garageId         String?
+  garage           Garage?  @relation(fields: [garageId], references: [id], onDelete: SetNull)
   costCents        Int
   createdAt        DateTime @default(now())
 

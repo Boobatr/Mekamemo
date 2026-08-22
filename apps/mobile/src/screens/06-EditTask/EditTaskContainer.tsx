@@ -1,5 +1,6 @@
 import React from 'react';
 import { Alert } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { EditTaskScreen, EditableTask } from './EditTaskScreen';
 import { useDeleteTask, useUpdateTask } from '../../hooks/useMaintenance';
 import { MaintenanceTask } from '../../services/maintenance';
@@ -12,7 +13,18 @@ interface EditTaskContainerProps {
   onSaved: () => void;
 }
 
-function toEditable(task: MaintenanceTask): EditableTask {
+function toEditable(task: MaintenanceTask, language: 'fr' | 'en', unknownDateLabel: string): EditableTask {
+  const dateLabel = task.projection?.projectedDueDate
+    ? new Date(task.projection.projectedDueDate).toLocaleDateString(language === 'fr' ? 'fr-CA' : 'en-CA', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      })
+    : unknownDateLabel;
+  const kmLabel = task.projection?.projectedDueKm
+    ? ` · ${task.projection.projectedDueKm.toLocaleString(language === 'fr' ? 'fr-CA' : 'en-CA')} km`
+    : '';
+
   return {
     id: task.id,
     name: task.name,
@@ -23,25 +35,20 @@ function toEditable(task: MaintenanceTask): EditableTask {
     intervalKm: task.intervalKm ?? 8000,
     intervalMonths: task.intervalMonths ?? 6,
     priority: task.priority,
-    nextDueLabel: task.projection?.projectedDueDate
-      ? new Date(task.projection.projectedDueDate).toLocaleDateString('fr-CA', {
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric',
-        })
-      : 'À déterminer',
+    nextDueLabel: `${dateLabel}${kmLabel}`,
     notesForGarage: task.notesForGarage ?? '',
     groupWithTireRotation: Boolean(task.groupWithTaskId),
   };
 }
 
 export function EditTaskContainer({ task, vehicleId, onBack, onDeleted, onSaved }: EditTaskContainerProps) {
+  const { t, i18n } = useTranslation();
   const updateTask = useUpdateTask(vehicleId);
   const deleteTask = useDeleteTask(vehicleId);
 
   return (
     <EditTaskScreen
-      task={toEditable(task)}
+      task={toEditable(task, i18n.language as 'fr' | 'en', t('taskEdit.dateUnknown'))}
       onBack={onBack}
       onDelete={async () => {
         try {

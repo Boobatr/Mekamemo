@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Bell, Plus } from 'lucide-react-native';
 import { Screen, Card, Tag } from '../../components';
@@ -121,19 +121,31 @@ export function DashboardScreen({
             activeOpacity={0.85}
           >
             <Card>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: spacing.md }}>
-                <Text style={[textStyles.cardTitle, { color: colors.textPrimary }]}>
-                  {vehicle.make} {vehicle.model} {vehicle.year}
-                </Text>
-                <Text style={[textStyles.body, { color: colors.textSecondary }]}>
-                  {vehicle.odometerKm.toLocaleString('fr-CA')} km
-                </Text>
-              </View>
-              <View style={{ flexDirection: 'row' }}>
-                <Tag label={vehicle.statusLabel} tone={vehicle.tasksCount > 0 ? 'neutral' : 'accent'} />
-                {vehicle.tasksCount > 0 ? (
-                  <Tag label={t('dashboard.tasksCount', { count: vehicle.tasksCount })} />
-                ) : null}
+              <View style={{ flexDirection: 'row', gap: spacing.lg }}>
+                {vehicle.photoUrl ? (
+                  <Image source={{ uri: vehicle.photoUrl }} style={styles.vehiclePhoto} />
+                ) : (
+                  <View style={[styles.vehiclePhoto, { borderColor: colors.hairlines[2], borderWidth: 1 }]} />
+                )}
+                <View style={{ flex: 1 }}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: spacing.md }}>
+                    <Text style={[textStyles.cardTitle, { color: colors.textPrimary }]}>
+                      {vehicle.make} {vehicle.model} {vehicle.year}
+                    </Text>
+                    <Text style={[textStyles.body, { color: colors.textSecondary }]}>
+                      {vehicle.odometerKm.toLocaleString('fr-CA')} km
+                    </Text>
+                  </View>
+                  <View style={{ flexDirection: 'row' }}>
+                    <Tag
+                      label={vehicle.statusLabel}
+                      tone={vehicle.isOverdue ? 'warning' : vehicle.tasksCount > 0 ? 'accent' : 'neutral'}
+                    />
+                    {vehicle.tasksCount > 0 ? (
+                      <Tag label={t('dashboard.tasksCount', { count: vehicle.tasksCount })} />
+                    ) : null}
+                  </View>
+                </View>
               </View>
             </Card>
           </TouchableOpacity>
@@ -150,7 +162,7 @@ export function DashboardScreen({
           </View>
         </Card>
       </Screen>
-      <FabAndroid onPress={onAddVehicle} testID="fab-add-vehicle" />
+      <FabAndroid onPress={onAddVehicle} testID="fab-add-vehicle" label={t('dashboard.addVehicle')} />
     </View>
   );
 }
@@ -173,5 +185,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-end',
     marginBottom: spacing.xxl,
+  },
+  vehiclePhoto: {
+    width: 60,
+    height: 60,
   },
 });

@@ -1,5 +1,6 @@
 import React from 'react';
 import { ActivityIndicator, Alert, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { BookingConfirmationScreen } from './BookingConfirmationScreen';
 import { useQuoteRequest } from '../../hooks/useGarages';
 import { useConfirmBooking } from '../../hooks/useBookings';
@@ -15,12 +16,19 @@ export function BookingConfirmationContainer({
   onConfirmed,
   onBack,
 }: BookingConfirmationContainerProps) {
+  const { i18n } = useTranslation();
+  const locale = i18n.language === 'fr' ? 'fr-CA' : 'en-CA';
   const { data: quoteRequest, isLoading } = useQuoteRequest(quoteRequestId);
   const confirmBooking = useConfirmBooking();
 
   const qr = quoteRequest as
     | {
         vehicleId: string;
+        taskName: string | null;
+        vehicleLabel: string | null;
+        distanceToBookingKm: number | null;
+        confirmedByChannel: 'email' | 'voice' | null;
+        otherSlots: { garageId: string; garageName: string; distanceKm: number; priceCents: number | null; startsAt: string }[];
         garages: {
           garageId: string;
           garage: { name: string };
@@ -60,8 +68,8 @@ export function BookingConfirmationContainer({
       onBack={onBack}
       booking={{
         id: pendingBooking?.id ?? '',
-        vehicleLabel: '',
-        taskName: '',
+        vehicleLabel: qr.vehicleLabel ?? '',
+        taskName: qr.taskName ?? '',
         garagesRetainedCount: qr.garages.length,
         emailsSent,
         voiceCalls,
@@ -71,22 +79,29 @@ export function BookingConfirmationContainer({
           ? {
               garageId: pendingBooking.garageId,
               garageName: bestGarage?.garage.name ?? '',
-              dateLabel: new Date(pendingBooking.confirmedSlotAt).toLocaleString('fr-CA', {
+              dateLabel: new Date(pendingBooking.confirmedSlotAt).toLocaleString(locale, {
                 weekday: 'long',
                 day: 'numeric',
                 month: 'long',
                 hour: '2-digit',
                 minute: '2-digit',
               }),
-              distanceKm: 0,
-              commuteMinutes: 0,
+              distanceKm: qr.distanceToBookingKm ?? 0,
+              commuteMinutes: null,
               priceCents: pendingBooking.priceCents,
               durationMinutes: pendingBooking.durationMinutes,
-              confirmedByChannel: '',
+              confirmedByChannel:
+                qr.confirmedByChannel === 'voice' ? 'Téléphone' : qr.confirmedByChannel === 'email' ? 'Courriel' : '',
               cancellationHours: 24,
             }
           : ({} as never),
-        otherSlots: [],
+        otherSlots: qr.otherSlots.map((s) => ({
+          garageId: s.garageId,
+          garageName: s.garageName,
+          dateLabel: new Date(s.startsAt).toLocaleString(locale, { weekday: 'short', hour: '2-digit', minute: '2-digit' }),
+          distanceKm: s.distanceKm,
+          priceCents: s.priceCents ?? 0,
+        })),
       }}
       onConfirm={async () => {
         if (!pendingBooking) return;

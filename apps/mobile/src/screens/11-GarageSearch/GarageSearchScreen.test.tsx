@@ -46,4 +46,17 @@ describe('GarageSearchScreen', () => {
     await fireEvent.press(screen.getByTestId('garage-search-send'));
     expect(onSendQuery).not.toHaveBeenCalled();
   });
+
+  it('renders the map with a pin per garage and highlights on tap', async () => {
+    await renderWithProviders(<GarageSearchScreen />, { withNavigationContainer: false });
+
+    expect(screen.getByTestId('garage-map')).toBeTruthy();
+    expect(screen.getByTestId('garage-pin-garage-precision')).toBeTruthy();
+    expect(screen.getByTestId('garage-pin-garage-rosemont')).toBeTruthy();
+    expect(screen.getByTestId('garage-pin-garage-papineau')).toBeTruthy();
+
+    await fireEvent.press(screen.getByTestId('garage-pin-garage-rosemont'));
+    // Tapping a pin highlights the matching result card without navigating away.
+    expect(screen.getByText('Atelier Rosemont')).toBeTruthy();
+  });
 });

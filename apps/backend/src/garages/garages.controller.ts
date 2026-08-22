@@ -19,7 +19,7 @@ export class GaragesController {
   async search(@CurrentUser() user: AuthenticatedUser, @Query() dto: SearchGaragesDto) {
     const profile = await this.prisma.user.findUniqueOrThrow({ where: { id: user.id } });
     const specialty = extractSpecialtyKeyword(dto.query);
-    const results = await this.garagesService.searchNearPostalCode(
+    const { origin, results } = await this.garagesService.searchNearPostalCode(
       profile.postalCode,
       profile.searchRadiusKm,
       specialty,
@@ -27,6 +27,7 @@ export class GaragesController {
 
     return {
       assistantSummary: buildFallbackSummary(results, profile.searchRadiusKm, profile.language),
+      origin,
       results,
     };
   }

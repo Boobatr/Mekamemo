@@ -27,6 +27,7 @@ export const mockVehicles = [
     usageType: 'mixed' as const,
     statusLabel: 'VIDANGE DANS 9 J',
     tasksCount: 4,
+    isOverdue: false,
     photoUrl: null,
   },
   {
@@ -39,6 +40,7 @@ export const mockVehicles = [
     usageType: 'mixed' as const,
     statusLabel: 'FREINS EN RETARD',
     tasksCount: 6,
+    isOverdue: true,
     photoUrl: null,
   },
   {
@@ -51,6 +53,7 @@ export const mockVehicles = [
     usageType: 'highway' as const,
     statusLabel: 'À JOUR',
     tasksCount: 0,
+    isOverdue: false,
     photoUrl: null,
   },
 ];
@@ -207,6 +210,8 @@ export interface MockGarage {
   name: string;
   neighbourhood: string;
   distanceKm: number;
+  lat: number;
+  lng: number;
   rating: number;
   reviewCount: number;
   priceCents: number;
@@ -221,12 +226,16 @@ export interface MockGarage {
   email?: string;
 }
 
+export const mockUserLocation = { lat: 45.54, lng: -73.57 };
+
 export const mockGarages: MockGarage[] = [
   {
     id: 'garage-precision',
     name: 'Garage Précision',
     neighbourhood: 'Rosemont',
     distanceKm: 2.4,
+    lat: 45.548,
+    lng: -73.578,
     rating: 4.8,
     reviewCount: 212,
     priceCents: 9500,
@@ -251,6 +260,8 @@ export const mockGarages: MockGarage[] = [
     name: 'Atelier Rosemont',
     neighbourhood: 'Rosemont',
     distanceKm: 3.1,
+    lat: 45.552,
+    lng: -73.559,
     rating: 4.6,
     reviewCount: 140,
     priceCents: 8900,
@@ -262,6 +273,8 @@ export const mockGarages: MockGarage[] = [
     name: 'Mécanique Papineau',
     neighbourhood: 'Papineau',
     distanceKm: 3.8,
+    lat: 45.529,
+    lng: -73.565,
     rating: 4.4,
     reviewCount: 88,
     priceCents: 11000,
@@ -284,7 +297,7 @@ export const mockBooking = {
     garageName: 'Garage Précision',
     dateLabel: 'Samedi 15 août · 9:00',
     distanceKm: 2.4,
-    commuteMinutes: 7,
+    commuteMinutes: 7 as number | null,
     priceCents: 9500,
     durationMinutes: 45,
     confirmedByChannel: 'Courriel',
@@ -296,7 +309,23 @@ export const mockBooking = {
   ],
 };
 
-export const mockHistory = {
+export interface MockHistoryEntry {
+  id: string;
+  name: string;
+  dateLabel: string;
+  mileageKm: number;
+  garageName: string | null;
+  costCents: number;
+}
+
+export interface MockHistory {
+  vehicleLabel: string;
+  totalThisYearCents: number;
+  interventionsCount: number;
+  entriesByYear: { year: number; entries: MockHistoryEntry[] }[];
+}
+
+export const mockHistory: MockHistory = {
   vehicleLabel: 'TOYOTA RAV4 2021',
   totalThisYearCents: 74200,
   interventionsCount: 6,

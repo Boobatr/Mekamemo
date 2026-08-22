@@ -18,9 +18,20 @@ export class HistoryService {
     await this.getOwnedVehicle(userId, vehicleId);
     return this.prisma.serviceHistoryEntry.findMany({
       where: { vehicleId },
-      include: { invoices: true },
+      include: { invoices: true, garage: { select: { name: true } } },
       orderBy: { performedAt: 'desc' },
     });
+  }
+
+  async yearSummaryForVehicle(userId: string, vehicleId: string) {
+    await this.getOwnedVehicle(userId, vehicleId);
+    const yearStart = new Date(new Date().getFullYear(), 0, 1);
+    const { _sum, _count } = await this.prisma.serviceHistoryEntry.aggregate({
+      where: { vehicleId, performedAt: { gte: yearStart } },
+      _sum: { costCents: true },
+      _count: true,
+    });
+    return { totalThisYearCents: _sum.costCents ?? 0, interventionsCount: _count };
   }
 
   async create(userId: string, vehicleId: string, dto: CreateHistoryEntryDto) {

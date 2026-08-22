@@ -73,4 +73,11 @@ describe('DashboardScreen', () => {
     await fireEvent.press(screen.getByTestId('open-notifications'));
     expect(onOpenNotifications).toHaveBeenCalledTimes(1);
   });
+
+  it('labels the Android FAB', async () => {
+    setPlatform('android');
+    await renderWithProviders(<DashboardScreen />, { withNavigationContainer: false });
+
+    expect(screen.getByText('+ Véhicule')).toBeTruthy();
+  });
 });

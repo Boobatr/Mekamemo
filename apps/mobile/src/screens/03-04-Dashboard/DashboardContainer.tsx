@@ -6,6 +6,8 @@ import { maintenanceKeys } from '../../hooks/useMaintenance';
 import { listMaintenanceTasks, MaintenanceTask } from '../../services/maintenance';
 import { mileageKeys } from '../../hooks/useMileage';
 import { getPace } from '../../services/mileage';
+import { historyKeys } from '../../hooks/useHistory';
+import { getHistorySummary } from '../../services/history';
 import { useTranslation } from 'react-i18next';
 
 interface DashboardContainerProps {
@@ -53,6 +55,14 @@ export function DashboardContainer({
     })),
   });
 
+  const historySummaryQueries = useQueries({
+    queries: vehicles.map((v) => ({
+      queryKey: historyKeys.summary(v.id),
+      queryFn: () => getHistorySummary(v.id),
+      enabled: Boolean(v.id),
+    })),
+  });
+
   const vehiclesWithStatus = useMemo(
     () =>
       vehicles.map((vehicle, i) => {
@@ -75,6 +85,7 @@ export function DashboardContainer({
           odometerKm: paceQueries[i]?.data?.currentKm ?? 0,
           usageType: vehicle.usageType,
           statusLabel,
+          isOverdue: Boolean(overdue),
           tasksCount: tasks.filter((task) => task.status === 'upcoming' || task.status === 'overdue')
             .length,
           photoUrl: vehicle.photoUrl,
@@ -105,6 +116,11 @@ export function DashboardContainer({
     return days >= 0 && days <= 30;
   }).length;
 
+  const costThisYearCents = historySummaryQueries.reduce(
+    (sum, q) => sum + (q.data?.totalThisYearCents ?? 0),
+    0,
+  );
+
   return (
     <DashboardScreen
       userName={userName}
@@ -115,7 +131,7 @@ export function DashboardContainer({
         vehicleLabel: globalNextVehicle ? `${globalNextVehicle.make} ${globalNextVehicle.model}` : '',
         daysUntilDue: daysUntil,
       }}
-      fleetSummary={{ vehiclesCount: vehicles.length, upcoming30d, costThisYearCents: 0 }}
+      fleetSummary={{ vehiclesCount: vehicles.length, upcoming30d, costThisYearCents }}
       onSelectVehicle={onSelectVehicle}
       onAddVehicle={onAddVehicle}
       onOpenNotifications={onOpenNotifications}

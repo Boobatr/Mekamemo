@@ -33,6 +33,7 @@ export interface Diagnosis {
   id: string;
   reportId: string;
   primaryCause: string;
+  explanation: string;
   confidence: 'low' | 'medium' | 'high';
   secondaryCauses: { cause: string; confidence: 'low' | 'medium' | 'high' }[];
   recommendedDelay: string;

@@ -82,7 +82,7 @@ export function ReportBreakdownScreen({
           onChangeText={setDescription}
           multiline
           numberOfLines={4}
-          placeholder="Bruit de grincement quand je freine…"
+          placeholder={t('breakdown.descriptionPlaceholder')}
           placeholderTextColor={colors.textMuted}
           style={[textStyles.body, { color: colors.textPrimary, minHeight: 90, textAlignVertical: 'top' }]}
         />

@@ -6,12 +6,15 @@ import { Screen, Card, Field, Tag } from '../../components';
 import { useTheme } from '../../theme';
 import { textStyles } from '../../theme/typography';
 import { spacing } from '../../theme/spacing';
-import { mockGarages } from '../../mocks/mockData';
+import { mockGarages, mockUserLocation } from '../../mocks/mockData';
+import { GarageMap } from './GarageMap';
 
 interface GarageSearchScreenProps {
   userQuery?: string;
   assistantSummary?: string;
   results?: typeof mockGarages;
+  origin?: { lat: number; lng: number };
+  radiusKm?: number;
   quickFilters?: string[];
   onSelectGarage?: (garageId: string) => void;
   onSendQuery?: (text: string) => void;
@@ -21,6 +24,8 @@ export function GarageSearchScreen({
   userQuery = 'Trouve un garage pour la vidange du RAV4, samedi matin si possible.',
   assistantSummary = "Cinq ateliers certifiés dans 4 km acceptent l'huile 0W-20. Voici les trois plus proches, du moins cher au plus rapide.",
   results = mockGarages,
+  origin = mockUserLocation,
+  radiusKm = 4,
   quickFilters = ['Le moins cher', 'Ouvert samedi', 'Concessionnaire'],
   onSelectGarage = () => {},
   onSendQuery = () => {},
@@ -28,6 +33,7 @@ export function GarageSearchScreen({
   const { t } = useTranslation();
   const { colors } = useTheme();
   const [draft, setDraft] = useState('');
+  const [highlightedId, setHighlightedId] = useState<string | undefined>(undefined);
 
   function handleSend() {
     if (!draft.trim()) return;
@@ -37,8 +43,16 @@ export function GarageSearchScreen({
 
   return (
     <Screen>
+      <GarageMap
+        origin={origin}
+        radiusKm={radiusKm}
+        garages={results}
+        selectedId={highlightedId}
+        onSelectGarage={setHighlightedId}
+      />
+
       <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.xl }]}>
-        {t('garageSearch.resultsNear', { count: results.length, radius: 4 }).toUpperCase()}
+        {t('garageSearch.resultsNear', { count: results.length, radius: radiusKm }).toUpperCase()}
       </Text>
 
       <Card withMarks={false}>
@@ -57,10 +71,13 @@ export function GarageSearchScreen({
           key={garage.id}
           accessibilityRole="button"
           testID={`garage-result-${garage.id}`}
-          onPress={() => onSelectGarage(garage.id)}
+          onPress={() => {
+            setHighlightedId(garage.id);
+            onSelectGarage(garage.id);
+          }}
           activeOpacity={0.85}
         >
-          <Card>
+          <Card style={garage.id === highlightedId ? { borderColor: colors.accent } : undefined}>
             <Text style={[textStyles.cardTitle, { color: colors.textPrimary, marginBottom: spacing.xs }]}>
               {garage.name}
             </Text>

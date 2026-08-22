@@ -5,16 +5,20 @@ export interface GarageSearchResult {
   name: string;
   address: string;
   distanceKm: number;
+  lat: number;
+  lng: number;
   rating: number | null;
   reviewCount: number | null;
   specialties: string[];
   email: string | null;
   phone: string | null;
   certifications: string[];
+  hours: Record<string, string> | null;
 }
 
 export interface GarageSearchResponse {
   assistantSummary: string;
+  origin: { lat: number; lng: number };
   results: GarageSearchResult[];
 }
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { ScanLine } from 'lucide-react-native';
-import { Screen, Card, Field, Button, Tag } from '../../components';
+import { Screen, Card, Field, Button, Tag, StepProgress } from '../../components';
 import { useTheme } from '../../theme';
 import { textStyles } from '../../theme/typography';
 import { spacing } from '../../theme/spacing';
@@ -58,9 +58,12 @@ export function AddVehicleScreen({ decodeVin, onGenerateCalendar, onBack }: AddV
           ‹ {t('common.back')}
         </Text>
       ) : (
-        <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.md }]}>
-          {t('onboarding.step', { current: 2, total: 3 })}
-        </Text>
+        <>
+          <StepProgress current={2} total={3} />
+          <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.md }]}>
+            {t('onboarding.step', { current: 2, total: 3 })}
+          </Text>
+        </>
       )}
       <Text style={[textStyles.onboardingTitle, { color: colors.textPrimary, marginBottom: spacing.xxl }]}>
         {t('onboarding.vehicle.title')}

@@ -76,7 +76,8 @@ export function BookingConfirmationScreen({
           {best.dateLabel}
         </Text>
         <Text style={[textStyles.body, { color: colors.textOnAccentTint, marginBottom: spacing.lg }]}>
-          {best.garageName} · {best.distanceKm} km · {best.commuteMinutes} min de trajet ·{' '}
+          {best.garageName} · {best.distanceKm} km
+          {best.commuteMinutes != null ? ` · ${best.commuteMinutes} min de trajet` : ''} ·{' '}
           {(best.priceCents / 100).toFixed(0)} $ · durée {best.durationMinutes} min
         </Text>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>

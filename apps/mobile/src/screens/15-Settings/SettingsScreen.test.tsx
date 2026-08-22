@@ -40,6 +40,9 @@ describe('SettingsScreen', () => {
 
     await fireEvent.press(screen.getByTestId('theme-light'));
     expect(onChangeTheme).toHaveBeenCalledWith('light');
+
+    await fireEvent.press(screen.getByTestId('theme-ember'));
+    expect(onChangeTheme).toHaveBeenCalledWith('ember');
   });
 
   it('toggles auto-contact and voice-fallback switches independently', async () => {

@@ -11,6 +11,7 @@
     "retry": "Retry",
     "km": "km",
     "mi": "mi",
+    "months": "months",
     "language": "App language",
     "french": "Français",
     "english": "English"
@@ -88,6 +89,7 @@
     "priorityNormal": "Normal",
     "priorityCritical": "Critical",
     "nextDue": "Next due",
+    "dateUnknown": "To be determined",
     "notesForGarage": "Notes for the garage",
     "groupWith": "Group with tire rotation"
   },
@@ -116,6 +118,7 @@
   "breakdown": {
     "title": "A problem?",
     "subtitle": "Describe it in your own words. No technical vocabulary needed — the app takes care of the rest.",
+    "descriptionPlaceholder": "Grinding noise when I brake at low speed, especially in the morning. The steering wheel vibrates a bit when I slow down on the highway.",
     "photo": "Photo",
     "video": "Video",
     "audio": "The noise",
@@ -139,6 +142,7 @@
     "estimatedCost": "Estimated cost",
     "disclaimer": "Indicative estimate: the garage confirms at diagnosis.",
     "availableGarages": "{{count}} garages available this week",
+    "availabilityUnknown": "Availability to confirm",
     "requestQuotes": "Request 3 quotes",
     "addToCalendar": "Add to calendar",
     "confidence": {
@@ -150,7 +154,8 @@
   "garageSearch": {
     "assistant": "Assistant",
     "placeholder": "Ask the assistant a question…",
-    "resultsNear": "{{count}} garages within {{radius}} km"
+    "resultsNear": "{{count}} garages within {{radius}} km",
+    "mapCaption": "Map · {{count}} garages within {{radius}} km"
   },
   "garageProfile": {
     "certified": "CAA certified",
@@ -200,6 +205,7 @@
     "theme": "Theme",
     "dark": "Dark",
     "light": "Light",
+    "ember": "Ember",
     "units": "Units",
     "autoContact": "Automatic garage contact",
     "voiceFallback": "Voice calls if no email",

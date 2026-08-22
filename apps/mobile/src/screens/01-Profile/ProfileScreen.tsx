@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Screen, Card, Field, Button } from '../../components';
+import { Screen, Card, Field, Button, StepProgress } from '../../components';
 import { useTheme } from '../../theme';
 import { textStyles } from '../../theme/typography';
 import { spacing } from '../../theme/spacing';
@@ -31,6 +31,7 @@ export function ProfileScreen({ onContinue }: ProfileScreenProps) {
 
   return (
     <Screen>
+      <StepProgress current={1} total={3} />
       <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.md }]}>
         {t('onboarding.step', { current: 1, total: 3 })}
       </Text>
@@ -63,28 +64,34 @@ export function ProfileScreen({ onContinue }: ProfileScreenProps) {
           keyboardType="phone-pad"
           testID="input-phone"
         />
-        <Field
-          label={t('onboarding.profile.postalCode')}
-          value={postalCode}
-          onChangeText={setPostalCode}
-          autoCapitalize="characters"
-          testID="input-postalCode"
-        />
-        <Field
-          label={t('onboarding.profile.radius')}
-          value={`${radiusKm} km`}
-          onChangeText={(v) => {
-            const parsed = parseInt(v, 10);
-            if (!Number.isNaN(parsed)) setRadiusKm(parsed);
-          }}
-          keyboardType="numeric"
-          testID="input-radius"
-        />
+        <View style={{ flexDirection: 'row', gap: spacing.md }}>
+          <View style={{ flex: 1 }}>
+            <Field
+              label={t('onboarding.profile.postalCode')}
+              value={postalCode}
+              onChangeText={setPostalCode}
+              autoCapitalize="characters"
+              testID="input-postalCode"
+            />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Field
+              label={t('onboarding.profile.radius')}
+              value={`${radiusKm} km`}
+              onChangeText={(v) => {
+                const parsed = parseInt(v, 10);
+                if (!Number.isNaN(parsed)) setRadiusKm(parsed);
+              }}
+              keyboardType="numeric"
+              testID="input-radius"
+            />
+          </View>
+        </View>
 
         <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.sm }]}>
           {t('common.language')}
         </Text>
-        <View style={{ flexDirection: 'row' }}>
+        <View style={{ flexDirection: 'row', borderWidth: 1, borderColor: colors.hairlines[1] }}>
           <LanguageChip
             label={t('common.french')}
             selected={language === 'fr'}
@@ -140,13 +147,11 @@ function LanguageChip({
       style={[
         textStyles.button,
         {
+          flex: 1,
+          textAlign: 'center',
           color: selected ? '#ffffff' : colors.textSecondary,
           backgroundColor: selected ? colors.accent : 'transparent',
-          borderWidth: 1,
-          borderColor: selected ? colors.accent : colors.hairlines[1],
-          paddingHorizontal: spacing.xl,
-          paddingVertical: spacing.sm,
-          marginRight: spacing.md,
+          paddingVertical: spacing.md,
           fontSize: 13,
         },
       ]}

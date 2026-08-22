@@ -43,6 +43,8 @@ export function GarageProfileContainer({
         name: g.name,
         neighbourhood: g.address,
         distanceKm: (g as unknown as { distanceKm?: number }).distanceKm ?? 0,
+        lat: g.lat,
+        lng: g.lng,
         rating: g.rating ?? 0,
         reviewCount: g.reviewCount ?? 0,
         priceCents: 0,

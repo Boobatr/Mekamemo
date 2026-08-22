@@ -103,12 +103,22 @@ export function DiagnosisScreen({
         </View>
       </View>
 
-      <Text style={[textStyles.body, { color: colors.textSecondary, marginBottom: spacing.sm }]}>
-        {diagnosis.safetyNote}
-      </Text>
-      <Text style={[textStyles.bodySecondary, { color: colors.textMuted, marginBottom: spacing.xxl }]} testID="diagnosis-disclaimer">
-        {diagnosis.disclaimer}
-      </Text>
+      <View
+        style={{
+          borderWidth: 1,
+          borderColor: colors.hairlines[2],
+          backgroundColor: colors.accentTints[4],
+          padding: spacing.lg,
+          marginBottom: spacing.xxl,
+        }}
+      >
+        <Text style={[textStyles.body, { color: colors.textSecondary, marginBottom: spacing.sm }]}>
+          {diagnosis.safetyNote}
+        </Text>
+        <Text style={[textStyles.bodySecondary, { color: colors.textMuted }]} testID="diagnosis-disclaimer">
+          {diagnosis.disclaimer}
+        </Text>
+      </View>
 
       <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.md }]}>
         {t('diagnosis.availableGarages', { count: diagnosis.availableGarages.length })}

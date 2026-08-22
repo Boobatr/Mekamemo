@@ -1,5 +1,6 @@
 import React from 'react';
 import { Alert, Linking } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { HistoryScreen } from './HistoryScreen';
 import { useHistory } from '../../hooks/useHistory';
 import { useVehicle } from '../../hooks/useVehicles';
@@ -18,6 +19,8 @@ export function HistoryContainer({
   onUpdateMileage,
   onBack,
 }: HistoryContainerProps) {
+  const { i18n } = useTranslation();
+  const locale = i18n.language === 'fr' ? 'fr-CA' : 'en-CA';
   const { data: vehicle } = useVehicle(vehicleId);
   const { data: entries = [] } = useHistory(vehicleId);
 
@@ -27,17 +30,19 @@ export function HistoryContainer({
       acc[year] = [...(acc[year] ?? []), entry];
       return acc;
     }, {}),
-  ).map((yearEntries) => ({
-    year: new Date(yearEntries[0].performedAt).getFullYear(),
-    entries: yearEntries.map((e) => ({
-      id: e.id,
-      name: e.taskName,
-      dateLabel: new Date(e.performedAt).toLocaleDateString('fr-CA', { day: 'numeric', month: 'long' }),
-      mileageKm: e.mileageAtServiceKm,
-      garageName: null,
-      costCents: e.costCents,
-    })),
-  }));
+  )
+    .map((yearEntries) => ({
+      year: new Date(yearEntries[0].performedAt).getFullYear(),
+      entries: yearEntries.map((e) => ({
+        id: e.id,
+        name: e.taskName,
+        dateLabel: new Date(e.performedAt).toLocaleDateString(locale, { day: 'numeric', month: 'long' }),
+        mileageKm: e.mileageAtServiceKm,
+        garageName: e.garage?.name ?? null,
+        costCents: e.costCents,
+      })),
+    }))
+    .sort((a, b) => b.year - a.year);
 
   const totalThisYearCents = entries
     .filter((e) => new Date(e.performedAt).getFullYear() === new Date().getFullYear())

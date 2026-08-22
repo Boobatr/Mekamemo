@@ -3,6 +3,8 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { BookingsService } from '../bookings/bookings.service';
 import { SubscriptionsService } from '../subscriptions/subscriptions.service';
+import { GEOCODING_PROVIDER, distanceKm } from '../geocoding/geocoding-provider.interface';
+import type { GeocodingProvider } from '../geocoding/geocoding-provider.interface';
 import { EMAIL_PROVIDER } from './email-provider.interface';
 import type { EmailProvider } from './email-provider.interface';
 import { VOICE_PROVIDER } from './voice-provider.interface';
@@ -18,6 +20,7 @@ export class QuotesService {
     private readonly subscriptionsService: SubscriptionsService,
     @Inject(EMAIL_PROVIDER) private readonly emailProvider: EmailProvider,
     @Inject(VOICE_PROVIDER) private readonly voiceProvider: VoiceProvider,
+    @Inject(GEOCODING_PROVIDER) private readonly geocoding: GeocodingProvider,
   ) {}
 
   async create(userId: string, dto: CreateQuoteRequestDto) {
@@ -121,10 +124,55 @@ export class QuotesService {
       include: {
         garages: { include: { garage: true, responses: true } },
         bookings: true,
+        vehicle: true,
       },
     });
     if (!quoteRequest) throw new NotFoundException('Demande introuvable.');
     if (quoteRequest.userId !== userId) throw new ForbiddenException();
-    return quoteRequest;
+
+    const [user, task] = await Promise.all([
+      this.prisma.user.findUniqueOrThrow({ where: { id: userId } }),
+      quoteRequest.taskId
+        ? this.prisma.maintenanceTask.findUnique({ where: { id: quoteRequest.taskId } })
+        : null,
+    ]);
+
+    const pendingBooking = quoteRequest.bookings.find((b) => b.status === 'pending_user_confirmation');
+    const origin = await this.geocoding.geocode(user.postalCode);
+
+    const candidates = quoteRequest.garages
+      .flatMap((link) =>
+        link.responses
+          .filter((r) => r.parsedSlots && (r.parsedSlots as unknown as { startsAt: string }[]).length > 0)
+          .map((r) => ({ link, response: r })),
+      )
+      .sort((a, b) => (a.response.priceCents ?? Infinity) - (b.response.priceCents ?? Infinity));
+
+    const winningLink = pendingBooking
+      ? quoteRequest.garages.find((l) => l.garageId === pendingBooking.garageId)
+      : undefined;
+
+    const distanceToGarage = (garage: { lat: number; lng: number }) =>
+      Math.round(distanceKm(origin, garage) * 10) / 10;
+
+    return {
+      ...quoteRequest,
+      taskName: task?.name ?? null,
+      vehicleLabel: quoteRequest.vehicle
+        ? `${quoteRequest.vehicle.make} ${quoteRequest.vehicle.model} ${quoteRequest.vehicle.year}`
+        : null,
+      distanceToBookingKm: winningLink ? distanceToGarage(winningLink.garage) : null,
+      confirmedByChannel: winningLink?.contactMethod ?? null,
+      otherSlots: candidates
+        .filter((c) => c.link.garageId !== pendingBooking?.garageId)
+        .slice(0, 2)
+        .map((c) => ({
+          garageId: c.link.garageId,
+          garageName: c.link.garage.name,
+          distanceKm: distanceToGarage(c.link.garage),
+          priceCents: c.response.priceCents,
+          startsAt: (c.response.parsedSlots as unknown as { startsAt: string }[])[0].startsAt,
+        })),
+    };
   }
 }

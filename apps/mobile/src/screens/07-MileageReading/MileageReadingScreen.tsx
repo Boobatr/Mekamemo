@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Switch, Text, TouchableOpacity, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Camera } from 'lucide-react-native';
+import { Camera, ChevronRight } from 'lucide-react-native';
 import { Screen, Card, Field, Button } from '../../components';
 import { useTheme } from '../../theme';
 import { textStyles } from '../../theme/typography';
@@ -113,12 +113,13 @@ export function MileageReadingScreen({
         style={{ flexDirection: 'row', alignItems: 'center', marginBottom: spacing.xxl }}
       >
         <Camera size={20} strokeWidth={1.5} color={colors.accentOnBackground} />
-        <View style={{ marginLeft: spacing.md }}>
+        <View style={{ marginLeft: spacing.md, flex: 1 }}>
           <Text style={[textStyles.body, { color: colors.textPrimary }]}>{t('mileage.photoOdometer')}</Text>
           <Text style={[textStyles.bodySecondary, { color: colors.textMuted }]}>
             {t('mileage.photoOdometerNote')}
           </Text>
         </View>
+        <ChevronRight size={18} strokeWidth={1.5} color={colors.textMuted} />
       </TouchableOpacity>
 
       <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.sm }]}>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Switch, Text, TouchableOpacity, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Screen, Card, Field, Tag, Button } from '../../components';
 import { useTheme } from '../../theme';
@@ -35,8 +35,8 @@ export function EditTaskScreen({ task, onBack = () => {}, onDelete = () => {}, o
   const { t } = useTranslation();
   const { colors } = useTheme();
 
-  const [intervalKm, setIntervalKm] = useState(String(task.intervalKm));
-  const [intervalMonths, setIntervalMonths] = useState(String(task.intervalMonths));
+  const [intervalKm, setIntervalKm] = useState(`${task.intervalKm} ${t('common.km')}`);
+  const [intervalMonths, setIntervalMonths] = useState(`${task.intervalMonths} ${t('common.months')}`);
   const [priority, setPriority] = useState<TaskPriority>(task.priority);
   const [notes, setNotes] = useState(task.notesForGarage);
   const [groupWithTireRotation, setGroupWithTireRotation] = useState(task.groupWithTireRotation);
@@ -68,12 +68,21 @@ export function EditTaskScreen({ task, onBack = () => {}, onDelete = () => {}, o
         {task.isRecurring ? <Tag label={t('taskEdit.recurring')} /> : null}
       </View>
 
-      <Text style={[textStyles.bodySecondary, { color: colors.textSecondary, marginBottom: spacing.xxl }]}>
-        {t('taskEdit.manufacturerNote', {
-          km: task.manufacturerIntervalKm.toLocaleString('fr-CA'),
-          months: task.manufacturerIntervalMonths,
-        })}
-      </Text>
+      <View
+        style={{
+          borderLeftWidth: 2,
+          borderLeftColor: colors.accent,
+          paddingLeft: spacing.lg,
+          marginBottom: spacing.xxl,
+        }}
+      >
+        <Text style={[textStyles.bodySecondary, { color: colors.textSecondary }]}>
+          {t('taskEdit.manufacturerNote', {
+            km: task.manufacturerIntervalKm.toLocaleString('fr-CA'),
+            months: task.manufacturerIntervalMonths,
+          })}
+        </Text>
+      </View>
 
       <Card>
         <Field
@@ -121,16 +130,16 @@ export function EditTaskScreen({ task, onBack = () => {}, onDelete = () => {}, o
           testID="input-notes"
         />
 
-        <TouchableOpacity
-          accessibilityRole="checkbox"
-          accessibilityState={{ checked: groupWithTireRotation }}
-          testID="group-with-tire-rotation"
-          onPress={() => setGroupWithTireRotation((v) => !v)}
-        >
-          <Text style={[textStyles.body, { color: colors.textSecondary }]}>
-            {groupWithTireRotation ? '☑' : '☐'} {t('taskEdit.groupWith')}
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Text style={[textStyles.body, { color: colors.textSecondary, flexShrink: 1 }]}>
+            {t('taskEdit.groupWith')}
           </Text>
-        </TouchableOpacity>
+          <Switch
+            testID="group-with-tire-rotation"
+            value={groupWithTireRotation}
+            onValueChange={setGroupWithTireRotation}
+          />
+        </View>
       </Card>
 
       <Button

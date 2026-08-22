@@ -47,6 +47,7 @@ export class DiagnosisService {
       create: {
         reportId,
         primaryCause: result.primaryCause,
+        explanation: result.explanation,
         confidence: result.confidence,
         secondaryCauses: result.secondaryCauses as unknown as Prisma.InputJsonValue,
         recommendedDelay: result.recommendedDelay,
@@ -58,6 +59,7 @@ export class DiagnosisService {
       },
       update: {
         primaryCause: result.primaryCause,
+        explanation: result.explanation,
         confidence: result.confidence,
         secondaryCauses: result.secondaryCauses as unknown as Prisma.InputJsonValue,
         recommendedDelay: result.recommendedDelay,

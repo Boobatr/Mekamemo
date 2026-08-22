@@ -9,12 +9,22 @@ export interface HistoryEntry {
   performedAt: string;
   mileageAtServiceKm: number;
   garageId: string | null;
+  garage: { name: string } | null;
   costCents: number;
   invoices: { id: string; fileUrl: string }[];
 }
 
 export function listHistory(vehicleId: string): Promise<HistoryEntry[]> {
   return apiGet(`/vehicles/${vehicleId}/history`);
+}
+
+export interface HistoryYearSummary {
+  totalThisYearCents: number;
+  interventionsCount: number;
+}
+
+export function getHistorySummary(vehicleId: string): Promise<HistoryYearSummary> {
+  return apiGet(`/vehicles/${vehicleId}/history/summary`);
 }
 
 export interface CreateHistoryEntryInput {

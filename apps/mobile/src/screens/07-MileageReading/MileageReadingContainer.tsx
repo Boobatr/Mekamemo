@@ -1,8 +1,10 @@
 import React from 'react';
 import { Alert } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import * as ImagePicker from 'expo-image-picker';
 import { MileageReadingScreen } from './MileageReadingScreen';
 import { useOcrOdometer, usePace, useRecordReading } from '../../hooks/useMileage';
+import { useMaintenanceTasks } from '../../hooks/useMaintenance';
 import { useVehicle } from '../../hooks/useVehicles';
 
 interface MileageReadingContainerProps {
@@ -12,10 +14,21 @@ interface MileageReadingContainerProps {
 }
 
 export function MileageReadingContainer({ vehicleId, onSaved, onBack }: MileageReadingContainerProps) {
+  const { i18n } = useTranslation();
+  const locale = i18n.language === 'fr' ? 'fr-CA' : 'en-CA';
   const { data: vehicle } = useVehicle(vehicleId);
   const { data: pace } = usePace(vehicleId);
+  const { data: tasks = [] } = useMaintenanceTasks(vehicleId);
   const recordReading = useRecordReading(vehicleId);
   const ocrOdometer = useOcrOdometer(vehicleId);
+
+  const nextTask = tasks
+    .filter((t) => (t.status === 'upcoming' || t.status === 'overdue') && t.projection?.projectedDueDate)
+    .sort(
+      (a, b) =>
+        new Date(a.projection!.projectedDueDate!).getTime() -
+        new Date(b.projection!.projectedDueDate!).getTime(),
+    )[0];
 
   return (
     <MileageReadingScreen
@@ -28,7 +41,16 @@ export function MileageReadingContainer({ vehicleId, onSaved, onBack }: MileageR
               readingsCount: pace.readingsCount,
               monthlyBars: pace.monthlyBars.map((b) => ({ label: b.month.slice(5), km: b.km })),
               suggestedReadings: pace.suggestedReadings,
-              projection: { taskName: '', dueKm: 0, dueDateLabel: '' },
+              projection: {
+                taskName: nextTask?.name ?? '',
+                dueKm: nextTask?.projection?.projectedDueKm ?? 0,
+                dueDateLabel: nextTask?.projection?.projectedDueDate
+                  ? new Date(nextTask.projection.projectedDueDate).toLocaleDateString(locale, {
+                      day: 'numeric',
+                      month: 'long',
+                    })
+                  : '',
+              },
             }
           : undefined
       }

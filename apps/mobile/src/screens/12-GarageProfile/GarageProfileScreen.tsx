@@ -37,6 +37,16 @@ export function GarageProfileScreen({
           ‹ {t('common.back')}
         </Text>
       ) : null}
+      <View
+        testID="garage-photo-slot"
+        style={{
+          height: 150,
+          borderWidth: 1,
+          borderColor: colors.hairlines[2],
+          backgroundColor: colors.fieldBackground,
+          marginBottom: spacing.lg,
+        }}
+      />
       <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.sm }]}>
         {garage.distanceKm} KM · {garage.neighbourhood.toUpperCase()}
       </Text>
@@ -51,14 +61,21 @@ export function GarageProfileScreen({
         {garage.openUntil ? <Tag label={`${t('garageProfile.open')} · ${garage.openUntil}`} /> : null}
       </View>
 
-      <Card withMarks={false}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Stat label={t('calendar.title')} value={`${(garage.priceCents / 100).toFixed(0)} $`} />
-          <Stat label={t('garageProfile.wait')} value={`${garage.waitDays} j`} />
-          <Stat label={t('garageProfile.commute')} value={`${garage.commuteMinutes} min`} />
-          <Stat label={t('garageProfile.warranty')} value={`${garage.warrantyMonths} m`} />
-        </View>
-      </Card>
+      {garage.waitDays != null || garage.commuteMinutes != null || garage.warrantyMonths != null ? (
+        <Card withMarks={false}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            {garage.waitDays != null ? (
+              <Stat label={t('garageProfile.wait')} value={`${garage.waitDays} j`} />
+            ) : null}
+            {garage.commuteMinutes != null ? (
+              <Stat label={t('garageProfile.commute')} value={`${garage.commuteMinutes} min`} />
+            ) : null}
+            {garage.warrantyMonths != null ? (
+              <Stat label={t('garageProfile.warranty')} value={`${garage.warrantyMonths} m`} />
+            ) : null}
+          </View>
+        </Card>
+      ) : null}
 
       <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.md }]}>
         {t('garageProfile.relevantServices')}

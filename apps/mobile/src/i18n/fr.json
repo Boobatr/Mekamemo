@@ -11,6 +11,7 @@
     "retry": "Réessayer",
     "km": "km",
     "mi": "mi",
+    "months": "mois",
     "language": "Langue de l'application",
     "french": "Français",
     "english": "English"
@@ -88,6 +89,7 @@
     "priorityNormal": "Normale",
     "priorityCritical": "Critique",
     "nextDue": "Prochaine échéance",
+    "dateUnknown": "À déterminer",
     "notesForGarage": "Notes pour le garage",
     "groupWith": "Grouper avec la rotation des pneus"
   },
@@ -116,6 +118,7 @@
   "breakdown": {
     "title": "Un problème ?",
     "subtitle": "Décrivez-le dans vos mots. Pas besoin de vocabulaire technique — l'application se charge du reste.",
+    "descriptionPlaceholder": "Bruit de grincement quand je freine à basse vitesse, surtout le matin. Le volant vibre un peu quand je ralentis sur l'autoroute.",
     "photo": "Photo",
     "video": "Vidéo",
     "audio": "Le bruit",
@@ -139,6 +142,7 @@
     "estimatedCost": "Coût estimé",
     "disclaimer": "Estimation indicative : le garage confirme au diagnostic.",
     "availableGarages": "{{count}} garages disponibles cette semaine",
+    "availabilityUnknown": "Disponibilité à confirmer",
     "requestQuotes": "Demander 3 soumissions",
     "addToCalendar": "Ajouter au calendrier",
     "confidence": {
@@ -150,7 +154,8 @@
   "garageSearch": {
     "assistant": "Assistant",
     "placeholder": "Poser une question à l'assistant…",
-    "resultsNear": "{{count}} garages dans {{radius}} km"
+    "resultsNear": "{{count}} garages dans {{radius}} km",
+    "mapCaption": "Carte · {{count}} garages dans {{radius}} km"
   },
   "garageProfile": {
     "certified": "Certifié CAA",
@@ -200,6 +205,7 @@
     "theme": "Thème",
     "dark": "Sombre",
     "light": "Clair",
+    "ember": "Braise",
     "units": "Unités",
     "autoContact": "Contact automatique des garages",
     "voiceFallback": "Appels vocaux si aucun courriel",

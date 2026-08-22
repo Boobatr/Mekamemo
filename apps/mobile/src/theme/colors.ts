@@ -1,5 +1,5 @@
 export interface ThemeColors {
-  mode: 'dark' | 'light';
+  mode: 'dark' | 'light' | 'ember';
   screenBackground: string;
   screenBackgroundSecondary: string;
   veilTop: string;
@@ -54,6 +54,42 @@ export const darkTheme: ThemeColors = {
     'rgba(29,110,245,.18)',
     'rgba(29,110,245,.14)',
     'rgba(29,110,245,.12)',
+  ],
+};
+
+/** Warm, high-energy "performance" theme — same dark photo backdrop as `darkTheme`,
+ * but an amber/ember accent instead of blue, for a more premium/sporty feel. */
+export const emberTheme: ThemeColors = {
+  mode: 'ember',
+  screenBackground: 'rgba(24,17,13,.52)',
+  screenBackgroundSecondary: 'rgba(24,17,13,.52)',
+  veilTop: 'rgba(20,13,10,.62)',
+  veilBottom: 'rgba(18,11,8,.88)',
+  textPrimary: '#f5ece3',
+  textSecondary: '#c9a98c',
+  textTertiary: '#a9876c',
+  textMuted: '#8f6f57',
+  fieldBackground: 'rgba(35,24,18,.62)',
+  rail: '#3a281e',
+  accent: '#ff7a1a',
+  accentHover: '#ff9142',
+  accentOnBackground: '#ffab5e',
+  textOnAccentTint: '#ffd9b3',
+  accentPanelSolid: '#4a1f05',
+  accentPanelMark: '#ffb066',
+  hairlines: [
+    'rgba(245,236,227,.22)',
+    'rgba(245,236,227,.16)',
+    'rgba(245,236,227,.12)',
+    'rgba(245,236,227,.09)',
+    'rgba(245,236,227,.07)',
+  ],
+  accentTints: [
+    'rgba(255,122,26,.22)',
+    'rgba(255,122,26,.20)',
+    'rgba(255,122,26,.18)',
+    'rgba(255,122,26,.14)',
+    'rgba(255,122,26,.12)',
   ],
 };
 

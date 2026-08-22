@@ -10,9 +10,10 @@ import { TwilioVoiceProvider } from './twilio-voice.provider';
 import { LoggingVoiceProvider } from './logging-voice.provider';
 import { BookingsModule } from '../bookings/bookings.module';
 import { SubscriptionsModule } from '../subscriptions/subscriptions.module';
+import { GeocodingModule } from '../geocoding/geocoding.module';
 
 @Module({
-  imports: [ConfigModule, BookingsModule, SubscriptionsModule],
+  imports: [ConfigModule, BookingsModule, SubscriptionsModule, GeocodingModule],
   providers: [
     QuotesService,
     ResendEmailProvider,

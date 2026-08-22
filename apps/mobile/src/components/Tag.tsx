@@ -16,8 +16,8 @@ export function Tag({ label, tone = 'neutral' }: TagProps) {
     tone === 'accent'
       ? colors.accentTints[0]
       : tone === 'warning'
-        ? colors.mode === 'dark'
-          ? 'rgba(232,237,243,.16)'
+        ? colors.mode !== 'light'
+          ? colors.hairlines[1]
           : '#e8e2d4'
         : colors.hairlines[3];
 

@@ -1,11 +1,18 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { darkTheme, lightTheme, ThemeColors } from './colors';
-import { getStoredThemeMode, setStoredThemeMode } from './theme-storage';
+import { darkTheme, emberTheme, lightTheme, ThemeColors } from './colors';
+import { getStoredThemeMode, setStoredThemeMode, ThemeMode } from './theme-storage';
+
+const THEME_ORDER: ThemeMode[] = ['dark', 'light', 'ember'];
+const THEME_MAP: Record<ThemeMode, ThemeColors> = {
+  dark: darkTheme,
+  light: lightTheme,
+  ember: emberTheme,
+};
 
 interface ThemeContextValue {
   colors: ThemeColors;
-  mode: 'dark' | 'light';
-  setMode: (mode: 'dark' | 'light') => void;
+  mode: ThemeMode;
+  setMode: (mode: ThemeMode) => void;
   toggleMode: () => void;
 }
 
@@ -16,9 +23,9 @@ export function ThemeProvider({
   initialMode = 'dark',
 }: {
   children: React.ReactNode;
-  initialMode?: 'dark' | 'light';
+  initialMode?: ThemeMode;
 }) {
-  const [mode, setModeState] = useState<'dark' | 'light'>(initialMode);
+  const [mode, setModeState] = useState<ThemeMode>(initialMode);
 
   useEffect(() => {
     getStoredThemeMode().then((stored) => {
@@ -26,17 +33,17 @@ export function ThemeProvider({
     });
   }, []);
 
-  const setMode = (next: 'dark' | 'light') => {
+  const setMode = (next: ThemeMode) => {
     setModeState(next);
     setStoredThemeMode(next);
   };
 
   const value = useMemo<ThemeContextValue>(
     () => ({
-      colors: mode === 'dark' ? darkTheme : lightTheme,
+      colors: THEME_MAP[mode],
       mode,
       setMode,
-      toggleMode: () => setMode(mode === 'dark' ? 'light' : 'dark'),
+      toggleMode: () => setMode(THEME_ORDER[(THEME_ORDER.indexOf(mode) + 1) % THEME_ORDER.length]),
     }),
     [mode],
   );

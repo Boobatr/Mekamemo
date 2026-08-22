@@ -6,6 +6,7 @@ import { useTheme } from '../../theme';
 import { textStyles } from '../../theme/typography';
 import { spacing } from '../../theme/spacing';
 import { mockUser } from '../../mocks/mockData';
+import { ThemeMode } from '../../theme';
 
 interface SettingsScreenProps {
   userName?: string;
@@ -15,8 +16,8 @@ interface SettingsScreenProps {
   onEditProfile?: () => void;
   onChangeLanguage?: (language: 'fr' | 'en') => void;
   onChangeUnits?: (units: 'km' | 'mi') => void;
-  themeMode?: 'dark' | 'light';
-  onChangeTheme?: (mode: 'dark' | 'light') => void;
+  themeMode?: ThemeMode;
+  onChangeTheme?: (mode: ThemeMode) => void;
   onToggleAutoContact?: (value: boolean) => void;
   onToggleVoiceFallback?: (value: boolean) => void;
   onManageSubscription?: () => void;
@@ -89,12 +90,13 @@ export function SettingsScreen({
       </Text>
       <Card>
         <SettingRow label={t('settings.theme')}>
-          <TwoWayToggle
-            leftLabel={t('settings.dark').toUpperCase()}
-            rightLabel={t('settings.light').toUpperCase()}
+          <OptionToggle
+            options={[
+              { label: t('settings.dark').toUpperCase(), value: 'dark' as const },
+              { label: t('settings.light').toUpperCase(), value: 'light' as const },
+              { label: t('settings.ember').toUpperCase(), value: 'ember' as const },
+            ]}
             value={themeMode}
-            leftValue="dark"
-            rightValue="light"
             onChange={onChangeTheme}
             testIDPrefix="theme"
           />
@@ -181,6 +183,46 @@ function SettingRow({ label, children }: { label: string; children: React.ReactN
     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.lg }}>
       <Text style={[textStyles.body, { color: colors.textPrimary, flexShrink: 1 }]}>{label}</Text>
       {children}
+    </View>
+  );
+}
+
+function OptionToggle<T extends string>({
+  options,
+  value,
+  onChange,
+  testIDPrefix,
+}: {
+  options: { label: string; value: T }[];
+  value: T;
+  onChange: (value: T) => void;
+  testIDPrefix: string;
+}) {
+  const { colors } = useTheme();
+  return (
+    <View style={{ flexDirection: 'row' }}>
+      {options.map(({ label, value: v }) => (
+        <Text
+          key={v}
+          onPress={() => onChange(v)}
+          testID={`${testIDPrefix}-${v}`}
+          style={[
+            textStyles.button,
+            {
+              color: value === v ? '#ffffff' : colors.textSecondary,
+              backgroundColor: value === v ? colors.accent : 'transparent',
+              borderWidth: 1,
+              borderColor: value === v ? colors.accent : colors.hairlines[1],
+              paddingHorizontal: spacing.lg,
+              paddingVertical: spacing.xs,
+              marginLeft: spacing.sm,
+              fontSize: 12,
+            },
+          ]}
+        >
+          {label}
+        </Text>
+      ))}
     </View>
   );
 }

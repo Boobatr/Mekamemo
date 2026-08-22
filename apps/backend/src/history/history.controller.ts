@@ -23,6 +23,11 @@ export class HistoryController {
     return this.historyService.listForVehicle(user.id, vehicleId);
   }
 
+  @Get('vehicles/:vehicleId/history/summary')
+  yearSummary(@CurrentUser() user: AuthenticatedUser, @Param('vehicleId') vehicleId: string) {
+    return this.historyService.yearSummaryForVehicle(user.id, vehicleId);
+  }
+
   @Post('vehicles/:vehicleId/history')
   create(
     @CurrentUser() user: AuthenticatedUser,
