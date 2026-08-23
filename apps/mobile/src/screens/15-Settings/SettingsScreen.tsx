@@ -20,6 +20,8 @@ interface SettingsScreenProps {
   onChangeTheme?: (mode: ThemeMode) => void;
   onToggleAutoContact?: (value: boolean) => void;
   onToggleVoiceFallback?: (value: boolean) => void;
+  searchRadiusKm?: number;
+  onChangeSearchRadius?: (km: number) => void;
   onManageSubscription?: () => void;
   onOpenPrivacy?: () => void;
   onOpenHelp?: () => void;
@@ -38,6 +40,8 @@ export function SettingsScreen({
   onChangeTheme = () => {},
   onToggleAutoContact = () => {},
   onToggleVoiceFallback = () => {},
+  searchRadiusKm = 15,
+  onChangeSearchRadius = () => {},
   onManageSubscription = () => {},
   onOpenPrivacy = () => {},
   onOpenHelp = () => {},
@@ -130,6 +134,14 @@ export function SettingsScreen({
             testIDPrefix="units"
           />
         </SettingRow>
+        <SettingRow label={t('settings.searchRadius')}>
+          <OptionToggle
+            options={RADIUS_OPTIONS_KM.map((km) => ({ label: `${km} KM`, value: km }))}
+            value={searchRadiusKm}
+            onChange={onChangeSearchRadius}
+            testIDPrefix="radius"
+          />
+        </SettingRow>
         <SettingRow label={t('settings.autoContact')}>
           <Switch
             testID="switch-auto-contact"
@@ -187,7 +199,9 @@ function SettingRow({ label, children }: { label: string; children: React.ReactN
   );
 }
 
-function OptionToggle<T extends string>({
+const RADIUS_OPTIONS_KM = [10, 15, 25, 50] as const;
+
+function OptionToggle<T extends string | number>({
   options,
   value,
   onChange,

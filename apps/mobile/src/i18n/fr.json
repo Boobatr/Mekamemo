@@ -200,9 +200,14 @@
     "totalThisYear": "Total {{year}}",
     "interventions": "Interventions",
     "resaleNote": "Les factures jointes sont réunies dans un dossier de revente.",
-    "open": "Ouvrir",
+    "open": "Ouvrir"
+  },
+  "vehicleDetail": {
     "reportBreakdown": "Signaler une panne",
-    "updateMileage": "Mettre à jour le kilométrage"
+    "reportBreakdownNote": "Décrivez le problème — obtenez un diagnostic IA instantané.",
+    "updateMileage": "Mettre à jour le kilométrage",
+    "updateMileageNote": "Gardez vos projections d'entretien précises.",
+    "history": "Historique"
   },
   "settings": {
     "title": "Réglages",
@@ -212,6 +217,7 @@
     "light": "Clair",
     "ember": "Braise",
     "units": "Unités",
+    "searchRadius": "Rayon de recherche",
     "autoContact": "Contact automatique des garages",
     "voiceFallback": "Appels vocaux si aucun courriel",
     "confirmBeforeBooking": "Confirmer avant chaque réservation",

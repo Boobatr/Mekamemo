@@ -4,15 +4,6 @@ export type RootStackParamList = {
   OnboardingProfile: undefined;
   OnboardingVehicle: undefined;
   MainTabs: undefined;
-  AddVehicle: undefined;
-  EditTask: { task: MaintenanceTask; vehicleId: string };
-  MileageReading: { vehicleId: string };
-  Notifications: undefined;
-  ReportBreakdown: { vehicleId: string };
-  Diagnosis: { reportId: string };
-  GarageProfile: { garageId: string; vehicleId: string; taskId?: string; diagnosisId?: string };
-  BookingConfirmation: { quoteRequestId: string };
-  History: { vehicleId: string };
 };
 
 export type MainTabsParamList = {
@@ -20,4 +11,33 @@ export type MainTabsParamList = {
   Calendar: undefined;
   Garages: undefined;
   Settings: undefined;
+};
+
+/** Nested inside the "Vehicles" tab so the bottom tab bar stays visible while
+ * drilling from the dashboard into a vehicle and its action screens. */
+export type VehiclesStackParamList = {
+  VehicleList: undefined;
+  VehicleDetail: { vehicleId: string };
+  AddVehicle: undefined;
+  History: { vehicleId: string };
+  ReportBreakdown: { vehicleId: string };
+  Diagnosis: { reportId: string };
+  MileageReading: { vehicleId: string };
+  GarageProfile: { garageId: string; vehicleId: string; taskId?: string; diagnosisId?: string };
+  BookingConfirmation: { quoteRequestId: string };
+  Notifications: undefined;
+};
+
+/** Nested inside the "Calendar" tab, same tab-bar-visibility rationale. */
+export type CalendarStackParamList = {
+  CalendarHome: undefined;
+  EditTask: { task: MaintenanceTask; vehicleId: string };
+};
+
+/** Nested inside the "Garages" tab — has its own GarageProfile/BookingConfirmation
+ * copies, independent from the ones reachable via the Vehicles tab's diagnosis flow. */
+export type GaragesStackParamList = {
+  GarageList: undefined;
+  GarageProfile: { garageId: string; vehicleId: string; taskId?: string; diagnosisId?: string };
+  BookingConfirmation: { quoteRequestId: string };
 };

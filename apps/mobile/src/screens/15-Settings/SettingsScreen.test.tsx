@@ -45,6 +45,17 @@ describe('SettingsScreen', () => {
     expect(onChangeTheme).toHaveBeenCalledWith('ember');
   });
 
+  it('changes the search radius and forwards the new value', async () => {
+    const onChangeSearchRadius = jest.fn();
+    await renderWithProviders(
+      <SettingsScreen searchRadiusKm={15} onChangeSearchRadius={onChangeSearchRadius} />,
+      { withNavigationContainer: false },
+    );
+
+    await fireEvent.press(screen.getByTestId('radius-25'));
+    expect(onChangeSearchRadius).toHaveBeenCalledWith(25);
+  });
+
   it('toggles auto-contact and voice-fallback switches independently', async () => {
     const onToggleAutoContact = jest.fn();
     const onToggleVoiceFallback = jest.fn();

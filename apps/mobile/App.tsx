@@ -23,7 +23,9 @@ function WebFrame({ children }: { children: React.ReactNode }) {
   if (Platform.OS !== 'web') return <>{children}</>;
   return (
     <View style={{ flex: 1, alignItems: 'center', backgroundColor: '#08090b' }}>
-      <View style={{ flex: 1, width: '100%', maxWidth: screenGeometry.width }}>{children}</View>
+      <View style={{ flex: 1, width: '100%', maxWidth: screenGeometry.width, overflow: 'hidden' }}>
+        {children}
+      </View>
     </View>
   );
 }

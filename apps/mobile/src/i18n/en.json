@@ -200,9 +200,14 @@
     "totalThisYear": "Total {{year}}",
     "interventions": "Interventions",
     "resaleNote": "Attached invoices are gathered into a resale dossier.",
-    "open": "Open",
+    "open": "Open"
+  },
+  "vehicleDetail": {
     "reportBreakdown": "Report a breakdown",
-    "updateMileage": "Update mileage"
+    "reportBreakdownNote": "Describe the problem — get an instant AI diagnosis.",
+    "updateMileage": "Update mileage",
+    "updateMileageNote": "Keep your maintenance projections accurate.",
+    "history": "History"
   },
   "settings": {
     "title": "Settings",
@@ -212,6 +217,7 @@
     "light": "Light",
     "ember": "Ember",
     "units": "Units",
+    "searchRadius": "Search radius",
     "autoContact": "Automatic garage contact",
     "voiceFallback": "Voice calls if no email",
     "confirmBeforeBooking": "Confirm before every booking",

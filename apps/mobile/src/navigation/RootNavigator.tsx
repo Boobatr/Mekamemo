@@ -6,14 +6,6 @@ import { MainTabs } from './MainTabs';
 import { getStoredToken } from '../services/auth-storage';
 import { ProfileContainer } from '../screens/01-Profile/ProfileContainer';
 import { AddVehicleContainer } from '../screens/02-AddVehicle/AddVehicleContainer';
-import { EditTaskContainer } from '../screens/06-EditTask/EditTaskContainer';
-import { MileageReadingContainer } from '../screens/07-MileageReading/MileageReadingContainer';
-import { NotificationsContainer } from '../screens/08-Notifications/NotificationsContainer';
-import { ReportBreakdownContainer } from '../screens/09-ReportBreakdown/ReportBreakdownContainer';
-import { DiagnosisContainer } from '../screens/10-Diagnosis/DiagnosisContainer';
-import { GarageProfileContainer } from '../screens/12-GarageProfile/GarageProfileContainer';
-import { BookingConfirmationContainer } from '../screens/13-BookingConfirmation/BookingConfirmationContainer';
-import { HistoryContainer } from '../screens/14-History/HistoryContainer';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -50,91 +42,7 @@ export function RootNavigator() {
           </Stack.Screen>
         </>
       ) : (
-        <>
-          <Stack.Screen name="MainTabs" component={MainTabs} />
-          <Stack.Screen name="AddVehicle">
-            {({ navigation }) => (
-              <AddVehicleContainer onDone={() => navigation.goBack()} onBack={() => navigation.goBack()} />
-            )}
-          </Stack.Screen>
-          <Stack.Screen name="EditTask">
-            {({ route, navigation }) => (
-              <EditTaskContainer
-                task={route.params.task}
-                vehicleId={route.params.vehicleId}
-                onBack={() => navigation.goBack()}
-                onDeleted={() => navigation.goBack()}
-                onSaved={() => navigation.goBack()}
-              />
-            )}
-          </Stack.Screen>
-          <Stack.Screen name="MileageReading">
-            {({ route, navigation }) => (
-              <MileageReadingContainer
-                vehicleId={route.params.vehicleId}
-                onSaved={() => navigation.goBack()}
-                onBack={() => navigation.goBack()}
-              />
-            )}
-          </Stack.Screen>
-          <Stack.Screen name="Notifications">
-            {({ navigation }) => <NotificationsContainer onBack={() => navigation.goBack()} />}
-          </Stack.Screen>
-          <Stack.Screen name="ReportBreakdown">
-            {({ route, navigation }) => (
-              <ReportBreakdownContainer
-                vehicleId={route.params.vehicleId}
-                onAnalyzed={(reportId) => navigation.navigate('Diagnosis', { reportId })}
-                onBack={() => navigation.goBack()}
-              />
-            )}
-          </Stack.Screen>
-          <Stack.Screen name="Diagnosis">
-            {({ route, navigation }) => (
-              <DiagnosisContainer
-                reportId={route.params.reportId}
-                onRequestQuotes={() =>
-                  navigation.navigate('MainTabs', { screen: 'Garages' } as never)
-                }
-                onAddToCalendar={() => navigation.navigate('MainTabs')}
-                onBack={() => navigation.goBack()}
-              />
-            )}
-          </Stack.Screen>
-          <Stack.Screen name="GarageProfile">
-            {({ route, navigation }) => (
-              <GarageProfileContainer
-                garageId={route.params.garageId}
-                vehicleId={route.params.vehicleId}
-                taskId={route.params.taskId}
-                diagnosisId={route.params.diagnosisId}
-                onRequestedAppointment={(quoteRequestId) =>
-                  navigation.navigate('BookingConfirmation', { quoteRequestId })
-                }
-                onBack={() => navigation.goBack()}
-              />
-            )}
-          </Stack.Screen>
-          <Stack.Screen name="BookingConfirmation">
-            {({ route, navigation }) => (
-              <BookingConfirmationContainer
-                quoteRequestId={route.params.quoteRequestId}
-                onConfirmed={() => navigation.navigate('MainTabs')}
-                onBack={() => navigation.goBack()}
-              />
-            )}
-          </Stack.Screen>
-          <Stack.Screen name="History">
-            {({ route, navigation }) => (
-              <HistoryContainer
-                vehicleId={route.params.vehicleId}
-                onReportBreakdown={(vehicleId) => navigation.navigate('ReportBreakdown', { vehicleId })}
-                onUpdateMileage={(vehicleId) => navigation.navigate('MileageReading', { vehicleId })}
-                onBack={() => navigation.goBack()}
-              />
-            )}
-          </Stack.Screen>
-        </>
+        <Stack.Screen name="MainTabs" component={MainTabs} />
       )}
     </Stack.Navigator>
   );

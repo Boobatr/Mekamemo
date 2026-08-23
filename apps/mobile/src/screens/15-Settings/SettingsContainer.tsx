@@ -27,6 +27,8 @@ export function SettingsContainer({ onLoggedOut }: SettingsContainerProps) {
       onChangeUnits={(units) => updateProfile.mutate({ units })}
       onToggleAutoContact={(value) => updateProfile.mutate({ autoContactGarages: value })}
       onToggleVoiceFallback={(value) => updateProfile.mutate({ voiceFallbackEnabled: value })}
+      searchRadiusKm={profile?.searchRadiusKm}
+      onChangeSearchRadius={(km) => updateProfile.mutate({ searchRadiusKm: km })}
       onManageSubscription={() => {}}
       onOpenPrivacy={() => {}}
       onOpenHelp={() => {}}

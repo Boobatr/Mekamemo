@@ -8,17 +8,10 @@ import { getResaleDossierExportUrl } from '../../services/history';
 
 interface HistoryContainerProps {
   vehicleId: string;
-  onReportBreakdown: (vehicleId: string) => void;
-  onUpdateMileage: (vehicleId: string) => void;
   onBack?: () => void;
 }
 
-export function HistoryContainer({
-  vehicleId,
-  onReportBreakdown,
-  onUpdateMileage,
-  onBack,
-}: HistoryContainerProps) {
+export function HistoryContainer({ vehicleId, onBack }: HistoryContainerProps) {
   const { i18n } = useTranslation();
   const locale = i18n.language === 'fr' ? 'fr-CA' : 'en-CA';
   const { data: vehicle } = useVehicle(vehicleId);
@@ -69,8 +62,6 @@ export function HistoryContainer({
         const url = await getResaleDossierExportUrl(vehicleId);
         await Linking.openURL(url);
       }}
-      onReportBreakdown={() => onReportBreakdown(vehicleId)}
-      onUpdateMileage={() => onUpdateMileage(vehicleId)}
     />
   );
 }
