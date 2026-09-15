@@ -121,14 +121,14 @@ export class ClaudeDiagnosisProvider implements DiagnosisProvider {
   }
 
   private async tryLoadImage(url: string): Promise<Anthropic.ImageBlockParam | null> {
-    if (!url.startsWith('/uploads/')) return null;
     const extension = url.split('.').pop()?.toLowerCase() ?? '';
     const mimeType = MIME_BY_EXTENSION[extension];
     if (!mimeType) return null;
 
     try {
-      const filePath = join(UPLOADS_DIR, url.replace('/uploads/', ''));
-      const buffer = await readFile(filePath);
+      const buffer = url.startsWith('/uploads/')
+        ? await readFile(join(UPLOADS_DIR, url.replace('/uploads/', '')))
+        : await this.fetchRemote(url);
       return {
         type: 'image',
         source: { type: 'base64', media_type: mimeType as 'image/jpeg', data: buffer.toString('base64') },
@@ -137,5 +137,12 @@ export class ClaudeDiagnosisProvider implements DiagnosisProvider {
       this.logger.warn(`Could not load attachment ${url} for diagnosis`, err as Error);
       return null;
     }
+  }
+
+  /** Attachments stored on a remote provider (e.g. Cloudinary) come back as absolute URLs. */
+  private async fetchRemote(url: string): Promise<Buffer> {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`fetch ${url} failed: ${response.status}`);
+    return Buffer.from(await response.arrayBuffer());
   }
 }

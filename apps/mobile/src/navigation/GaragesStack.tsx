@@ -17,13 +17,22 @@ export function GaragesStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="GarageList">
-        {({ navigation }) => (
-          <GarageSearchContainer
-            onSelectGarage={(garageId) =>
-              primaryVehicleId && navigation.navigate('GarageProfile', { garageId, vehicleId: primaryVehicleId })
-            }
-          />
-        )}
+        {({ route, navigation }) => {
+          const vehicleId = route.params?.vehicleId ?? primaryVehicleId;
+          return (
+            <GarageSearchContainer
+              onSelectGarage={(garageId) =>
+                vehicleId &&
+                navigation.navigate('GarageProfile', {
+                  garageId,
+                  vehicleId,
+                  taskId: route.params?.taskId,
+                  diagnosisId: route.params?.diagnosisId,
+                })
+              }
+            />
+          );
+        }}
       </Stack.Screen>
       <Stack.Screen name="GarageProfile">
         {({ route, navigation }) => (

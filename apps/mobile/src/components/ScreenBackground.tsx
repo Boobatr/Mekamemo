@@ -5,24 +5,22 @@ import { useTheme } from '../theme';
 const workshopPhoto = require('../../assets/images/atelier-ecran.png');
 
 /**
- * Dark mode lets the workshop photo show through under a tinted veil;
- * light mode fully hides it behind a pale blue-paper background (per README).
+ * The workshop photo shows through under a tinted veil on every theme. Dark/ember
+ * use a dark veil at full photo opacity; light mode dims the photo itself first,
+ * then lays a near-opaque pale veil on top, so it reads as a soft, bright texture
+ * instead of darkening the screen or fighting with light mode's dark text.
  */
 export function ScreenBackground({ children }: { children: React.ReactNode }) {
   const { colors } = useTheme();
-
-  if (colors.mode === 'light') {
-    return <View style={[styles.fill, { backgroundColor: colors.screenBackground }]}>{children}</View>;
-  }
 
   return (
     <ImageBackground
       source={workshopPhoto}
       resizeMode="cover"
-      imageStyle={styles.image}
+      imageStyle={colors.mode === 'light' ? styles.imageLight : styles.image}
       style={styles.fill}
     >
-      <View style={[styles.veil, { backgroundColor: colors.screenBackground }]} />
+      <View style={[styles.veil, { backgroundColor: colors.photoVeil }]} />
       <View style={styles.content}>{children}</View>
     </ImageBackground>
   );
@@ -31,6 +29,7 @@ export function ScreenBackground({ children }: { children: React.ReactNode }) {
 const styles = StyleSheet.create({
   fill: { flex: 1 },
   image: { opacity: 1 },
+  imageLight: { opacity: 0.5 },
   veil: StyleSheet.absoluteFill,
   content: { flex: 1 },
 });

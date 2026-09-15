@@ -131,7 +131,8 @@
       "odor": "Odor"
     },
     "urgentNote": "If it's urgent, say so: the app looks for a garage that can see you today.",
-    "analyze": "Analyze the problem"
+    "analyze": "Analyze the problem",
+    "analyzeHint": "Describe the problem to enable analysis."
   },
   "diagnosis": {
     "title": "Diagnosis",
@@ -143,7 +144,9 @@
     "disclaimer": "Indicative estimate: the garage confirms at diagnosis.",
     "availableGarages": "{{count}} garages available this week",
     "availabilityUnknown": "Availability to confirm",
-    "requestQuotes": "Request 3 quotes",
+    "requestQuotes_one": "Request a quote",
+    "requestQuotes_other": "Request {{count}} quotes",
+    "noGaragesFound": "No garages found yet.",
     "addToCalendar": "Add to calendar",
     "confidence": {
       "low": "Low",

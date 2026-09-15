@@ -7,7 +7,7 @@ import { useTheme } from '../../theme';
 import { textStyles } from '../../theme/typography';
 import { spacing } from '../../theme/spacing';
 import { mockGarages, mockUserLocation } from '../../mocks/mockData';
-import { GarageMap } from './GarageMap';
+import { GarageMapView } from './GarageMapView';
 
 interface GarageSearchScreenProps {
   userQuery?: string;
@@ -43,7 +43,7 @@ export function GarageSearchScreen({
 
   return (
     <Screen>
-      <GarageMap
+      <GarageMapView
         origin={origin}
         radiusKm={radiusKm}
         garages={results}

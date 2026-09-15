@@ -21,7 +21,7 @@ export type VehiclesStackParamList = {
   AddVehicle: undefined;
   History: { vehicleId: string };
   ReportBreakdown: { vehicleId: string };
-  Diagnosis: { reportId: string };
+  Diagnosis: { reportId: string; vehicleId: string };
   MileageReading: { vehicleId: string };
   GarageProfile: { garageId: string; vehicleId: string; taskId?: string; diagnosisId?: string };
   BookingConfirmation: { quoteRequestId: string };
@@ -35,9 +35,11 @@ export type CalendarStackParamList = {
 };
 
 /** Nested inside the "Garages" tab — has its own GarageProfile/BookingConfirmation
- * copies, independent from the ones reachable via the Vehicles tab's diagnosis flow. */
+ * copies, independent from the ones reachable via the Vehicles tab's diagnosis flow.
+ * GarageList takes optional params so Dashboard/Calendar's "book" actions can carry a
+ * task/diagnosis/vehicle across the tab switch instead of losing that context. */
 export type GaragesStackParamList = {
-  GarageList: undefined;
+  GarageList: { vehicleId?: string; taskId?: string; diagnosisId?: string } | undefined;
   GarageProfile: { garageId: string; vehicleId: string; taskId?: string; diagnosisId?: string };
   BookingConfirmation: { quoteRequestId: string };
 };

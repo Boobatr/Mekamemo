@@ -1,21 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, Alert, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { DiagnosisScreen } from './DiagnosisScreen';
 import { useAnalyzeBreakdownReport } from '../../hooks/useBreakdown';
-import { useGarageSearch } from '../../hooks/useGarages';
+import { useGarageSearch, useCreateQuoteRequest } from '../../hooks/useGarages';
 import { Diagnosis } from '../../services/breakdown';
 
 interface DiagnosisContainerProps {
   reportId: string;
-  onRequestQuotes: (diagnosisId: string) => void;
+  vehicleId: string;
+  onRequestedQuotes: (quoteRequestId: string) => void;
+  onSelectGarage: (garageId: string, diagnosisId: string) => void;
   onAddToCalendar: () => void;
   onBack?: () => void;
 }
 
-export function DiagnosisContainer({ reportId, onRequestQuotes, onAddToCalendar, onBack }: DiagnosisContainerProps) {
+export function DiagnosisContainer({
+  reportId,
+  vehicleId,
+  onRequestedQuotes,
+  onSelectGarage,
+  onAddToCalendar,
+  onBack,
+}: DiagnosisContainerProps) {
   const { t } = useTranslation();
   const analyze = useAnalyzeBreakdownReport();
+  const createQuoteRequest = useCreateQuoteRequest();
   const [diagnosis, setDiagnosis] = useState<Diagnosis | null>(null);
   const { data: nearbyGarages } = useGarageSearch(diagnosis?.primaryCause ?? '');
 
@@ -32,6 +42,8 @@ export function DiagnosisContainer({ reportId, onRequestQuotes, onAddToCalendar,
     );
   }
 
+  const availableGarages = (nearbyGarages?.results ?? []).slice(0, 3);
+
   return (
     <DiagnosisScreen
       onBack={onBack}
@@ -47,14 +59,26 @@ export function DiagnosisContainer({ reportId, onRequestQuotes, onAddToCalendar,
         costMaxCents: diagnosis.costMaxCents,
         safetyNote: diagnosis.safetyNote,
         disclaimer: diagnosis.disclaimer,
-        availableGarages: (nearbyGarages?.results ?? []).slice(0, 3).map((g) => ({
+        availableGarages: availableGarages.map((g) => ({
           id: g.id,
           name: g.name,
           distanceKm: g.distanceKm,
           slotLabel: t('diagnosis.availabilityUnknown'),
         })),
       }}
-      onRequestQuotes={() => onRequestQuotes(diagnosis.id)}
+      onSelectGarage={(garageId) => onSelectGarage(garageId, diagnosis.id)}
+      onRequestQuotes={async () => {
+        try {
+          const quoteRequest = await createQuoteRequest.mutateAsync({
+            vehicleId,
+            diagnosisId: diagnosis.id,
+            garageIds: availableGarages.map((g) => g.id),
+          });
+          onRequestedQuotes((quoteRequest as { id: string }).id);
+        } catch (err) {
+          Alert.alert('Erreur', err instanceof Error ? err.message : 'Une erreur est survenue.');
+        }
+      }}
       onAddToCalendar={onAddToCalendar}
     />
   );

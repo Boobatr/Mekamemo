@@ -9,7 +9,7 @@ import { usePace } from '../../hooks/useMileage';
 
 interface ReportBreakdownContainerProps {
   vehicleId: string;
-  onAnalyzed: (reportId: string) => void;
+  onAnalyzed: (reportId: string, vehicleId: string) => void;
   onBack?: () => void;
 }
 
@@ -104,7 +104,7 @@ export function ReportBreakdownContainer({ vehicleId, onAnalyzed, onBack }: Repo
             urgent: submission.tags.includes('urgent'),
             attachments,
           });
-          onAnalyzed(report.id);
+          onAnalyzed(report.id, report.vehicleId);
         } catch (err) {
           Alert.alert('Erreur', err instanceof Error ? err.message : 'Une erreur est survenue.');
         }

@@ -4,9 +4,14 @@ import { renderWithProviders } from '../../test-utils/renderWithProviders';
 import { ReportBreakdownScreen } from './ReportBreakdownScreen';
 
 describe('ReportBreakdownScreen', () => {
-  it('disables analyze until a description is entered', async () => {
+  it('disables analyze until a description is entered, and shows a hint why', async () => {
     await renderWithProviders(<ReportBreakdownScreen />, { withNavigationContainer: false });
     expect(screen.getByTestId('analyze-button').props.accessibilityState.disabled).toBe(true);
+    expect(screen.getByTestId('analyze-hint')).toBeTruthy();
+
+    await fireEvent.changeText(screen.getByTestId('input-description'), 'Bruit au freinage');
+    expect(screen.getByTestId('analyze-button').props.accessibilityState.disabled).toBe(false);
+    expect(screen.queryByTestId('analyze-hint')).toBeNull();
   });
 
   it('submits description, tags, and attachment flags on analyze', async () => {

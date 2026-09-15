@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Screen, Card, Tag, Button } from '../../components';
 import { useTheme } from '../../theme';
@@ -26,6 +26,7 @@ export interface DiagnosisData {
 interface DiagnosisScreenProps {
   diagnosis?: DiagnosisData;
   onRequestQuotes?: () => void;
+  onSelectGarage?: (garageId: string) => void;
   onAddToCalendar?: () => void;
   onBack?: () => void;
 }
@@ -33,6 +34,7 @@ interface DiagnosisScreenProps {
 export function DiagnosisScreen({
   diagnosis = mockDiagnosis,
   onRequestQuotes = () => {},
+  onSelectGarage = () => {},
   onAddToCalendar = () => {},
   onBack,
 }: DiagnosisScreenProps) {
@@ -130,15 +132,32 @@ export function DiagnosisScreen({
         {t('diagnosis.availableGarages', { count: diagnosis.availableGarages.length })}
       </Text>
       {diagnosis.availableGarages.map((garage) => (
-        <View key={garage.id} style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: spacing.md }}>
+        <TouchableOpacity
+          key={garage.id}
+          accessibilityRole="button"
+          testID={`diagnosis-garage-${garage.id}`}
+          onPress={() => onSelectGarage(garage.id)}
+          activeOpacity={0.85}
+          style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: spacing.md }}
+        >
           <Text style={[textStyles.body, { color: colors.textPrimary }]}>
             {garage.name} · {garage.distanceKm} km
           </Text>
           <Text style={[textStyles.bodySecondary, { color: colors.accentOnBackground }]}>{garage.slotLabel}</Text>
-        </View>
+        </TouchableOpacity>
       ))}
+      {diagnosis.availableGarages.length === 0 ? (
+        <Text style={[textStyles.bodySecondary, { color: colors.textMuted, marginBottom: spacing.md }]}>
+          {t('diagnosis.noGaragesFound')}
+        </Text>
+      ) : null}
 
-      <Button label={t('diagnosis.requestQuotes')} testID="request-quotes-button" onPress={onRequestQuotes} />
+      <Button
+        label={t('diagnosis.requestQuotes', { count: diagnosis.availableGarages.length })}
+        disabled={diagnosis.availableGarages.length === 0}
+        testID="request-quotes-button"
+        onPress={onRequestQuotes}
+      />
       <Button
         label={t('diagnosis.addToCalendar')}
         variant="secondary"

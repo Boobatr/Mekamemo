@@ -14,7 +14,9 @@ export function CalendarStack() {
         {({ navigation }) => (
           <AiCalendarContainer
             onOpenTask={(task, vehicleId) => navigation.navigate('EditTask', { task, vehicleId })}
-            onBook={() => navigation.navigate('Garages' as never)}
+            onBook={(vehicleId) =>
+              navigation.navigate('Garages', { screen: 'GarageList', params: { vehicleId } } as never)
+            }
           />
         )}
       </Stack.Screen>

@@ -29,7 +29,9 @@ export function VehiclesStack() {
             userName={profile?.fullName ?? ''}
             onSelectVehicle={(vehicleId) => navigation.navigate('VehicleDetail', { vehicleId })}
             onAddVehicle={() => navigation.navigate('AddVehicle')}
-            onBookNextDue={() => navigation.navigate('Garages' as never)}
+            onBookNextDue={(vehicleId, taskId) =>
+              navigation.navigate('Garages', { screen: 'GarageList', params: { vehicleId, taskId } } as never)
+            }
             onOpenNotifications={() => navigation.navigate('Notifications')}
           />
         )}
@@ -59,7 +61,7 @@ export function VehiclesStack() {
         {({ route, navigation }) => (
           <ReportBreakdownContainer
             vehicleId={route.params.vehicleId}
-            onAnalyzed={(reportId) => navigation.navigate('Diagnosis', { reportId })}
+            onAnalyzed={(reportId, vehicleId) => navigation.navigate('Diagnosis', { reportId, vehicleId })}
             onBack={() => navigation.goBack()}
           />
         )}
@@ -68,7 +70,11 @@ export function VehiclesStack() {
         {({ route, navigation }) => (
           <DiagnosisContainer
             reportId={route.params.reportId}
-            onRequestQuotes={() => navigation.navigate('Garages' as never)}
+            vehicleId={route.params.vehicleId}
+            onRequestedQuotes={(quoteRequestId) => navigation.navigate('BookingConfirmation', { quoteRequestId })}
+            onSelectGarage={(garageId, diagnosisId) =>
+              navigation.navigate('GarageProfile', { garageId, vehicleId: route.params.vehicleId, diagnosisId })
+            }
             onAddToCalendar={() => navigation.navigate('VehicleList')}
             onBack={() => navigation.goBack()}
           />

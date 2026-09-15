@@ -2,6 +2,10 @@ export interface ThemeColors {
   mode: 'dark' | 'light' | 'ember';
   screenBackground: string;
   screenBackgroundSecondary: string;
+  /** Veil drawn over the workshop-photo backdrop (ScreenBackground). Separate from
+   * screenBackground so tuning it (e.g. for light mode) can't ripple into the many
+   * other components — tab bars, tags, cards — that assume screenBackground is solid. */
+  photoVeil: string;
   veilTop: string;
   veilBottom: string;
   textPrimary: string;
@@ -27,6 +31,7 @@ export const darkTheme: ThemeColors = {
   mode: 'dark',
   screenBackground: 'rgba(15,19,23,.5)',
   screenBackgroundSecondary: 'rgba(15,19,23,.5)',
+  photoVeil: 'rgba(15,19,23,.5)',
   veilTop: 'rgba(11,14,18,.62)',
   veilBottom: 'rgba(11,14,18,.86)',
   textPrimary: '#e8edf3',
@@ -63,6 +68,7 @@ export const emberTheme: ThemeColors = {
   mode: 'ember',
   screenBackground: 'rgba(24,17,13,.52)',
   screenBackgroundSecondary: 'rgba(24,17,13,.52)',
+  photoVeil: 'rgba(24,17,13,.52)',
   veilTop: 'rgba(20,13,10,.62)',
   veilBottom: 'rgba(18,11,8,.88)',
   textPrimary: '#f5ece3',
@@ -97,6 +103,7 @@ export const lightTheme: ThemeColors = {
   mode: 'light',
   screenBackground: '#f4f6f9',
   screenBackgroundSecondary: '#eceff4',
+  photoVeil: 'rgba(244,246,249,.88)',
   veilTop: 'transparent',
   veilBottom: 'transparent',
   textPrimary: '#141a22',

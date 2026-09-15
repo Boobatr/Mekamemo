@@ -154,6 +154,14 @@ export function ReportBreakdownScreen({
           })
         }
       />
+      {!canAnalyze ? (
+        <Text
+          testID="analyze-hint"
+          style={[textStyles.bodySecondary, { color: colors.textMuted, textAlign: 'center', marginTop: spacing.md }]}
+        >
+          {t('breakdown.analyzeHint')}
+        </Text>
+      ) : null}
     </Screen>
   );
 }

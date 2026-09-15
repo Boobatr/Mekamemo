@@ -131,7 +131,8 @@
       "odor": "Odeur"
     },
     "urgentNote": "Si c'est urgent, dites-le : l'application cherche un garage qui peut vous prendre aujourd'hui.",
-    "analyze": "Analyser le problème"
+    "analyze": "Analyser le problème",
+    "analyzeHint": "Décrivez le problème pour activer l'analyse."
   },
   "diagnosis": {
     "title": "Diagnostic",
@@ -143,7 +144,9 @@
     "disclaimer": "Estimation indicative : le garage confirme au diagnostic.",
     "availableGarages": "{{count}} garages disponibles cette semaine",
     "availabilityUnknown": "Disponibilité à confirmer",
-    "requestQuotes": "Demander 3 soumissions",
+    "requestQuotes_one": "Demander une soumission",
+    "requestQuotes_other": "Demander {{count}} soumissions",
+    "noGaragesFound": "Aucun garage trouvé pour l'instant.",
     "addToCalendar": "Ajouter au calendrier",
     "confidence": {
       "low": "Faible",

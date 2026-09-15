@@ -134,7 +134,7 @@ export function SettingsScreen({
             testIDPrefix="units"
           />
         </SettingRow>
-        <SettingRow label={t('settings.searchRadius')}>
+        <SettingRow label={t('settings.searchRadius')} stacked>
           <OptionToggle
             options={RADIUS_OPTIONS_KM.map((km) => ({ label: `${km} KM`, value: km }))}
             value={searchRadiusKm}
@@ -189,8 +189,24 @@ export function SettingsScreen({
   );
 }
 
-function SettingRow({ label, children }: { label: string; children: React.ReactNode }) {
+function SettingRow({
+  label,
+  children,
+  stacked = false,
+}: {
+  label: string;
+  children: React.ReactNode;
+  stacked?: boolean;
+}) {
   const { colors } = useTheme();
+  if (stacked) {
+    return (
+      <View style={{ marginBottom: spacing.lg }}>
+        <Text style={[textStyles.body, { color: colors.textPrimary, marginBottom: spacing.sm }]}>{label}</Text>
+        {children}
+      </View>
+    );
+  }
   return (
     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.lg }}>
       <Text style={[textStyles.body, { color: colors.textPrimary, flexShrink: 1 }]}>{label}</Text>
@@ -214,7 +230,7 @@ function OptionToggle<T extends string | number>({
 }) {
   const { colors } = useTheme();
   return (
-    <View style={{ flexDirection: 'row' }}>
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
       {options.map(({ label, value: v }) => (
         <Text
           key={v}
@@ -229,7 +245,6 @@ function OptionToggle<T extends string | number>({
               borderColor: value === v ? colors.accent : colors.hairlines[1],
               paddingHorizontal: spacing.lg,
               paddingVertical: spacing.xs,
-              marginLeft: spacing.sm,
               fontSize: 12,
             },
           ]}

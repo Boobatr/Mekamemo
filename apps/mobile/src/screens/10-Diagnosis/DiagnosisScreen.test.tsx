@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent, screen } from '@testing-library/react-native';
 import { renderWithProviders } from '../../test-utils/renderWithProviders';
 import { DiagnosisScreen } from './DiagnosisScreen';
+import { mockDiagnosis } from '../../mocks/mockData';
 
 describe('DiagnosisScreen', () => {
   it('always shows the confirm-with-garage disclaimer', async () => {
@@ -30,5 +31,28 @@ describe('DiagnosisScreen', () => {
 
     expect(onRequestQuotes).toHaveBeenCalledTimes(1);
     expect(onAddToCalendar).toHaveBeenCalledTimes(1);
+  });
+
+  it('forwards a tap on a nearby garage', async () => {
+    const onSelectGarage = jest.fn();
+    await renderWithProviders(<DiagnosisScreen onSelectGarage={onSelectGarage} />, {
+      withNavigationContainer: false,
+    });
+
+    await fireEvent.press(screen.getByTestId('diagnosis-garage-garage-precision'));
+    expect(onSelectGarage).toHaveBeenCalledWith('garage-precision');
+  });
+
+  it('shows the quote count on the request-quotes button and disables it when no garages are found', async () => {
+    await renderWithProviders(<DiagnosisScreen />, { withNavigationContainer: false });
+    expect(screen.getByText('Demander 2 soumissions')).toBeTruthy();
+    expect(screen.getByTestId('request-quotes-button').props.accessibilityState.disabled).toBe(false);
+
+    await renderWithProviders(
+      <DiagnosisScreen diagnosis={{ ...mockDiagnosis, availableGarages: [] }} />,
+      { withNavigationContainer: false },
+    );
+    expect(screen.getByTestId('request-quotes-button').props.accessibilityState.disabled).toBe(true);
+    expect(screen.getByText("Aucun garage trouvé pour l'instant.")).toBeTruthy();
   });
 });
