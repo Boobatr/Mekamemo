@@ -40,7 +40,18 @@ export function createVehicle(input: CreateVehicleInput): Promise<Vehicle> {
   return apiPost('/vehicles', input);
 }
 
-export function updateVehicle(id: string, input: { usageType?: string; photoUrl?: string }): Promise<Vehicle> {
+export interface UpdateVehicleInput {
+  usageType?: 'city' | 'highway' | 'mixed';
+  photoUrl?: string;
+  vin?: string;
+  make?: string;
+  model?: string;
+  trim?: string;
+  year?: number;
+  engine?: string;
+}
+
+export function updateVehicle(id: string, input: UpdateVehicleInput): Promise<Vehicle> {
   return apiPatch(`/vehicles/${id}`, input);
 }
 

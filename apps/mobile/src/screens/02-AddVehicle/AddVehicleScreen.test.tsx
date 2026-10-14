@@ -48,7 +48,11 @@ describe('AddVehicleScreen', () => {
 
     expect(onGenerateCalendar).toHaveBeenCalledWith({
       vin: VALID_VIN,
-      decoded: { make: 'Toyota', model: 'RAV4 LE', year: 2021, engine: '2,5 L I4' },
+      make: 'Toyota',
+      model: 'RAV4 LE',
+      year: 2021,
+      engine: '2,5 L I4',
+      trim: undefined,
       odometerKm: 64200,
     });
   });
@@ -59,5 +63,52 @@ describe('AddVehicleScreen', () => {
 
     await fireEvent.changeText(screen.getByTestId('input-vin'), '2T3W1RFV8MW');
     expect(decodeVin).not.toHaveBeenCalled();
+  });
+
+  it('lets the user switch to manual entry when they have no VIN', async () => {
+    const onGenerateCalendar = jest.fn();
+    await renderWithProviders(
+      <AddVehicleScreen decodeVin={jest.fn()} onGenerateCalendar={onGenerateCalendar} />,
+    );
+
+    expect(screen.getByTestId('generate-calendar-button').props.accessibilityState.disabled).toBe(
+      true,
+    );
+
+    await fireEvent.press(screen.getByTestId('switch-to-manual-entry'));
+    expect(screen.queryByTestId('input-vin')).toBeNull();
+    expect(screen.getByTestId('generate-calendar-button').props.accessibilityState.disabled).toBe(
+      true,
+    );
+
+    await fireEvent.changeText(screen.getByTestId('input-make'), 'Honda');
+    await fireEvent.changeText(screen.getByTestId('input-model'), 'Civic');
+    await fireEvent.changeText(screen.getByTestId('input-year'), '2018');
+    await fireEvent.changeText(screen.getByTestId('input-odometer'), '80000');
+
+    expect(screen.getByTestId('generate-calendar-button').props.accessibilityState.disabled).toBe(
+      false,
+    );
+
+    await fireEvent.press(screen.getByTestId('generate-calendar-button'));
+    expect(onGenerateCalendar).toHaveBeenCalledWith({
+      make: 'Honda',
+      model: 'Civic',
+      year: 2018,
+      engine: undefined,
+      odometerKm: 80000,
+    });
+  });
+
+  it('can switch back from manual entry to VIN entry', async () => {
+    await renderWithProviders(
+      <AddVehicleScreen decodeVin={jest.fn()} onGenerateCalendar={jest.fn()} />,
+    );
+
+    await fireEvent.press(screen.getByTestId('switch-to-manual-entry'));
+    await fireEvent.press(screen.getByTestId('switch-to-vin-entry'));
+
+    expect(screen.getByTestId('input-vin')).toBeTruthy();
+    expect(screen.queryByTestId('input-make')).toBeNull();
   });
 });

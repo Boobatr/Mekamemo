@@ -89,6 +89,51 @@ describe('SettingsScreen', () => {
     expect(screen.getByText(/Véhicules illimités/)).toBeTruthy();
   });
 
+  it('lets the user edit and save their name, phone, and postal code', async () => {
+    const onSaveProfile = jest.fn();
+    await renderWithProviders(
+      <SettingsScreen
+        userName="Marc Lavoie"
+        userPhone="+1 514 555 0142"
+        userPostalCode="H2X 1Y4"
+        onSaveProfile={onSaveProfile}
+      />,
+      { withNavigationContainer: false },
+    );
+
+    await fireEvent.press(screen.getByTestId('edit-profile'));
+
+    expect(screen.getByTestId('input-edit-fullName').props.value).toBe('Marc Lavoie');
+    expect(screen.getByTestId('input-edit-phone').props.value).toBe('+1 514 555 0142');
+    expect(screen.getByTestId('input-edit-postalCode').props.value).toBe('H2X 1Y4');
+
+    await fireEvent.changeText(screen.getByTestId('input-edit-phone'), '+1 514 555 9999');
+    await fireEvent.press(screen.getByTestId('save-edit-profile'));
+
+    expect(onSaveProfile).toHaveBeenCalledWith({
+      fullName: 'Marc Lavoie',
+      phone: '+1 514 555 9999',
+      postalCode: 'H2X 1Y4',
+    });
+    expect(screen.queryByTestId('profile-edit')).toBeNull();
+  });
+
+  it('discards changes when cancelling the profile edit', async () => {
+    const onSaveProfile = jest.fn();
+    await renderWithProviders(
+      <SettingsScreen userName="Marc Lavoie" onSaveProfile={onSaveProfile} />,
+      { withNavigationContainer: false },
+    );
+
+    await fireEvent.press(screen.getByTestId('edit-profile'));
+    await fireEvent.changeText(screen.getByTestId('input-edit-fullName'), 'Someone Else');
+    await fireEvent.press(screen.getByTestId('cancel-edit-profile'));
+
+    expect(onSaveProfile).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('profile-edit')).toBeNull();
+    expect(screen.getByText('Marc Lavoie')).toBeTruthy();
+  });
+
   it('triggers logout', async () => {
     const onLogout = jest.fn();
     await renderWithProviders(<SettingsScreen onLogout={onLogout} />, { withNavigationContainer: false });

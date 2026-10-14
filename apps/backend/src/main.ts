@@ -6,7 +6,8 @@ import { UPLOADS_DIR } from './media/local-disk-storage.provider';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  const corsOrigin = process.env.CORS_ORIGIN?.split(',').map((origin) => origin.trim());
+  const corsOriginEnv = process.env.CORS_ORIGIN?.trim();
+  const corsOrigin = corsOriginEnv ? corsOriginEnv.split(',').map((origin) => origin.trim()) : undefined;
   app.enableCors({ origin: corsOrigin ?? true });
   app.useGlobalPipes(
     new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }),

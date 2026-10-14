@@ -20,9 +20,12 @@ export function SettingsContainer({ onLoggedOut }: SettingsContainerProps) {
     <SettingsScreen
       userName={profile?.fullName}
       userEmail={profile?.email}
+      userPhone={profile?.phone}
+      userPostalCode={profile?.postalCode}
       isPlus={subscription?.plan === 'mekamemo_plus'}
       themeMode={themeMode}
       onChangeTheme={setThemeMode}
+      onSaveProfile={(data) => updateProfile.mutate(data)}
       onChangeLanguage={(language) => updateProfile.mutate({ language })}
       onChangeUnits={(units) => updateProfile.mutate({ units })}
       onToggleAutoContact={(value) => updateProfile.mutate({ autoContactGarages: value })}

@@ -24,15 +24,15 @@ export function AddVehicleContainer({ onDone, onBack }: AddVehicleContainerProps
           return null;
         }
       }}
-      onGenerateCalendar={async ({ vin, decoded, odometerKm }) => {
+      onGenerateCalendar={async ({ vin, make, model, year, engine, trim, odometerKm }) => {
         try {
           const vehicle = await createVehicle.mutateAsync({
             vin,
-            make: decoded.make,
-            model: decoded.model,
-            trim: decoded.trim ?? undefined,
-            year: decoded.year,
-            engine: decoded.engine ?? undefined,
+            make,
+            model,
+            trim,
+            year,
+            engine,
             usageType: 'mixed',
             odometerKm,
           });

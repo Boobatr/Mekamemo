@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Switch, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Screen, Card, Button } from '../../components';
+import { Screen, Card, Button, Field } from '../../components';
 import { useTheme } from '../../theme';
 import { textStyles } from '../../theme/typography';
 import { spacing } from '../../theme/spacing';
@@ -11,9 +11,11 @@ import { ThemeMode } from '../../theme';
 interface SettingsScreenProps {
   userName?: string;
   userEmail?: string;
+  userPhone?: string;
+  userPostalCode?: string;
   isPlus?: boolean;
   planPriceLabel?: string;
-  onEditProfile?: () => void;
+  onSaveProfile?: (profile: { fullName: string; phone: string; postalCode: string }) => void;
   onChangeLanguage?: (language: 'fr' | 'en') => void;
   onChangeUnits?: (units: 'km' | 'mi') => void;
   themeMode?: ThemeMode;
@@ -31,9 +33,11 @@ interface SettingsScreenProps {
 export function SettingsScreen({
   userName = mockUser.fullName,
   userEmail = mockUser.email,
+  userPhone = mockUser.phone,
+  userPostalCode = mockUser.postalCode,
   isPlus = false,
   planPriceLabel,
-  onEditProfile = () => {},
+  onSaveProfile = () => {},
   onChangeLanguage = () => {},
   onChangeUnits = () => {},
   themeMode = 'dark',
@@ -55,6 +59,23 @@ export function SettingsScreen({
   const [autoContact, setAutoContact] = useState(true);
   const [voiceFallback, setVoiceFallback] = useState(false);
 
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [editFullName, setEditFullName] = useState(userName);
+  const [editPhone, setEditPhone] = useState(userPhone);
+  const [editPostalCode, setEditPostalCode] = useState(userPostalCode);
+
+  function startEditingProfile() {
+    setEditFullName(userName);
+    setEditPhone(userPhone);
+    setEditPostalCode(userPostalCode);
+    setIsEditingProfile(true);
+  }
+
+  function saveProfile() {
+    onSaveProfile({ fullName: editFullName, phone: editPhone, postalCode: editPostalCode });
+    setIsEditingProfile(false);
+  }
+
   const initials = userName
     .split(' ')
     .map((part) => part[0])
@@ -67,27 +88,69 @@ export function SettingsScreen({
         {t('settings.title')}
       </Text>
 
-      <Card withMarks={false} testID="profile-summary" style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <View
-          style={{
-            width: 40,
-            height: 40,
-            backgroundColor: colors.accent,
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginRight: spacing.lg,
-          }}
-        >
-          <Text style={[textStyles.button, { color: '#ffffff', fontSize: 14 }]}>{initials}</Text>
-        </View>
-        <View style={{ flex: 1 }}>
-          <Text style={[textStyles.body, { color: colors.textPrimary }]}>{userName}</Text>
-          <Text style={[textStyles.bodySecondary, { color: colors.textMuted }]}>{userEmail}</Text>
-        </View>
-        <Text onPress={onEditProfile} testID="edit-profile" style={[textStyles.button, { color: colors.accentOnBackground }]}>
-          ›
-        </Text>
-      </Card>
+      {isEditingProfile ? (
+        <Card withMarks={false} testID="profile-edit">
+          <Field
+            label={t('onboarding.profile.fullName')}
+            value={editFullName}
+            onChangeText={setEditFullName}
+            testID="input-edit-fullName"
+          />
+          <Field
+            label={t('onboarding.profile.phone')}
+            value={editPhone}
+            onChangeText={setEditPhone}
+            keyboardType="phone-pad"
+            testID="input-edit-phone"
+          />
+          <Field
+            label={t('onboarding.profile.postalCode')}
+            value={editPostalCode}
+            onChangeText={setEditPostalCode}
+            autoCapitalize="characters"
+            testID="input-edit-postalCode"
+          />
+          <View style={{ flexDirection: 'row', gap: spacing.md }}>
+            <View style={{ flex: 1 }}>
+              <Button
+                label={t('common.cancel')}
+                variant="secondary"
+                testID="cancel-edit-profile"
+                onPress={() => setIsEditingProfile(false)}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Button label={t('common.save')} testID="save-edit-profile" onPress={saveProfile} />
+            </View>
+          </View>
+        </Card>
+      ) : (
+        <Card withMarks={false} testID="profile-summary" style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View
+            style={{
+              width: 40,
+              height: 40,
+              backgroundColor: colors.accent,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginRight: spacing.lg,
+            }}
+          >
+            <Text style={[textStyles.button, { color: '#ffffff', fontSize: 14 }]}>{initials}</Text>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={[textStyles.body, { color: colors.textPrimary }]}>{userName}</Text>
+            <Text style={[textStyles.bodySecondary, { color: colors.textMuted }]}>{userEmail}</Text>
+          </View>
+          <Text
+            onPress={startEditingProfile}
+            testID="edit-profile"
+            style={[textStyles.button, { color: colors.accentOnBackground }]}
+          >
+            ›
+          </Text>
+        </Card>
+      )}
 
       <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.md }]}>
         {t('settings.preferences')}

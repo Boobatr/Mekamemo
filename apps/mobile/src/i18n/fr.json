@@ -39,10 +39,14 @@
       "model": "Modèle",
       "year": "Année",
       "engine": "Moteur",
+      "engineOptional": "Moteur (facultatif)",
       "odometer": "Kilométrage",
       "usage": "Usage",
       "photoOptional": "Photo du véhicule (facultatif)",
-      "generateCalendar": "Générer le calendrier"
+      "generateCalendar": "Générer le calendrier",
+      "noVinLink": "Je n'ai pas le NIV — entrer les informations manuellement",
+      "useVinLink": "J'ai le NIV — le saisir plutôt",
+      "manualEntryNote": "Le NIV pourra être ajouté plus tard ; ces informations suffisent pour générer le calendrier d'entretien."
     }
   },
   "dashboard": {

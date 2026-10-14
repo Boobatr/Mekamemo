@@ -39,10 +39,14 @@
       "model": "Model",
       "year": "Year",
       "engine": "Engine",
+      "engineOptional": "Engine (optional)",
       "odometer": "Mileage",
       "usage": "Usage",
       "photoOptional": "Vehicle photo (optional)",
-      "generateCalendar": "Generate calendar"
+      "generateCalendar": "Generate calendar",
+      "noVinLink": "I don't have the VIN — enter the info manually",
+      "useVinLink": "I have the VIN — enter it instead",
+      "manualEntryNote": "The VIN can be added later; this information is enough to generate the maintenance calendar."
     }
   },
   "dashboard": {
