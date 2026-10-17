@@ -5,7 +5,13 @@ import type { AuthenticatedUser } from '../common/decorators/current-user.decora
 import { PrismaService } from '../prisma/prisma.service';
 import { GaragesService } from './garages.service';
 import { SearchGaragesDto } from './dto/search-garages.dto';
-import { buildFallbackSummary, extractSpecialtyKeyword } from './garage-search-summary.util';
+import { GeocodingError } from '../geocoding/geocoding-provider.interface';
+import { MONTREAL_DOWNTOWN } from '../geocoding/fixed-geocoding.provider';
+import {
+  buildFallbackSummary,
+  buildGeocodeFailureSummary,
+  extractSpecialtyKeyword,
+} from './garage-search-summary.util';
 
 @UseGuards(JwtAuthGuard)
 @Controller('garages')
@@ -19,11 +25,24 @@ export class GaragesController {
   async search(@CurrentUser() user: AuthenticatedUser, @Query() dto: SearchGaragesDto) {
     const profile = await this.prisma.user.findUniqueOrThrow({ where: { id: user.id } });
     const specialty = extractSpecialtyKeyword(dto.query);
-    const { origin, results } = await this.garagesService.searchNearPostalCode(
-      profile.postalCode,
-      profile.searchRadiusKm,
-      specialty,
-    );
+
+    let search;
+    try {
+      search = await this.garagesService.searchNearPostalCode(
+        profile.postalCode,
+        profile.searchRadiusKm,
+        specialty,
+      );
+    } catch (err) {
+      if (!(err instanceof GeocodingError)) throw err;
+      // An unknown postal code isn't a server fault: say so in the chat instead of failing the screen.
+      return {
+        assistantSummary: buildGeocodeFailureSummary(profile.postalCode, profile.language),
+        origin: MONTREAL_DOWNTOWN,
+        results: [],
+      };
+    }
+    const { origin, results } = search;
 
     return {
       assistantSummary: buildFallbackSummary(results, profile.searchRadiusKm, profile.language),

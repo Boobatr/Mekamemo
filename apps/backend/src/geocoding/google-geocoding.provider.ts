@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { GeocodingProvider, GeoPoint } from './geocoding-provider.interface';
+import { GeocodingError, GeocodingProvider, GeoPoint } from './geocoding-provider.interface';
 
 @Injectable()
 export class GoogleGeocodingProvider implements GeocodingProvider {
@@ -14,7 +14,7 @@ export class GoogleGeocodingProvider implements GeocodingProvider {
       results?: { geometry: { location: GeoPoint } }[];
     };
     const location = body.results?.[0]?.geometry.location;
-    if (!location) throw new Error(`Could not geocode postal code ${postalCode}`);
+    if (!location) throw new GeocodingError(postalCode);
     return location;
   }
 }

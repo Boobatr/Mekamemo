@@ -88,8 +88,15 @@ export function GarageSearchScreen({
                   {garage.name}
                 </Text>
                 <Text style={[textStyles.bodySecondary, { color: colors.textSecondary }]}>
-                  {garage.distanceKm} km · {garage.rating} ★ · {(garage.priceCents / 100).toFixed(0)} $ ·{' '}
-                  {garage.contactMethod === 'email' ? 'courriel' : 'téléphone'}
+                  {[
+                    `${garage.distanceKm} km`,
+                    // Real-world garages often have no rating or price yet: say nothing rather than "0 ★".
+                    garage.rating > 0 ? `${garage.rating} ★` : null,
+                    garage.priceCents > 0 ? `${(garage.priceCents / 100).toFixed(0)} $` : null,
+                    garage.contactMethod === 'email' ? 'courriel' : 'téléphone',
+                  ]
+                    .filter(Boolean)
+                    .join(' · ')}
                 </Text>
               </View>
               <Text style={[textStyles.button, { color: colors.accentOnBackground, fontSize: 12, flexShrink: 0 }]}>
@@ -125,6 +132,13 @@ export function GarageSearchScreen({
           <Send size={20} strokeWidth={1.5} color={colors.accentOnBackground} />
         </TouchableOpacity>
       </View>
+
+      <Text
+        testID="osm-attribution"
+        style={[textStyles.bodySecondary, { color: colors.textMuted, textAlign: 'center', fontSize: 11 }]}
+      >
+        {t('garageSearch.osmAttribution')}
+      </Text>
     </Screen>
   );
 }

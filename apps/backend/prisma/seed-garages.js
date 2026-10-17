@@ -1,4 +1,5 @@
-/** Shared garage fixtures — used by both the e2e global-setup and the dev seed script. */
+/** Shared garage fixtures — used by both the e2e global-setup and the dev seed script.
+ * Tagged `demo` so real-garage discovery (OpenStreetMap) can hide them in production. */
 const GARAGES = [
   {
     name: 'Garage Précision',
@@ -11,6 +12,7 @@ const GARAGES = [
     rating: 4.8,
     reviewCount: 212,
     certifications: ['CAA'],
+    source: 'demo',
   },
   {
     name: 'Atelier Rosemont',
@@ -23,6 +25,7 @@ const GARAGES = [
     rating: 4.6,
     reviewCount: 140,
     certifications: [],
+    source: 'demo',
   },
   {
     name: 'Mécanique Papineau',
@@ -35,6 +38,7 @@ const GARAGES = [
     rating: 4.4,
     reviewCount: 88,
     certifications: [],
+    source: 'demo',
   },
 ];
 

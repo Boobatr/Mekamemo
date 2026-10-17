@@ -348,7 +348,10 @@ model Garage {
   reviewCount     Int?
   hours           Json?
   certifications  String[]
+  /// "manual" (entered by hand), "osm" (imported from OpenStreetMap) or "demo" (sample
+  /// fixtures, hidden from search once real garage discovery is on).
   source          String   @default("manual")
+  /// Stable id at the source, e.g. "node/123456" for OpenStreetMap.
   externalPlaceId String?
   createdAt       DateTime @default(now())
 
@@ -356,7 +359,19 @@ model Garage {
   bookings            Booking[]
   serviceHistoryEntries ServiceHistoryEntry[]
 
+  @@unique([source, externalPlaceId])
   @@map("garages")
+}
+
+/// Remembers which search areas were already pulled from OpenStreetMap, so the public
+/// servers are queried once per area and month instead of on every search.
+model GarageAreaFetch {
+  cellKey   String   @id
+  fetchedAt DateTime @default(now())
+  /// true when only the capped fallback source answered, so the area is refreshed sooner.
+  partial   Boolean  @default(false)
+
+  @@map("garage_area_fetches")
 }
 
 model QuoteRequest {

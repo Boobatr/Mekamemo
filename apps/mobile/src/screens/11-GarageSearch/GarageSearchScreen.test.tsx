@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent, screen } from '@testing-library/react-native';
 import { renderWithProviders } from '../../test-utils/renderWithProviders';
 import { GarageSearchScreen } from './GarageSearchScreen';
+import { mockGarages } from '../../mocks/mockData';
 
 describe('GarageSearchScreen', () => {
   it('lists garage results ordered as provided', async () => {
@@ -9,6 +10,23 @@ describe('GarageSearchScreen', () => {
     expect(screen.getByText('Garage Précision')).toBeTruthy();
     expect(screen.getByText('Atelier Rosemont')).toBeTruthy();
     expect(screen.getByText('Mécanique Papineau')).toBeTruthy();
+  });
+
+  it('shows rating and price when a garage has them, and omits them when it has none', async () => {
+    const real = { ...mockGarages[0], id: 'osm-1', name: 'Garage OSM', rating: 0, reviewCount: 0, priceCents: 0 };
+    await renderWithProviders(<GarageSearchScreen results={[mockGarages[0], real] as never} />, {
+      withNavigationContainer: false,
+    });
+
+    expect(screen.getByText(/4\.8 ★ · 95 \$/)).toBeTruthy();
+    expect(screen.getByText(`${real.distanceKm} km · courriel`)).toBeTruthy();
+    expect(screen.queryByText(/0 ★/)).toBeNull();
+  });
+
+  it('credits OpenStreetMap for the garage data', async () => {
+    await renderWithProviders(<GarageSearchScreen />, { withNavigationContainer: false });
+    expect(screen.getByTestId('osm-attribution')).toBeTruthy();
+    expect(screen.getByText(/OpenStreetMap/)).toBeTruthy();
   });
 
   it('forwards garage selection', async () => {

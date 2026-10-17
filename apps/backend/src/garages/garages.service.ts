@@ -2,6 +2,8 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { GEOCODING_PROVIDER, distanceKm } from '../geocoding/geocoding-provider.interface';
 import type { GeocodingProvider, GeoPoint } from '../geocoding/geocoding-provider.interface';
+import { GARAGE_DISCOVERY } from '../garage-discovery/garage-discovery.interface';
+import type { GarageDiscovery } from '../garage-discovery/garage-discovery.interface';
 
 export interface GarageWithDistance {
   id: string;
@@ -19,11 +21,15 @@ export interface GarageWithDistance {
   hours: unknown;
 }
 
+/** In a dense city a 50 km radius holds hundreds of garages; the nearest ones are what's useful. */
+const MAX_RESULTS = 30;
+
 @Injectable()
 export class GaragesService {
   constructor(
     private readonly prisma: PrismaService,
     @Inject(GEOCODING_PROVIDER) private readonly geocoding: GeocodingProvider,
+    @Inject(GARAGE_DISCOVERY) private readonly discovery: GarageDiscovery,
   ) {}
 
   async searchNearPostalCode(
@@ -32,8 +38,21 @@ export class GaragesService {
     specialtyKeyword?: string,
   ): Promise<{ origin: GeoPoint; results: GarageWithDistance[] }> {
     const origin = await this.geocoding.geocode(postalCode);
-    const garages = await this.prisma.garage.findMany();
+    await this.discovery.ensureNear(origin, radiusKm);
 
+    // Cheap bounding box in SQL first, exact distance in memory after.
+    const dLat = radiusKm / 111;
+    const dLng = radiusKm / (111 * Math.max(Math.cos((origin.lat * Math.PI) / 180), 0.01));
+    const garages = await this.prisma.garage.findMany({
+      where: {
+        lat: { gte: origin.lat - dLat, lte: origin.lat + dLat },
+        lng: { gte: origin.lng - dLng, lte: origin.lng + dLng },
+        // Sample garages are only for development: hide them once real garages are discovered.
+        ...(this.discovery.enabled ? { source: { not: 'demo' } } : {}),
+      },
+    });
+
+    const keyword = specialtyKeyword?.toLowerCase();
     const results = garages
       .map((g) => ({
         id: g.id,
@@ -51,12 +70,11 @@ export class GaragesService {
         hours: g.hours,
       }))
       .filter((g) => g.distanceKm <= radiusKm)
-      .filter(
-        (g) =>
-          !specialtyKeyword ||
-          g.specialties.some((s) => s.toLowerCase().includes(specialtyKeyword.toLowerCase())),
-      )
-      .sort((a, b) => a.distanceKm - b.distanceKm);
+      // OpenStreetMap rarely lists services: a garage with none listed stays in, since
+      // dropping it would hide most real garages from every specialty search.
+      .filter((g) => !keyword || g.specialties.length === 0 || g.specialties.some((s) => s.toLowerCase().includes(keyword)))
+      .sort((a, b) => a.distanceKm - b.distanceKm)
+      .slice(0, MAX_RESULTS);
 
     return { origin, results };
   }

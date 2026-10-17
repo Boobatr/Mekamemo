@@ -28,6 +28,11 @@ par API. C'est la manière standard — et gratuite — de faire tourner ce genr
 - **Sans clé Cloudinary** : les photos/factures uploadées disparaissent au prochain
   redémarrage de Render (le disque n'est pas persistant). Avec Cloudinary (gratuit,
   étape 4), elles sont conservées définitivement.
+- **Garages** : la recherche utilise OpenStreetMap (gratuit, sans clé, activé par
+  `OSM_ENABLED=true` dans `render.yaml`). Les garages viennent de contributeurs :
+  la couverture varie selon les régions et beaucoup n'ont ni courriel ni note.
+  Le premier chargement d'une nouvelle zone prend quelques secondes de plus, puis
+  les garages sont mémorisés en base pendant 30 jours.
 - **Clés IA optionnelles** (Anthropic, Google Places, etc.) : déjà couvertes dans
   [HANDOFF.md](HANDOFF.md) section 3 — l'app fonctionne très bien sans elles
   (replis déterministes), à ajouter plus tard si souhaité.

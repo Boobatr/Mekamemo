@@ -165,7 +165,8 @@
     "assistant": "Assistant",
     "placeholder": "Ask the assistant a question…",
     "resultsNear": "{{count}} garages within {{radius}} km",
-    "mapCaption": "Map · {{count}} garages within {{radius}} km"
+    "mapCaption": "Map · {{count}} garages within {{radius}} km",
+    "osmAttribution": "Garage data © OpenStreetMap contributors"
   },
   "garageProfile": {
     "certified": "CAA certified",

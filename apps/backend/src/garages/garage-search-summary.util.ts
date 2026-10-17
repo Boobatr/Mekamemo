@@ -33,3 +33,9 @@ export function buildFallbackSummary(
     ? `${count} garage${count > 1 ? 's' : ''} trouvé${count > 1 ? 's' : ''} dans ${radiusKm} km. Voici les plus proches.`
     : `${count} garage${count > 1 ? 's' : ''} found within ${radiusKm} km. Here are the closest ones.`;
 }
+
+export function buildGeocodeFailureSummary(postalCode: string, language: 'fr' | 'en'): string {
+  return language === 'fr'
+    ? `Je ne trouve pas le code postal « ${postalCode} ». Vérifiez-le dans Réglages pour voir les garages près de chez vous.`
+    : `I can't find the postal code "${postalCode}". Check it in Settings to see garages near you.`;
+}

@@ -48,13 +48,16 @@ export function GarageProfileScreen({
         }}
       />
       <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.sm }]}>
-        {garage.distanceKm} KM · {garage.neighbourhood.toUpperCase()}
+        {garage.distanceKm > 0 ? `${garage.distanceKm} KM · ` : ''}
+        {garage.neighbourhood.toUpperCase()}
       </Text>
       <Text style={[textStyles.onboardingTitle, { color: colors.textPrimary, marginBottom: spacing.sm }]}>
         {garage.name}
       </Text>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: spacing.xxl }}>
-        <Tag label={`${garage.rating} ★ · ${garage.reviewCount} ${t('garageProfile.reviews')}`} tone="accent" />
+        {garage.rating > 0 ? (
+          <Tag label={`${garage.rating} ★ · ${garage.reviewCount} ${t('garageProfile.reviews')}`} tone="accent" />
+        ) : null}
         {garage.certifiedCaa ? <Tag label={t('garageProfile.certified')} tone="accent" /> : null}
         {garage.openUntil ? <Tag label={`${t('garageProfile.open')} · ${garage.openUntil}`} /> : null}
       </View>

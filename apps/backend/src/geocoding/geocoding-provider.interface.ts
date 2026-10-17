@@ -6,7 +6,14 @@ export interface GeoPoint {
 }
 
 export interface GeocodingProvider {
+  /** Rejects with a GeocodingError when the postal code can't be located. */
   geocode(postalCode: string): Promise<GeoPoint>;
+}
+
+export class GeocodingError extends Error {
+  constructor(postalCode: string) {
+    super(`Could not geocode postal code ${postalCode}`);
+  }
 }
 
 /** Haversine distance in km — used by both the fallback and real search providers. */

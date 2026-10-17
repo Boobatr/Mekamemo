@@ -30,7 +30,8 @@ Toutes les fonctionnalités concernées ont un **repli fonctionnel et testé** e
 Ces valeurs se placent dans `apps/backend/.env` (actuellement toutes vides) :
 
 - [ ] `ANTHROPIC_API_KEY` — active la génération IA du calendrier d'entretien (véhicules sans fiche constructeur en base) et le diagnostic de panne multimodal. Sans elle : intervalles génériques de l'industrie + repli déterministe pour le diagnostic.
-- [ ] `GOOGLE_PLACES_API_KEY` — géocodage réel de l'adresse de l'utilisateur pour la recherche de garages à proximité. Sans elle : position fixe (Montréal).
+- [ ] `GOOGLE_PLACES_API_KEY` — optionnelle (carte bancaire requise chez Google). Géocodage Google du code postal. Sans elle : OpenStreetMap gratuit si `OSM_ENABLED=true` (recommandé, aucune clé), sinon position fixe (Montréal).
+- [x] `OSM_ENABLED=true` — recherche de garages réels via OpenStreetMap (Nominatim + Overpass, gratuit, sans clé). Les garages trouvés sont enregistrés en base ; les 3 garages d'exemple (`source = 'demo'`) sont alors masqués.
 - [ ] `EMAIL_PROVIDER_API_KEY` (Resend) — envoi réel des courriels aux garages pour les demandes de soumission. Sans elle : les courriels sont journalisés, pas envoyés.
 - [ ] `TWILIO_ACCOUNT_SID` / `TWILIO_AUTH_TOKEN` / `TWILIO_FROM_NUMBER` — appels vocaux automatisés vers les garages sans courriel (fonctionnalité MEKAMEMO+). Sans elles : appel non déclenché, journalisé seulement.
 - [ ] `REVENUECAT_API_KEY` / `REVENUECAT_WEBHOOK_SECRET` — gestion réelle des abonnements MEKAMEMO+ (achat in-app, renouvellement, webhook de statut). **À faire avant tout lancement payant.**
