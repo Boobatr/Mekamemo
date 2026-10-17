@@ -16,6 +16,15 @@ export function useUpdateProfile() {
   });
 }
 
+export function useChangePassword() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: usersApi.changePassword,
+    // Refresh the profile so `hasChosenPassword` flips for accounts that just set their first one.
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: profileKey }),
+  });
+}
+
 export function useSubscription() {
   return useQuery({ queryKey: subscriptionKey, queryFn: usersApi.getSubscription });
 }

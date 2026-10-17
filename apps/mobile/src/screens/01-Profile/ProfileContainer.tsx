@@ -3,31 +3,23 @@ import { Alert } from 'react-native';
 import { ProfileScreen } from './ProfileScreen';
 import { useRegister } from '../../hooks/useAuth';
 
-function generateLocalPassword(): string {
-  const segment = () => Math.random().toString(36).slice(2);
-  return `${segment()}${segment()}${Date.now().toString(36)}`;
-}
-
 interface ProfileContainerProps {
   onContinue: () => void;
+  onLogin?: () => void;
 }
 
-/**
- * The 15-screen mockup has no password field, so this generates one locally
- * and never surfaces it — the backend's real email/password auth stays
- * intact (useful for a future second-device/reinstall login screen), but
- * this device's first-run flow is effectively passwordless.
- */
-export function ProfileContainer({ onContinue }: ProfileContainerProps) {
+/** Account creation. The user picks their own password so they can sign back in on any device. */
+export function ProfileContainer({ onContinue, onLogin }: ProfileContainerProps) {
   const register = useRegister();
 
   return (
     <ProfileScreen
+      onLogin={onLogin}
       onContinue={async (profile) => {
         try {
           await register.mutateAsync({
             email: profile.email,
-            password: generateLocalPassword(),
+            password: profile.password,
             fullName: profile.fullName,
             phone: profile.phone,
             postalCode: profile.postalCode,

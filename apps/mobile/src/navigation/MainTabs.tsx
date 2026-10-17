@@ -1,9 +1,8 @@
 import React from 'react';
 import { Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationProp } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
-import { MainTabsParamList, RootStackParamList } from './types';
+import { MainTabsParamList } from './types';
 import { TabBarIOS } from './TabBarIOS';
 import { TabBarAndroid } from './TabBarAndroid';
 import { VehiclesStack } from './VehiclesStack';
@@ -13,7 +12,11 @@ import { SettingsContainer } from '../screens/15-Settings/SettingsContainer';
 
 const Tab = createBottomTabNavigator<MainTabsParamList>();
 
-export function MainTabs() {
+interface MainTabsProps {
+  onLoggedOut?: () => void;
+}
+
+export function MainTabs({ onLoggedOut = () => {} }: MainTabsProps) {
   const { t } = useTranslation();
 
   return (
@@ -25,10 +28,7 @@ export function MainTabs() {
       <Tab.Screen name="Calendar" component={CalendarStack} options={{ title: t('dashboard.tabs.calendar') }} />
       <Tab.Screen name="Garages" component={GaragesStack} options={{ title: t('dashboard.tabs.garages') }} />
       <Tab.Screen name="Settings" options={{ title: t('dashboard.tabs.settings') }}>
-        {({ navigation }) => {
-          const nav = navigation as unknown as NavigationProp<RootStackParamList>;
-          return <SettingsContainer onLoggedOut={() => nav.navigate('OnboardingProfile')} />;
-        }}
+        {() => <SettingsContainer onLoggedOut={onLoggedOut} />}
       </Tab.Screen>
     </Tab.Navigator>
   );

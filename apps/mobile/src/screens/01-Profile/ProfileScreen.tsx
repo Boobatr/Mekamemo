@@ -7,23 +7,28 @@ import { textStyles } from '../../theme/typography';
 import { spacing } from '../../theme/spacing';
 import { mockUser } from '../../mocks/mockData';
 
+const MIN_PASSWORD_LENGTH = 8;
+
 interface ProfileScreenProps {
   onContinue: (profile: {
     fullName: string;
     email: string;
+    password: string;
     phone: string;
     postalCode: string;
     searchRadiusKm: number;
     language: 'fr' | 'en';
   }) => void;
+  onLogin?: () => void;
 }
 
-export function ProfileScreen({ onContinue }: ProfileScreenProps) {
+export function ProfileScreen({ onContinue, onLogin }: ProfileScreenProps) {
   const { t, i18n } = useTranslation();
   const { colors } = useTheme();
 
   const [fullName, setFullName] = useState(mockUser.fullName);
   const [email, setEmail] = useState(mockUser.email);
+  const [password, setPassword] = useState('');
   const [phone, setPhone] = useState(mockUser.phone);
   const [postalCode, setPostalCode] = useState(mockUser.postalCode);
   const [radiusKm, setRadiusKm] = useState(mockUser.searchRadiusKm);
@@ -57,6 +62,19 @@ export function ProfileScreen({ onContinue }: ProfileScreenProps) {
           autoCapitalize="none"
           testID="input-email"
         />
+        <Field
+          label={t('onboarding.profile.password')}
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+          autoCapitalize="none"
+          autoCorrect={false}
+          autoComplete="new-password"
+          testID="input-password"
+        />
+        <Text style={[textStyles.bodySecondary, { color: colors.textMuted, marginTop: -spacing.md, marginBottom: spacing.xl }]}>
+          {t('onboarding.profile.passwordHint')}
+        </Text>
         <Field
           label={t('onboarding.profile.phone')}
           value={phone}
@@ -114,10 +132,25 @@ export function ProfileScreen({ onContinue }: ProfileScreenProps) {
       <Button
         label={t('common.continue')}
         testID="continue-button"
+        disabled={password.length < MIN_PASSWORD_LENGTH}
         onPress={() =>
-          onContinue({ fullName, email, phone, postalCode, searchRadiusKm: radiusKm, language })
+          onContinue({ fullName, email, password, phone, postalCode, searchRadiusKm: radiusKm, language })
         }
       />
+
+      {onLogin ? (
+        <Text
+          onPress={onLogin}
+          testID="login-link"
+          accessibilityRole="button"
+          style={[
+            textStyles.button,
+            { color: colors.accentOnBackground, fontSize: 13, textAlign: 'center', marginTop: spacing.xl },
+          ]}
+        >
+          {t('onboarding.profile.haveAccount')}
+        </Text>
+      ) : null}
 
       <Text
         style={[

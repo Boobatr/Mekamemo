@@ -23,9 +23,12 @@
       "subtitle": "Elles servent à personnaliser les courriels envoyés aux garages et à trouver les ateliers près de vous.",
       "fullName": "Nom complet",
       "email": "Courriel",
+      "password": "Mot de passe",
+      "passwordHint": "8 caractères minimum. Il vous servira à vous reconnecter sur un autre appareil.",
       "phone": "Téléphone",
       "postalCode": "Code postal",
       "radius": "Rayon",
+      "haveAccount": "J'ai déjà un compte — me connecter",
       "privacyNote": "Vos données restent sur votre appareil jusqu'à l'envoi d'une demande."
     },
     "vehicle": {
@@ -214,7 +217,11 @@
     "reportBreakdownNote": "Décrivez le problème — obtenez un diagnostic IA instantané.",
     "updateMileage": "Mettre à jour le kilométrage",
     "updateMileageNote": "Gardez vos projections d'entretien précises.",
-    "history": "Historique"
+    "history": "Historique",
+    "vinLabel": "Numéro de série (NIV)",
+    "vinMissing": "Non renseigné",
+    "addVin": "Ajouter le NIV",
+    "vinHint": "17 caractères (chiffres et lettres, sans I, O ni Q) — habituellement visible au bas du pare-brise ou sur la portière conducteur."
   },
   "settings": {
     "title": "Réglages",
@@ -236,6 +243,25 @@
     "manageSubscription": "Gérer l'abonnement",
     "privacy": "Données et confidentialité",
     "help": "Aide et contact",
-    "logout": "Se déconnecter"
+    "logout": "Se déconnecter",
+    "password": {
+      "change": "Changer le mot de passe",
+      "set": "Définir un mot de passe",
+      "current": "Mot de passe actuel",
+      "new": "Nouveau mot de passe",
+      "confirm": "Confirmer le nouveau mot de passe",
+      "hint": "8 caractères minimum.",
+      "legacyNote": "Votre compte a été créé sans mot de passe. Définissez-en un pour pouvoir vous reconnecter depuis un autre appareil.",
+      "mismatch": "Les deux mots de passe ne correspondent pas.",
+      "success": "Mot de passe enregistré."
+    }
+  },
+  "login": {
+    "title": "Connexion",
+    "subtitle": "Retrouvez votre compte avec votre courriel et votre mot de passe.",
+    "email": "Courriel",
+    "password": "Mot de passe",
+    "submit": "Se connecter",
+    "createAccount": "Pas encore de compte ? Créer un compte"
   }
 }

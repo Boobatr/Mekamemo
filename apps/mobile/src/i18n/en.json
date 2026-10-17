@@ -23,9 +23,12 @@
       "subtitle": "Used to personalize the emails sent to garages and to find shops near you.",
       "fullName": "Full name",
       "email": "Email",
+      "password": "Password",
+      "passwordHint": "At least 8 characters. You'll use it to sign back in on another device.",
       "phone": "Phone",
       "postalCode": "Postal code",
       "radius": "Radius",
+      "haveAccount": "I already have an account — sign in",
       "privacyNote": "Your data stays on your device until a request is sent."
     },
     "vehicle": {
@@ -214,7 +217,11 @@
     "reportBreakdownNote": "Describe the problem — get an instant AI diagnosis.",
     "updateMileage": "Update mileage",
     "updateMileageNote": "Keep your maintenance projections accurate.",
-    "history": "History"
+    "history": "History",
+    "vinLabel": "Vehicle identification number (VIN)",
+    "vinMissing": "Not provided",
+    "addVin": "Add the VIN",
+    "vinHint": "17 characters (letters and digits, no I, O or Q) — usually visible at the bottom of the windshield or on the driver's door jamb."
   },
   "settings": {
     "title": "Settings",
@@ -236,6 +243,25 @@
     "manageSubscription": "Manage subscription",
     "privacy": "Data and privacy",
     "help": "Help and contact",
-    "logout": "Log out"
+    "logout": "Log out",
+    "password": {
+      "change": "Change password",
+      "set": "Set a password",
+      "current": "Current password",
+      "new": "New password",
+      "confirm": "Confirm new password",
+      "hint": "At least 8 characters.",
+      "legacyNote": "Your account was created without a password. Set one to be able to sign back in from another device.",
+      "mismatch": "The two passwords don't match.",
+      "success": "Password saved."
+    }
+  },
+  "login": {
+    "title": "Sign in",
+    "subtitle": "Get back to your account with your email and password.",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "createAccount": "No account yet? Create one"
   }
 }

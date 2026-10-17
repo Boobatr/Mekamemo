@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from './types';
 import { MainTabs } from './MainTabs';
 import { getStoredToken } from '../services/auth-storage';
+import { LoginContainer } from '../screens/00-Login/LoginContainer';
 import { ProfileContainer } from '../screens/01-Profile/ProfileContainer';
 import { AddVehicleContainer } from '../screens/02-AddVehicle/AddVehicleContainer';
 
@@ -34,7 +35,18 @@ export function RootNavigator() {
         <>
           <Stack.Screen name="OnboardingProfile">
             {({ navigation }) => (
-              <ProfileContainer onContinue={() => navigation.navigate('OnboardingVehicle')} />
+              <ProfileContainer
+                onContinue={() => navigation.navigate('OnboardingVehicle')}
+                onLogin={() => navigation.navigate('Login')}
+              />
+            )}
+          </Stack.Screen>
+          <Stack.Screen name="Login">
+            {({ navigation }) => (
+              <LoginContainer
+                onLoggedIn={() => setOnboarded(true)}
+                onCreateAccount={() => navigation.navigate('OnboardingProfile')}
+              />
             )}
           </Stack.Screen>
           <Stack.Screen name="OnboardingVehicle">
@@ -42,7 +54,7 @@ export function RootNavigator() {
           </Stack.Screen>
         </>
       ) : (
-        <Stack.Screen name="MainTabs" component={MainTabs} />
+        <Stack.Screen name="MainTabs">{() => <MainTabs onLoggedOut={() => setOnboarded(false)} />}</Stack.Screen>
       )}
     </Stack.Navigator>
   );

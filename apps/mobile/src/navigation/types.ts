@@ -2,6 +2,7 @@ import type { MaintenanceTask } from '../services/maintenance';
 
 export type RootStackParamList = {
   OnboardingProfile: undefined;
+  Login: undefined;
   OnboardingVehicle: undefined;
   MainTabs: undefined;
 };

@@ -63,6 +63,8 @@ const mockTask = {
 
 beforeEach(() => {
   jest.mocked(authApi.register).mockResolvedValue({ accessToken: 'test-token', userId: 'user-1' });
+  jest.mocked(authApi.login).mockResolvedValue({ accessToken: 'test-token', userId: 'user-1' });
+  jest.mocked(authApi.logout).mockResolvedValue(undefined);
   jest.mocked(vehiclesApi.decodeVin).mockResolvedValue({
     make: 'Toyota',
     model: 'RAV4',
@@ -85,6 +87,7 @@ beforeEach(() => {
   jest.mocked(usersApi.getProfile).mockResolvedValue({
     id: 'user-1',
     email: 'marc.lavoie@courriel.ca',
+    hasChosenPassword: true,
     fullName: 'Marc Lavoie',
     phone: '+1 514 555 0142',
     postalCode: 'H2X 1Y4',
@@ -108,6 +111,7 @@ describe('RootNavigator end-to-end flow', () => {
 
     // Step 1: profile
     expect(screen.getByText('Vos informations')).toBeTruthy();
+    await fireEvent.changeText(screen.getByTestId('input-password'), 'motdepasse123');
     await fireEvent.press(screen.getByTestId('continue-button'));
     expect(authApi.register).toHaveBeenCalled();
 
@@ -126,6 +130,7 @@ describe('RootNavigator end-to-end flow', () => {
   it('navigates from the dashboard into a vehicle detail flow and back', async () => {
     await renderWithProviders(<RootNavigator />);
 
+    await fireEvent.changeText(screen.getByTestId('input-password'), 'motdepasse123');
     await fireEvent.press(screen.getByTestId('continue-button'));
     await fireEvent.changeText(screen.getByTestId('input-vin'), '2T3W1RFV8MW123456');
     await screen.findByTestId('decoded-card');
@@ -141,5 +146,45 @@ describe('RootNavigator end-to-end flow', () => {
     await fireEvent.press(screen.getByTestId('back-to-calendar'));
 
     await screen.findByText("Vidange d'huile + filtre");
+  });
+  it('registers with the password the user chose', async () => {
+    await renderWithProviders(<RootNavigator />);
+
+    await fireEvent.changeText(screen.getByTestId('input-password'), 'motdepasse123');
+    await fireEvent.press(screen.getByTestId('continue-button'));
+
+    // react-query passes its own context as a second argument, so look at the input only.
+    expect(jest.mocked(authApi.register).mock.calls[0][0]).toEqual(
+      expect.objectContaining({ email: 'marc.lavoie@courriel.ca', password: 'motdepasse123' }),
+    );
+  });
+
+  it('signs in to an existing account straight from the first screen', async () => {
+    await renderWithProviders(<RootNavigator />);
+
+    await fireEvent.press(screen.getByTestId('login-link'));
+    await fireEvent.changeText(screen.getByTestId('input-login-email'), 'marc.lavoie@courriel.ca');
+    await fireEvent.changeText(screen.getByTestId('input-login-password'), 'motdepasse123');
+    await fireEvent.press(screen.getByTestId('login-submit'));
+
+    expect(authApi.login).toHaveBeenCalledWith('marc.lavoie@courriel.ca', 'motdepasse123');
+    await screen.findByText('Mes véhicules');
+    await screen.findByText('Toyota RAV4 2021');
+  });
+
+  it('returns to the first screen after logging out', async () => {
+    await renderWithProviders(<RootNavigator />);
+
+    await fireEvent.press(screen.getByTestId('login-link'));
+    await fireEvent.changeText(screen.getByTestId('input-login-email'), 'marc.lavoie@courriel.ca');
+    await fireEvent.changeText(screen.getByTestId('input-login-password'), 'motdepasse123');
+    await fireEvent.press(screen.getByTestId('login-submit'));
+    await screen.findByText('Mes véhicules');
+
+    await fireEvent.press(screen.getByTestId('tab-Settings'));
+    await fireEvent.press(await screen.findByTestId('link-logout'));
+
+    await screen.findByText('Vos informations');
+    expect(authApi.logout).toHaveBeenCalled();
   });
 });

@@ -21,6 +21,44 @@ describe('VehicleDetailScreen', () => {
     expect(screen.getByText('Historique')).toBeTruthy();
   });
 
+  it('offers to add a VIN when the vehicle has none, and rejects malformed ones', async () => {
+    const onSaveVin = jest.fn();
+    await renderWithProviders(<VehicleDetailScreen vin={null} onSaveVin={onSaveVin} />, {
+      withNavigationContainer: false,
+    });
+
+    expect(screen.getByText('Non renseigné')).toBeTruthy();
+    await fireEvent.press(screen.getByTestId('edit-vin'));
+
+    // Too short, and "O" is never valid in a VIN.
+    await fireEvent.changeText(screen.getByTestId('input-edit-vin'), '2T3W1RFV8MW12345');
+    expect(screen.getByTestId('save-edit-vin').props.accessibilityState.disabled).toBe(true);
+    await fireEvent.changeText(screen.getByTestId('input-edit-vin'), '2T3W1RFV8MW12345O');
+    expect(screen.getByTestId('save-edit-vin').props.accessibilityState.disabled).toBe(true);
+
+    await fireEvent.changeText(screen.getByTestId('input-edit-vin'), '2t3w1rfv8mw123456');
+    expect(screen.getByTestId('save-edit-vin').props.accessibilityState.disabled).toBe(false);
+    await fireEvent.press(screen.getByTestId('save-edit-vin'));
+
+    expect(onSaveVin).toHaveBeenCalledWith('2T3W1RFV8MW123456');
+    expect(screen.queryByTestId('vin-edit-card')).toBeNull();
+  });
+
+  it('shows an existing VIN and lets the user cancel an edit', async () => {
+    const onSaveVin = jest.fn();
+    await renderWithProviders(<VehicleDetailScreen vin="2T3W1RFV8MW123456" onSaveVin={onSaveVin} />, {
+      withNavigationContainer: false,
+    });
+
+    expect(screen.getByText('2T3W1RFV8MW123456')).toBeTruthy();
+    await fireEvent.press(screen.getByTestId('edit-vin'));
+    expect(screen.getByTestId('input-edit-vin').props.value).toBe('2T3W1RFV8MW123456');
+    await fireEvent.press(screen.getByTestId('cancel-edit-vin'));
+
+    expect(onSaveVin).not.toHaveBeenCalled();
+    expect(screen.getByTestId('vin-card')).toBeTruthy();
+  });
+
   it('forwards the three navigation callbacks', async () => {
     const onReportBreakdown = jest.fn();
     const onUpdateMileage = jest.fn();

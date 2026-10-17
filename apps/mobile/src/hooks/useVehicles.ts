@@ -22,6 +22,14 @@ export function useCreateVehicle() {
   });
 }
 
+export function useUpdateVehicle(id: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (input: vehiclesApi.UpdateVehicleInput) => vehiclesApi.updateVehicle(id, input),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: vehicleKeys.all }),
+  });
+}
+
 export function useDecodeVin() {
   return useMutation({ mutationFn: vehiclesApi.decodeVin });
 }

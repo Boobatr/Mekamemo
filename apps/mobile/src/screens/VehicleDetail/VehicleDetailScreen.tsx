@@ -1,15 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { AlertTriangle, ChevronRight, Gauge, History } from 'lucide-react-native';
-import { Screen, ScreenHeader, Card } from '../../components';
+import { Screen, ScreenHeader, Card, Field, Button } from '../../components';
 import { useTheme } from '../../theme';
 import { textStyles } from '../../theme/typography';
 import { spacing } from '../../theme/spacing';
 
+/** 17 characters, letters and digits except I, O and Q (they're never used in a VIN). */
+const VIN_PATTERN = /^[A-HJ-NPR-Z0-9]{17}$/;
+
 interface VehicleDetailScreenProps {
   vehicleLabel?: string;
   odometerKm?: number;
+  /** null/undefined when the vehicle was added without a VIN. */
+  vin?: string | null;
+  onSaveVin?: (vin: string) => void;
   onReportBreakdown?: () => void;
   onUpdateMileage?: () => void;
   onOpenHistory?: () => void;
@@ -22,6 +28,8 @@ interface VehicleDetailScreenProps {
 export function VehicleDetailScreen({
   vehicleLabel = '',
   odometerKm,
+  vin,
+  onSaveVin = () => {},
   onReportBreakdown = () => {},
   onUpdateMileage = () => {},
   onOpenHistory = () => {},
@@ -30,6 +38,21 @@ export function VehicleDetailScreen({
   const { t } = useTranslation();
   const { colors } = useTheme();
 
+  const [isEditingVin, setIsEditingVin] = useState(false);
+  const [vinDraft, setVinDraft] = useState('');
+  const vinIsValid = VIN_PATTERN.test(vinDraft);
+
+  function startEditingVin() {
+    setVinDraft(vin ?? '');
+    setIsEditingVin(true);
+  }
+
+  function saveVin() {
+    if (!vinIsValid) return;
+    onSaveVin(vinDraft);
+    setIsEditingVin(false);
+  }
+
   return (
     <Screen>
       <ScreenHeader
@@ -37,6 +60,58 @@ export function VehicleDetailScreen({
         title={vehicleLabel}
         onBack={onBack}
       />
+
+      {isEditingVin ? (
+        <Card withMarks={false} testID="vin-edit-card">
+          <Field
+            label={t('vehicleDetail.vinLabel')}
+            value={vinDraft}
+            onChangeText={(value) => setVinDraft(value.toUpperCase())}
+            autoCapitalize="characters"
+            autoCorrect={false}
+            maxLength={17}
+            testID="input-edit-vin"
+          />
+          <Text style={[textStyles.bodySecondary, { color: colors.textMuted }]}>{t('vehicleDetail.vinHint')}</Text>
+          <View style={{ flexDirection: 'row', gap: spacing.md }}>
+            <View style={{ flex: 1 }}>
+              <Button
+                label={t('common.cancel')}
+                variant="secondary"
+                testID="cancel-edit-vin"
+                onPress={() => setIsEditingVin(false)}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Button label={t('common.save')} testID="save-edit-vin" disabled={!vinIsValid} onPress={saveVin} />
+            </View>
+          </View>
+        </Card>
+      ) : (
+        <Card withMarks={false} testID="vin-card">
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.lg }}>
+            <View style={{ flex: 1 }}>
+              <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.xs }]}>
+                {t('vehicleDetail.vinLabel')}
+              </Text>
+              <Text
+                testID="vin-value"
+                style={[textStyles.body, { color: vin ? colors.textPrimary : colors.textMuted }]}
+              >
+                {vin ?? t('vehicleDetail.vinMissing')}
+              </Text>
+            </View>
+            <Text
+              onPress={startEditingVin}
+              testID="edit-vin"
+              accessibilityRole="button"
+              style={[textStyles.button, { color: colors.accentOnBackground, fontSize: 13 }]}
+            >
+              {vin ? t('common.edit') : t('vehicleDetail.addVin')}
+            </Text>
+          </View>
+        </Card>
+      )}
 
       <TouchableOpacity
         accessibilityRole="button"

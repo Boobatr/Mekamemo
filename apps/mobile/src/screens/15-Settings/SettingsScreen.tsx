@@ -15,7 +15,11 @@ interface SettingsScreenProps {
   userPostalCode?: string;
   isPlus?: boolean;
   planPriceLabel?: string;
-  onSaveProfile?: (profile: { fullName: string; phone: string; postalCode: string }) => void;
+  onSaveProfile?: (profile: { fullName: string; email: string; phone: string; postalCode: string }) => void;
+  /** false for accounts created before passwords existed: no current password to confirm. */
+  hasChosenPassword?: boolean;
+  /** Should reject with the server's message when refused, so it can be shown in place. */
+  onChangePassword?: (input: { currentPassword?: string; newPassword: string }) => Promise<void>;
   onChangeLanguage?: (language: 'fr' | 'en') => void;
   onChangeUnits?: (units: 'km' | 'mi') => void;
   themeMode?: ThemeMode;
@@ -38,6 +42,8 @@ export function SettingsScreen({
   isPlus = false,
   planPriceLabel,
   onSaveProfile = () => {},
+  hasChosenPassword = true,
+  onChangePassword = async () => {},
   onChangeLanguage = () => {},
   onChangeUnits = () => {},
   themeMode = 'dark',
@@ -61,18 +67,68 @@ export function SettingsScreen({
 
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [editFullName, setEditFullName] = useState(userName);
+  const [editEmail, setEditEmail] = useState(userEmail);
   const [editPhone, setEditPhone] = useState(userPhone);
   const [editPostalCode, setEditPostalCode] = useState(userPostalCode);
 
+  const emailIsValid = /^\S+@\S+\.\S+$/.test(editEmail.trim());
+
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordSaving, setPasswordSaving] = useState(false);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [passwordSaved, setPasswordSaved] = useState(false);
+
+  const passwordsMismatch = confirmPassword.length > 0 && confirmPassword !== newPassword;
+  const canSavePassword =
+    newPassword.length >= 8 &&
+    newPassword === confirmPassword &&
+    (!hasChosenPassword || currentPassword.length > 0);
+
+  function closePasswordForm() {
+    setIsChangingPassword(false);
+    setCurrentPassword('');
+    setNewPassword('');
+    setConfirmPassword('');
+    setPasswordError(null);
+  }
+
+  async function savePassword() {
+    if (!canSavePassword || passwordSaving) return;
+    setPasswordSaving(true);
+    setPasswordError(null);
+    try {
+      await onChangePassword({
+        currentPassword: hasChosenPassword ? currentPassword : undefined,
+        newPassword,
+      });
+      closePasswordForm();
+      setPasswordSaved(true);
+    } catch (err) {
+      setPasswordError(err instanceof Error ? err.message : 'Une erreur est survenue.');
+    } finally {
+      setPasswordSaving(false);
+    }
+  }
+
   function startEditingProfile() {
     setEditFullName(userName);
+    setEditEmail(userEmail);
     setEditPhone(userPhone);
     setEditPostalCode(userPostalCode);
     setIsEditingProfile(true);
   }
 
   function saveProfile() {
-    onSaveProfile({ fullName: editFullName, phone: editPhone, postalCode: editPostalCode });
+    if (!emailIsValid) return;
+    onSaveProfile({
+      fullName: editFullName,
+      email: editEmail.trim(),
+      phone: editPhone,
+      postalCode: editPostalCode,
+    });
     setIsEditingProfile(false);
   }
 
@@ -95,6 +151,15 @@ export function SettingsScreen({
             value={editFullName}
             onChangeText={setEditFullName}
             testID="input-edit-fullName"
+          />
+          <Field
+            label={t('onboarding.profile.email')}
+            value={editEmail}
+            onChangeText={setEditEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoCorrect={false}
+            testID="input-edit-email"
           />
           <Field
             label={t('onboarding.profile.phone')}
@@ -120,7 +185,12 @@ export function SettingsScreen({
               />
             </View>
             <View style={{ flex: 1 }}>
-              <Button label={t('common.save')} testID="save-edit-profile" onPress={saveProfile} />
+              <Button
+                label={t('common.save')}
+                testID="save-edit-profile"
+                disabled={!emailIsValid}
+                onPress={saveProfile}
+              />
             </View>
           </View>
         </Card>
@@ -152,7 +222,97 @@ export function SettingsScreen({
         </Card>
       )}
 
-      <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.md }]}>
+      {isChangingPassword ? (
+        <Card withMarks={false} testID="password-edit">
+          {!hasChosenPassword ? (
+            <Text style={[textStyles.bodySecondary, { color: colors.textSecondary, marginBottom: spacing.xl }]}>
+              {t('settings.password.legacyNote')}
+            </Text>
+          ) : (
+            <Field
+              label={t('settings.password.current')}
+              value={currentPassword}
+              onChangeText={setCurrentPassword}
+              secureTextEntry
+              autoCapitalize="none"
+              autoCorrect={false}
+              autoComplete="current-password"
+              testID="input-current-password"
+            />
+          )}
+          <Field
+            label={t('settings.password.new')}
+            value={newPassword}
+            onChangeText={setNewPassword}
+            secureTextEntry
+            autoCapitalize="none"
+            autoCorrect={false}
+            autoComplete="new-password"
+            testID="input-new-password"
+          />
+          <Field
+            label={t('settings.password.confirm')}
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry
+            autoCapitalize="none"
+            autoCorrect={false}
+            autoComplete="new-password"
+            testID="input-confirm-password"
+          />
+          <Text style={[textStyles.bodySecondary, { color: colors.textMuted }]}>{t('settings.password.hint')}</Text>
+          {passwordsMismatch ? (
+            <Text testID="password-mismatch" style={[textStyles.body, { color: colors.accentOnBackground }]}>
+              {t('settings.password.mismatch')}
+            </Text>
+          ) : null}
+          {passwordError ? (
+            <Text testID="password-error" style={[textStyles.body, { color: colors.accentOnBackground }]}>
+              {passwordError}
+            </Text>
+          ) : null}
+          <View style={{ flexDirection: 'row', gap: spacing.md }}>
+            <View style={{ flex: 1 }}>
+              <Button
+                label={t('common.cancel')}
+                variant="secondary"
+                testID="cancel-change-password"
+                onPress={closePasswordForm}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Button
+                label={t('common.save')}
+                testID="save-change-password"
+                disabled={!canSavePassword}
+                loading={passwordSaving}
+                onPress={savePassword}
+              />
+            </View>
+          </View>
+        </Card>
+      ) : (
+        <>
+          <LinkRow
+            label={hasChosenPassword ? t('settings.password.change') : t('settings.password.set')}
+            onPress={() => {
+              setPasswordSaved(false);
+              setIsChangingPassword(true);
+            }}
+            testID="link-change-password"
+          />
+          {passwordSaved ? (
+            <Text
+              testID="password-saved"
+              style={[textStyles.bodySecondary, { color: colors.textSecondary, marginBottom: spacing.lg }]}
+            >
+              {t('settings.password.success')}
+            </Text>
+          ) : null}
+        </>
+      )}
+
+      <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.md, marginTop: spacing.xl }]}>
         {t('settings.preferences')}
       </Text>
       <Card>
