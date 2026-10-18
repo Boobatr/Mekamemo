@@ -18,7 +18,7 @@ const OVERPASS_COOLDOWN_MS = 10 * 60 * 1000;
 
 @Injectable()
 export class OsmGarageDiscovery implements GarageDiscovery {
-  readonly enabled = true;
+  readonly usesRealGarageData = true;
   private readonly logger = new Logger(OsmGarageDiscovery.name);
   private readonly inFlight = new Map<string, Promise<void>>();
   private overpassDownUntil = 0;

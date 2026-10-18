@@ -22,7 +22,7 @@ const garageAt = (n: number, overrides: Record<string, unknown> = {}) => ({
 function setup(rows: ReturnType<typeof garageAt>[], discoveryEnabled: boolean) {
   const prisma = { garage: { findMany: jest.fn().mockResolvedValue(rows) } };
   const geocoding = { geocode: jest.fn().mockResolvedValue(ORIGIN) };
-  const discovery = { enabled: discoveryEnabled, ensureNear: jest.fn().mockResolvedValue(undefined) };
+  const discovery = { usesRealGarageData: discoveryEnabled, ensureNear: jest.fn().mockResolvedValue(undefined) };
   const service = new GaragesService(prisma as never, geocoding as never, discovery as never);
   return { prisma, geocoding, discovery, service };
 }

@@ -4,6 +4,7 @@ import { GEOCODING_PROVIDER, distanceKm } from '../geocoding/geocoding-provider.
 import type { GeocodingProvider, GeoPoint } from '../geocoding/geocoding-provider.interface';
 import { GARAGE_DISCOVERY } from '../garage-discovery/garage-discovery.interface';
 import type { GarageDiscovery } from '../garage-discovery/garage-discovery.interface';
+import { pickNearestDistinct } from './distinct-garages';
 
 export interface GarageWithDistance {
   id: string;
@@ -48,7 +49,7 @@ export class GaragesService {
         lat: { gte: origin.lat - dLat, lte: origin.lat + dLat },
         lng: { gte: origin.lng - dLng, lte: origin.lng + dLng },
         // Sample garages are only for development: hide them once real garages are discovered.
-        ...(this.discovery.enabled ? { source: { not: 'demo' } } : {}),
+        ...(this.discovery.usesRealGarageData ? { source: { not: 'demo' } } : {}),
       },
     });
 
@@ -73,10 +74,9 @@ export class GaragesService {
       // OpenStreetMap rarely lists services: a garage with none listed stays in, since
       // dropping it would hide most real garages from every specialty search.
       .filter((g) => !keyword || g.specialties.length === 0 || g.specialties.some((s) => s.toLowerCase().includes(keyword)))
-      .sort((a, b) => a.distanceKm - b.distanceKm)
-      .slice(0, MAX_RESULTS);
+      .sort((a, b) => a.distanceKm - b.distanceKm);
 
-    return { origin, results };
+    return { origin, results: pickNearestDistinct(results, MAX_RESULTS) };
   }
 
   async getById(id: string) {

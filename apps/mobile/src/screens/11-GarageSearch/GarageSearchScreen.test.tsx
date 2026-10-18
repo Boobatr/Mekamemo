@@ -23,10 +23,23 @@ describe('GarageSearchScreen', () => {
     expect(screen.queryByText(/0 ★/)).toBeNull();
   });
 
-  it('credits OpenStreetMap for the garage data', async () => {
+  it('credits Overture Maps and OpenStreetMap for the garage data', async () => {
     await renderWithProviders(<GarageSearchScreen />, { withNavigationContainer: false });
     expect(screen.getByTestId('osm-attribution')).toBeTruthy();
+    expect(screen.getByText(/Overture Maps Foundation/)).toBeTruthy();
     expect(screen.getByText(/OpenStreetMap/)).toBeTruthy();
+  });
+
+  it("shows each garage's address, but not a placeholder when the address is unknown", async () => {
+    const known = { ...mockGarages[0], id: 'with-address', neighbourhood: '11280 Bd Sainte-Anne, Beaupré G0A 1E0' };
+    const unknown = { ...mockGarages[1], id: 'no-address', neighbourhood: 'Adresse non disponible' };
+    await renderWithProviders(<GarageSearchScreen results={[known, unknown] as never} />, {
+      withNavigationContainer: false,
+    });
+
+    expect(screen.getByTestId('garage-address-with-address')).toBeTruthy();
+    expect(screen.getByText('11280 Bd Sainte-Anne, Beaupré G0A 1E0')).toBeTruthy();
+    expect(screen.queryByTestId('garage-address-no-address')).toBeNull();
   });
 
   it('forwards garage selection', async () => {

@@ -360,6 +360,8 @@ model Garage {
   serviceHistoryEntries ServiceHistoryEntry[]
 
   @@unique([source, externalPlaceId])
+  /// Speeds up the bounding-box lookup behind every garage search.
+  @@index([lat, lng])
   @@map("garages")
 }
 

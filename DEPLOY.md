@@ -28,11 +28,16 @@ par API. C'est la manière standard — et gratuite — de faire tourner ce genr
 - **Sans clé Cloudinary** : les photos/factures uploadées disparaissent au prochain
   redémarrage de Render (le disque n'est pas persistant). Avec Cloudinary (gratuit,
   étape 4), elles sont conservées définitivement.
-- **Garages** : la recherche utilise OpenStreetMap (gratuit, sans clé, activé par
-  `OSM_ENABLED=true` dans `render.yaml`). Les garages viennent de contributeurs :
-  la couverture varie selon les régions et beaucoup n'ont ni courriel ni note.
-  Le premier chargement d'une nouvelle zone prend quelques secondes de plus, puis
-  les garages sont mémorisés en base pendant 30 jours.
+- **Garages** : la base contient ~29 000 garages du Canada (données ouvertes d'Overture
+  Maps : adresse et téléphone), chargés automatiquement au démarrage depuis
+  `apps/backend/prisma/data/garages-ca.ndjson.gz` — aucun service externe n'est appelé
+  pendant une recherche, qui prend donc moins d'une seconde. La position de l'utilisateur
+  vient d'OpenStreetMap (gratuit, sans clé). Les données viennent de sources publiques :
+  quelques garages sont absents ou ont un numéro périmé, et il n'y a ni note ni horaires.
+  Pour rafraîchir les données (quelques fois par an) :
+  `pip install duckdb`, puis `python apps/backend/scripts/export-overture-garages.py
+  --release <date>` (liste des versions dans l'en-tête du script), puis `git commit` et
+  `git push` : le prochain déploiement recharge tout seul le nouveau fichier.
 - **Clés IA optionnelles** (Anthropic, Google Places, etc.) : déjà couvertes dans
   [HANDOFF.md](HANDOFF.md) section 3 — l'app fonctionne très bien sans elles
   (replis déterministes), à ajouter plus tard si souhaité.

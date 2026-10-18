@@ -5,11 +5,12 @@ services:
     plan: free
     rootDir: apps/backend
     buildCommand: npm ci && npx prisma generate && npm run build
-    startCommand: npx prisma migrate deploy && npm run start:prod
+    startCommand: npx prisma migrate deploy && npm run import:garages && npm run start:prod
     envVars:
       - key: DATABASE_URL
         sync: false
-      # Free, key-less geocoding and real garages from OpenStreetMap (see DEPLOY.md).
+      # Free, key-less geocoding (OpenStreetMap) and real garages: the Canada-wide Overture
+      # dataset in prisma/data is loaded into the database before each start (see DEPLOY.md).
       - key: OSM_ENABLED
         value: "true"
       - key: JWT_SECRET

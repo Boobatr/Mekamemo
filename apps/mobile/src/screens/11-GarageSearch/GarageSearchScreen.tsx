@@ -87,6 +87,14 @@ export function GarageSearchScreen({
                 <Text style={[textStyles.cardTitle, { color: colors.textPrimary, marginBottom: spacing.xs }]}>
                   {garage.name}
                 </Text>
+                {garage.neighbourhood && garage.neighbourhood !== 'Adresse non disponible' ? (
+                  <Text
+                    testID={`garage-address-${garage.id}`}
+                    style={[textStyles.bodySecondary, { color: colors.textMuted, marginBottom: spacing.xs }]}
+                  >
+                    {garage.neighbourhood}
+                  </Text>
+                ) : null}
                 <Text style={[textStyles.bodySecondary, { color: colors.textSecondary }]}>
                   {[
                     `${garage.distanceKm} km`,

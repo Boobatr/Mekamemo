@@ -31,7 +31,7 @@ Ces valeurs se placent dans `apps/backend/.env` (actuellement toutes vides) :
 
 - [ ] `ANTHROPIC_API_KEY` — active la génération IA du calendrier d'entretien (véhicules sans fiche constructeur en base) et le diagnostic de panne multimodal. Sans elle : intervalles génériques de l'industrie + repli déterministe pour le diagnostic.
 - [ ] `GOOGLE_PLACES_API_KEY` — optionnelle (carte bancaire requise chez Google). Géocodage Google du code postal. Sans elle : OpenStreetMap gratuit si `OSM_ENABLED=true` (recommandé, aucune clé), sinon position fixe (Montréal).
-- [x] `OSM_ENABLED=true` — recherche de garages réels via OpenStreetMap (Nominatim + Overpass, gratuit, sans clé). Les garages trouvés sont enregistrés en base ; les 3 garages d'exemple (`source = 'demo'`) sont alors masqués.
+- [x] `OSM_ENABLED=true` — géocodage gratuit du code postal (OpenStreetMap) et masquage des 3 garages d'exemple (`source = 'demo'`). Les garages réels viennent du jeu de données Overture Maps chargé en base au démarrage (`npm run import:garages`, voir DEPLOY.md). `OSM_GARAGE_DISCOVERY=true` ajoute en plus une recherche en direct dans OpenStreetMap (désactivée par défaut).
 - [ ] `EMAIL_PROVIDER_API_KEY` (Resend) — envoi réel des courriels aux garages pour les demandes de soumission. Sans elle : les courriels sont journalisés, pas envoyés.
 - [ ] `TWILIO_ACCOUNT_SID` / `TWILIO_AUTH_TOKEN` / `TWILIO_FROM_NUMBER` — appels vocaux automatisés vers les garages sans courriel (fonctionnalité MEKAMEMO+). Sans elles : appel non déclenché, journalisé seulement.
 - [ ] `REVENUECAT_API_KEY` / `REVENUECAT_WEBHOOK_SECRET` — gestion réelle des abonnements MEKAMEMO+ (achat in-app, renouvellement, webhook de statut). **À faire avant tout lancement payant.**
