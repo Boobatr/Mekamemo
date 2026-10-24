@@ -10,6 +10,7 @@ import { ThemeProvider, useAppFonts } from './src/theme';
 import { screenGeometry } from './src/theme/spacing';
 import i18n, { detectDeviceLanguage, initI18n } from './src/i18n';
 import { RootNavigator } from './src/navigation/RootNavigator';
+import { ErrorBoundary } from './src/components/ErrorBoundary';
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,14 @@ function WebFrame({ children }: { children: React.ReactNode }) {
 initI18n(detectDeviceLanguage());
 
 export default function App() {
+  return (
+    <ErrorBoundary>
+      <AppContent />
+    </ErrorBoundary>
+  );
+}
+
+function AppContent() {
   const [fontsLoaded] = useAppFonts();
 
   if (!fontsLoaded) {
