@@ -39,6 +39,23 @@ describe('LoginScreen', () => {
     expect(screen.getByTestId('login-submit').props.accessibilityState.disabled).toBe(false);
   });
 
+  it('links to password recovery, carrying the e-mail typed so far', async () => {
+    const onForgotPassword = jest.fn();
+    await renderWithProviders(<LoginScreen onSubmit={jest.fn()} onForgotPassword={onForgotPassword} />, {
+      withNavigationContainer: false,
+    });
+
+    await fireEvent.changeText(screen.getByTestId('input-login-email'), '  marc@courriel.ca ');
+    await fireEvent.press(screen.getByTestId('forgot-password-link'));
+
+    expect(onForgotPassword).toHaveBeenCalledWith('marc@courriel.ca');
+  });
+
+  it('hides the recovery link when no handler is given', async () => {
+    await renderWithProviders(<LoginScreen onSubmit={jest.fn()} />, { withNavigationContainer: false });
+    expect(screen.queryByTestId('forgot-password-link')).toBeNull();
+  });
+
   it('links to account creation', async () => {
     const onCreateAccount = jest.fn();
     await renderWithProviders(<LoginScreen onSubmit={jest.fn()} onCreateAccount={onCreateAccount} />, {

@@ -15,6 +15,7 @@ import { MaintenanceScheduleModule } from './maintenance-schedule/maintenance-sc
 import { MediaModule } from './media/media.module';
 import { BreakdownModule } from './breakdown/breakdown.module';
 import { GeocodingModule } from './geocoding/geocoding.module';
+import { EmailModule } from './email/email.module';
 import { GaragesModule } from './garages/garages.module';
 import { BookingsModule } from './bookings/bookings.module';
 import { QuotesModule } from './quotes/quotes.module';
@@ -39,6 +40,7 @@ import { SubscriptionsModule } from './subscriptions/subscriptions.module';
     MediaModule,
     BreakdownModule,
     GeocodingModule,
+    EmailModule,
     GaragesModule,
     BookingsModule,
     QuotesModule,

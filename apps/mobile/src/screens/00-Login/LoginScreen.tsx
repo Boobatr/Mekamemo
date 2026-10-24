@@ -10,9 +10,11 @@ interface LoginScreenProps {
   /** Rejects with the server's message (e.g. wrong credentials) so it can be shown inline. */
   onSubmit: (credentials: { email: string; password: string }) => Promise<void>;
   onCreateAccount?: () => void;
+  /** Receives the e-mail typed so far, so the next screen can start from it. */
+  onForgotPassword?: (email: string) => void;
 }
 
-export function LoginScreen({ onSubmit, onCreateAccount = () => {} }: LoginScreenProps) {
+export function LoginScreen({ onSubmit, onCreateAccount = () => {}, onForgotPassword }: LoginScreenProps) {
   const { t } = useTranslation();
   const { colors } = useTheme();
 
@@ -80,6 +82,20 @@ export function LoginScreen({ onSubmit, onCreateAccount = () => {} }: LoginScree
         testID="login-submit"
         onPress={handleSubmit}
       />
+
+      {onForgotPassword ? (
+        <Text
+          onPress={() => onForgotPassword(email.trim())}
+          testID="forgot-password-link"
+          accessibilityRole="button"
+          style={[
+            textStyles.button,
+            { color: colors.accentOnBackground, fontSize: 13, textAlign: 'center', marginTop: spacing.xl },
+          ]}
+        >
+          {t('forgotPassword.link')}
+        </Text>
+      ) : null}
 
       <Text
         onPress={onCreateAccount}

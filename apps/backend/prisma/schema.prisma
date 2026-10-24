@@ -130,6 +130,7 @@ model User {
   updatedAt            DateTime @updatedAt
 
   subscription     Subscription?
+  passwordResetTokens PasswordResetToken[]
   vehicles         Vehicle[]
   notifications    Notification[]
   quoteRequests    QuoteRequest[]
@@ -475,4 +476,21 @@ model Invoice {
   uploadedAt          DateTime             @default(now())
 
   @@map("invoices")
+}
+
+/// A one-time code e-mailed to a user who forgot their password.
+model PasswordResetToken {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// SHA-256 of the code: the code itself is never stored.
+  codeHash  String
+  expiresAt DateTime
+  /// Guesses made so far. The code stops working after a handful, so it can't be brute-forced.
+  attempts  Int       @default(0)
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, createdAt])
+  @@map("password_reset_tokens")
 }

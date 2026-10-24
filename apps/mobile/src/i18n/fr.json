@@ -264,5 +264,22 @@
     "password": "Mot de passe",
     "submit": "Se connecter",
     "createAccount": "Pas encore de compte ? Créer un compte"
+  },
+  "forgotPassword": {
+    "link": "Mot de passe oublié ?",
+    "title": "Mot de passe oublié",
+    "subtitle": "Entrez votre courriel : nous vous envoyons un code pour choisir un nouveau mot de passe.",
+    "email": "Courriel",
+    "sendCode": "Envoyer le code",
+    "codeSent": "Si un compte existe pour {{email}}, un code vient d'être envoyé. Pensez à vérifier vos courriels indésirables. Il est valide 30 minutes.",
+    "code": "Code reçu par courriel",
+    "newPassword": "Nouveau mot de passe",
+    "confirmPassword": "Confirmer le nouveau mot de passe",
+    "passwordHint": "8 caractères minimum.",
+    "mismatch": "Les deux mots de passe ne correspondent pas.",
+    "reset": "Réinitialiser le mot de passe",
+    "resend": "Renvoyer un code",
+    "resent": "Un nouveau code a été envoyé : le précédent ne fonctionne plus.",
+    "backToLogin": "Retour à la connexion"
   }
 }

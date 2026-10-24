@@ -18,6 +18,18 @@ export function useLogin() {
   });
 }
 
+export function useForgotPassword() {
+  return useMutation({ mutationFn: authApi.forgotPassword });
+}
+
+export function useResetPassword() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: authApi.resetPassword,
+    onSuccess: () => queryClient.invalidateQueries(),
+  });
+}
+
 export function useLogout() {
   const queryClient = useQueryClient();
   return useMutation({

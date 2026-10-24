@@ -65,6 +65,8 @@ beforeEach(() => {
   jest.mocked(authApi.register).mockResolvedValue({ accessToken: 'test-token', userId: 'user-1' });
   jest.mocked(authApi.login).mockResolvedValue({ accessToken: 'test-token', userId: 'user-1' });
   jest.mocked(authApi.logout).mockResolvedValue(undefined);
+  jest.mocked(authApi.forgotPassword).mockResolvedValue({ ok: true });
+  jest.mocked(authApi.resetPassword).mockResolvedValue({ accessToken: 'test-token', userId: 'user-1' });
   jest.mocked(vehiclesApi.decodeVin).mockResolvedValue({
     make: 'Toyota',
     model: 'RAV4',
@@ -186,5 +188,30 @@ describe('RootNavigator end-to-end flow', () => {
 
     await screen.findByText('Vos informations');
     expect(authApi.logout).toHaveBeenCalled();
+  });
+
+  it('recovers a forgotten password from the login screen and lands in the app', async () => {
+    await renderWithProviders(<RootNavigator />);
+
+    await fireEvent.press(screen.getByTestId('login-link'));
+    await fireEvent.changeText(screen.getByTestId('input-login-email'), 'marc.lavoie@courriel.ca');
+    await fireEvent.press(screen.getByTestId('forgot-password-link'));
+
+    // The e-mail typed on the login screen is carried over.
+    expect(screen.getByTestId('input-forgot-email').props.value).toBe('marc.lavoie@courriel.ca');
+    await fireEvent.press(screen.getByTestId('forgot-send-code'));
+    expect(jest.mocked(authApi.forgotPassword).mock.calls[0][0]).toBe('marc.lavoie@courriel.ca');
+
+    await fireEvent.changeText(await screen.findByTestId('input-forgot-code'), 'ABCD-EFGH');
+    await fireEvent.changeText(screen.getByTestId('input-forgot-new-password'), 'nouveaumdp123');
+    await fireEvent.changeText(screen.getByTestId('input-forgot-confirm-password'), 'nouveaumdp123');
+    await fireEvent.press(screen.getByTestId('forgot-reset'));
+
+    expect(jest.mocked(authApi.resetPassword).mock.calls[0][0]).toEqual({
+      email: 'marc.lavoie@courriel.ca',
+      code: 'ABCD-EFGH',
+      newPassword: 'nouveaumdp123',
+    });
+    await screen.findByText('Mes véhicules');
   });
 });

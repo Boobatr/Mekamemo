@@ -133,6 +133,28 @@ Chrome sur Android) — même URL, aucune installation. Le premier chargement ap
 une période d'inactivité peut prendre 30-60 secondes le temps que Render (et
 Neon) se réveillent ; les suivants sont instantanés.
 
+## 8. Courriels (« Mot de passe oublié »)
+
+« Mot de passe oublié » envoie un code à 8 caractères par courriel (valide 30 minutes, 5 essais
+maximum, 3 demandes par heure et par compte). Sans service d'envoi configuré, **l'application
+fonctionne, mais le code n'est qu'écrit dans les journaux de Render** (onglet Logs de
+`mekamemo-backend`, cherche `[email:`) : pratique pour toi, inutilisable pour les autres
+utilisateurs. Pour qu'il arrive dans leur boîte, configure un service d'envoi gratuit :
+
+- **Brevo** (recommandé : gratuit, 300 courriels par jour, aucun nom de domaine requis) :
+  1. Crée un compte sur [brevo.com](https://www.brevo.com).
+  2. **Senders, Domains & Dedicated IPs → Senders** : ajoute une adresse d'expéditeur (la tienne)
+     et confirme-la avec le courriel que Brevo envoie.
+  3. **SMTP & API → API Keys** : crée une clé (commence par `xkeysib-`).
+  4. Sur Render (`mekamemo-backend` → Environment), ajoute :
+     `BREVO_API_KEY` = la clé, et `MAIL_FROM` = `MekaMemo <ton-adresse@exemple.com>`
+     (l'adresse confirmée à l'étape 2).
+  Les courriels envoyés depuis une adresse gratuite (Hotmail, Gmail…) peuvent finir dans les
+  indésirables ; un nom de domaine à toi, authentifié chez Brevo, règle ça (environ 15 $ par an).
+- **Resend** : `EMAIL_PROVIDER_API_KEY` + `MAIL_FROM`, mais n'envoie qu'à toi tant que tu n'as
+  pas vérifié un domaine.
+- **SMTP (Gmail, Outlook…) : impossible** sur l'offre gratuite de Render, qui bloque ces ports.
+
 ## Mettre à jour l'app plus tard
 
 Chaque `git push` sur la branche déployée redéclenche automatiquement le build et

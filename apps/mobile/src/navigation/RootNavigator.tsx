@@ -5,6 +5,7 @@ import { RootStackParamList } from './types';
 import { MainTabs } from './MainTabs';
 import { getStoredToken } from '../services/auth-storage';
 import { LoginContainer } from '../screens/00-Login/LoginContainer';
+import { ForgotPasswordContainer } from '../screens/00-ForgotPassword/ForgotPasswordContainer';
 import { ProfileContainer } from '../screens/01-Profile/ProfileContainer';
 import { AddVehicleContainer } from '../screens/02-AddVehicle/AddVehicleContainer';
 
@@ -46,6 +47,16 @@ export function RootNavigator() {
               <LoginContainer
                 onLoggedIn={() => setOnboarded(true)}
                 onCreateAccount={() => navigation.navigate('OnboardingProfile')}
+                onForgotPassword={(email) => navigation.navigate('ForgotPassword', { email })}
+              />
+            )}
+          </Stack.Screen>
+          <Stack.Screen name="ForgotPassword">
+            {({ route, navigation }) => (
+              <ForgotPasswordContainer
+                initialEmail={route.params?.email}
+                onLoggedIn={() => setOnboarded(true)}
+                onBackToLogin={() => navigation.navigate('Login')}
               />
             )}
           </Stack.Screen>

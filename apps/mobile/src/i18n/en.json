@@ -264,5 +264,22 @@
     "password": "Password",
     "submit": "Sign in",
     "createAccount": "No account yet? Create one"
+  },
+  "forgotPassword": {
+    "link": "Forgot your password?",
+    "title": "Forgot your password",
+    "subtitle": "Enter your email: we'll send you a code to choose a new password.",
+    "email": "Email",
+    "sendCode": "Send the code",
+    "codeSent": "If an account exists for {{email}}, a code has just been sent. Check your spam folder too. It is valid for 30 minutes.",
+    "code": "Code from the email",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm new password",
+    "passwordHint": "At least 8 characters.",
+    "mismatch": "The two passwords don't match.",
+    "reset": "Reset password",
+    "resend": "Send a new code",
+    "resent": "A new code was sent: the previous one no longer works.",
+    "backToLogin": "Back to sign in"
   }
 }

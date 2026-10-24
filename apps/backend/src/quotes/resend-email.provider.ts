@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EmailMessage, EmailProvider } from './email-provider.interface';
+import { formatSender, parseSender } from '../email/sender';
 
 /** Sends via Resend's HTTP API — no SDK needed for a single endpoint call. */
 @Injectable()
@@ -15,7 +16,7 @@ export class ResendEmailProvider implements EmailProvider {
       method: 'POST',
       headers: { authorization: `Bearer ${apiKey}`, 'content-type': 'application/json' },
       body: JSON.stringify({
-        from: 'MekaMemo <rendezvous@mekamemo.app>',
+        from: formatSender(parseSender(this.config.get<string>('MAIL_FROM'))),
         to: [message.to],
         subject: message.subject,
         text: message.body,
