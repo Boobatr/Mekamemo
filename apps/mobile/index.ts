@@ -1,6 +1,7 @@
 import { registerRootComponent } from 'expo';
 
 import './src/utils/installWebAlert';
+import './src/utils/installPageLanguage';
 import App from './App';
 
 // registerRootComponent calls AppRegistry.registerComponent('main', () => App);

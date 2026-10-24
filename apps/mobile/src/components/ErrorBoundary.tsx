@@ -65,6 +65,11 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
           >
             {error.name}: {error.message}
           </Text>
+          {Platform.OS === 'web' && typeof navigator !== 'undefined' ? (
+            <Text testID="error-browser" selectable style={{ color: '#7d8895', fontSize: 11, marginBottom: 24 }}>
+              {navigator.userAgent}
+            </Text>
+          ) : null}
 
           <TouchableOpacity
             accessibilityRole="button"
