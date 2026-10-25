@@ -18,6 +18,8 @@ interface GarageSearchScreenProps {
   quickFilters?: string[];
   onSelectGarage?: (garageId: string) => void;
   onSendQuery?: (text: string) => void;
+  /** Opens the form for a garage that is missing from the results. The link is hidden without it. */
+  onAddGarage?: () => void;
 }
 
 export function GarageSearchScreen({
@@ -29,6 +31,7 @@ export function GarageSearchScreen({
   quickFilters = ['Le moins cher', 'Ouvert samedi', 'Concessionnaire'],
   onSelectGarage = () => {},
   onSendQuery = () => {},
+  onAddGarage,
 }: GarageSearchScreenProps) {
   const { t } = useTranslation();
   const { colors } = useTheme();
@@ -115,6 +118,19 @@ export function GarageSearchScreen({
           </Card>
         </TouchableOpacity>
       ))}
+
+      {onAddGarage ? (
+        <TouchableOpacity
+          accessibilityRole="button"
+          testID="add-garage-link"
+          onPress={onAddGarage}
+          style={{ borderWidth: 1, borderColor: colors.hairlines[2], padding: spacing.lg, marginBottom: spacing.xl }}
+        >
+          <Text style={[textStyles.button, { color: colors.accentOnBackground, textAlign: 'center' }]}>
+            {t('garageSearch.addGarageLink')}
+          </Text>
+        </TouchableOpacity>
+      ) : null}
 
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: spacing.xxl }}>
         {quickFilters.map((filter) => (

@@ -26,12 +26,14 @@ interface GarageMapProps {
   onSelectGarage?: (garageId: string) => void;
   /** Defaults to the compact size; the expandable wrapper passes a taller one. */
   height?: number;
+  /** Draw the search point (default). A single garage's own map hides it. */
+  showOrigin?: boolean;
 }
 
 /** Schematic map — a grid backdrop with pins placed by real relative lat/lng,
  * not a tile-based map. Keeps the mockup's "map with pins" idea without a
  * native maps SDK (which has no web renderer, so it can't be verified there). */
-export function GarageMap({ origin, garages, radiusKm, selectedId, onSelectGarage = () => {}, height = MAP_HEIGHT }: GarageMapProps) {
+export function GarageMap({ origin, garages, radiusKm, selectedId, onSelectGarage = () => {}, height = MAP_HEIGHT, showOrigin = true }: GarageMapProps) {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const kmPerDegLng = KM_PER_DEG_LAT * Math.cos((origin.lat * Math.PI) / 180);
@@ -86,19 +88,21 @@ export function GarageMap({ origin, garages, radiusKm, selectedId, onSelectGarag
         />
       ))}
 
-      <View
-        testID="garage-map-origin"
-        style={{
-          position: 'absolute',
-          left: '50%',
-          top: '50%',
-          width: 14,
-          height: 14,
-          marginLeft: -7,
-          marginTop: -7,
-          backgroundColor: colors.textPrimary,
-        }}
-      />
+      {showOrigin ? (
+        <View
+          testID="garage-map-origin"
+          style={{
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            width: 14,
+            height: 14,
+            marginLeft: -7,
+            marginTop: -7,
+            backgroundColor: colors.textPrimary,
+          }}
+        />
+      ) : null}
 
       {garages.map((garage) => {
         const pos = project(garage.lat, garage.lng);

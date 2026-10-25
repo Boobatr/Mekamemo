@@ -1,10 +1,11 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import type { AuthenticatedUser } from '../common/decorators/current-user.decorator';
 import { PrismaService } from '../prisma/prisma.service';
 import { GaragesService } from './garages.service';
 import { SearchGaragesDto } from './dto/search-garages.dto';
+import { AddGarageDto } from './dto/add-garage.dto';
 import { GeocodingError } from '../geocoding/geocoding-provider.interface';
 import { MONTREAL_DOWNTOWN } from '../geocoding/fixed-geocoding.provider';
 import {
@@ -49,6 +50,12 @@ export class GaragesController {
       origin,
       results,
     };
+  }
+
+  /** A garage the open data doesn't list yet. */
+  @Post()
+  add(@CurrentUser() user: AuthenticatedUser, @Body() dto: AddGarageDto) {
+    return this.garagesService.addByUser(user.id, dto);
   }
 
   @Get(':id')

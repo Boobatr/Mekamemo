@@ -10,6 +10,7 @@ interface GarageMapViewProps {
   onSelectGarage?: (garageId: string) => void;
   height?: number;
   fullscreen?: boolean;
+  showOrigin?: boolean;
 }
 
 /** The web gets a real map: OpenStreetMap tiles drawn by Leaflet (free, no API key).

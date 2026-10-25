@@ -5,12 +5,13 @@ import { useProfile } from '../../hooks/useProfile';
 
 interface GarageSearchContainerProps {
   onSelectGarage: (garageId: string) => void;
+  onAddGarage?: () => void;
 }
 
 const DEFAULT_QUERY = 'Trouve un garage près de moi';
 const DEFAULT_ORIGIN = { lat: 45.5019, lng: -73.5674 };
 
-export function GarageSearchContainer({ onSelectGarage }: GarageSearchContainerProps) {
+export function GarageSearchContainer({ onSelectGarage, onAddGarage }: GarageSearchContainerProps) {
   const [query, setQuery] = useState(DEFAULT_QUERY);
   const { data } = useGarageSearch(query);
   const { data: profile } = useProfile();
@@ -38,6 +39,7 @@ export function GarageSearchContainer({ onSelectGarage }: GarageSearchContainerP
       }
       quickFilters={[]}
       onSelectGarage={onSelectGarage}
+      onAddGarage={onAddGarage}
       onSendQuery={setQuery}
     />
   );

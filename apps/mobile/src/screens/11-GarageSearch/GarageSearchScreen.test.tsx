@@ -138,4 +138,21 @@ describe('GarageSearchScreen', () => {
       expect(onSelectGarage).not.toHaveBeenCalled();
     });
   });
+
+  describe('missing garage link', () => {
+    it('opens the add-a-garage form', async () => {
+      const onAddGarage = jest.fn();
+      await renderWithProviders(<GarageSearchScreen onAddGarage={onAddGarage} />, { withNavigationContainer: false });
+
+      await fireEvent.press(screen.getByTestId('add-garage-link'));
+
+      expect(onAddGarage).toHaveBeenCalledTimes(1);
+    });
+
+    it('is not shown where adding is not possible', async () => {
+      await renderWithProviders(<GarageSearchScreen />, { withNavigationContainer: false });
+
+      expect(screen.queryByTestId('add-garage-link')).toBeNull();
+    });
+  });
 });

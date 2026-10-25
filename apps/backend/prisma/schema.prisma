@@ -349,7 +349,8 @@ model Garage {
   reviewCount     Int?
   hours           Json?
   certifications  String[]
-  /// "manual" (entered by hand), "osm" (imported from OpenStreetMap) or "demo" (sample
+  /// "manual" (entered by hand), "user" (added by an app user; externalPlaceId is
+  /// "<userId>:<uuid>"), "overture" / "osm" (imported open data) or "demo" (sample
   /// fixtures, hidden from search once real garage discovery is on).
   source          String   @default("manual")
   /// Stable id at the source, e.g. "node/123456" for OpenStreetMap.

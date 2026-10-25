@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ActivityIndicator, Alert, View } from 'react-native';
 import { GarageProfileScreen } from './GarageProfileScreen';
 import { useGarage } from '../../hooks/useGarages';
-import { useCreateQuoteRequest } from '../../hooks/useGarages';
+import { useCreateQuoteRequest, usePreviewQuoteEmail } from '../../hooks/useGarages';
 import { MockGarage } from '../../mocks/mockData';
 
 interface GarageProfileContainerProps {
@@ -24,6 +24,8 @@ export function GarageProfileContainer({
 }: GarageProfileContainerProps) {
   const { data: garage, isLoading } = useGarage(garageId);
   const createQuoteRequest = useCreateQuoteRequest();
+  const previewEmail = usePreviewQuoteEmail();
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   if (isLoading || !garage) {
     return (
@@ -33,7 +35,7 @@ export function GarageProfileContainer({
     );
   }
 
-  const g = garage as unknown as MockGarage & { address: string; certifications: string[] };
+  const g = garage as unknown as MockGarage & { address: string; certifications: string[]; phone?: string | null };
 
   return (
     <GarageProfileScreen
@@ -53,6 +55,7 @@ export function GarageProfileContainer({
         certifiedCaa: g.certifications?.includes('CAA'),
         services: (g as unknown as { specialties?: string[] }).specialties,
         email: g.email ?? undefined,
+        phone: g.phone ?? undefined,
       }}
       onRequestAppointment={async () => {
         try {
@@ -67,7 +70,16 @@ export function GarageProfileContainer({
           Alert.alert('Erreur', err instanceof Error ? err.message : 'Une erreur est survenue.');
         }
       }}
-      onViewEmailBeforeSending={() => {}}
+      onViewEmailBeforeSending={() => {
+        setPreviewOpen(true);
+        previewEmail.reset();
+        previewEmail.mutate({ vehicleId, garageId });
+      }}
+      emailPreviewOpen={previewOpen}
+      emailPreviewLoading={previewEmail.isPending}
+      emailPreviewError={previewEmail.error ? previewEmail.error.message : null}
+      emailPreview={previewEmail.data ?? null}
+      onCloseEmailPreview={() => setPreviewOpen(false)}
     />
   );
 }

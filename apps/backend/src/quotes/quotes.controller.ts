@@ -15,6 +15,7 @@ import type { AuthenticatedUser } from '../common/decorators/current-user.decora
 import { QuotesService } from './quotes.service';
 import { CreateQuoteRequestDto } from './dto/create-quote-request.dto';
 import { RecordGarageResponseDto } from './dto/record-garage-response.dto';
+import { PreviewQuoteEmailDto } from './dto/preview-quote-email.dto';
 
 @Controller()
 export class QuotesController {
@@ -27,6 +28,13 @@ export class QuotesController {
   @Post('quote-requests')
   create(@CurrentUser() user: AuthenticatedUser, @Body() dto: CreateQuoteRequestDto) {
     return this.quotesService.create(user.id, dto);
+  }
+
+  /** What a quote request to this garage would say — nothing is sent. */
+  @UseGuards(JwtAuthGuard)
+  @Post('quote-requests/preview')
+  preview(@CurrentUser() user: AuthenticatedUser, @Body() dto: PreviewQuoteEmailDto) {
+    return this.quotesService.preview(user.id, dto);
   }
 
   @UseGuards(JwtAuthGuard)

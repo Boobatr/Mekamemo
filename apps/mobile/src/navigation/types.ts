@@ -43,5 +43,6 @@ export type CalendarStackParamList = {
 export type GaragesStackParamList = {
   GarageList: { vehicleId?: string; taskId?: string; diagnosisId?: string } | undefined;
   GarageProfile: { garageId: string; vehicleId: string; taskId?: string; diagnosisId?: string };
+  AddGarage: { vehicleId?: string };
   BookingConfirmation: { quoteRequestId: string };
 };

@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as garagesApi from '../services/garages';
 
 export function useGarageSearch(query: string) {
@@ -23,5 +23,18 @@ export function useQuoteRequest(id: string) {
     queryFn: () => garagesApi.getQuoteRequest(id),
     enabled: Boolean(id),
     refetchInterval: 5000,
+  });
+}
+
+export function usePreviewQuoteEmail() {
+  return useMutation({ mutationFn: garagesApi.previewQuoteEmail });
+}
+
+export function useAddGarage() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: garagesApi.addGarage,
+    // The new garage must show up in the next search without waiting for a refresh.
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['garage-search'] }),
   });
 }

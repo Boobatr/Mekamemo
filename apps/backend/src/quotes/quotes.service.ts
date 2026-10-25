@@ -10,6 +10,7 @@ import type { EmailProvider } from './email-provider.interface';
 import { VOICE_PROVIDER } from './voice-provider.interface';
 import type { VoiceProvider } from './voice-provider.interface';
 import type { CreateQuoteRequestDto } from './dto/create-quote-request.dto';
+import type { PreviewQuoteEmailDto } from './dto/preview-quote-email.dto';
 import type { RecordGarageResponseDto } from './dto/record-garage-response.dto';
 
 @Injectable()
@@ -22,6 +23,27 @@ export class QuotesService {
     @Inject(VOICE_PROVIDER) private readonly voiceProvider: VoiceProvider,
     @Inject(GEOCODING_PROVIDER) private readonly geocoding: GeocodingProvider,
   ) {}
+
+  /**
+   * The message a quote request would send to one garage, without sending or saving anything,
+   * so the user can read it before asking for an appointment.
+   */
+  async preview(userId: string, dto: PreviewQuoteEmailDto) {
+    const vehicle = await this.prisma.vehicle.findUnique({ where: { id: dto.vehicleId } });
+    if (!vehicle) throw new NotFoundException('Véhicule introuvable.');
+    if (vehicle.userId !== userId) throw new ForbiddenException();
+    const garage = await this.prisma.garage.findUnique({ where: { id: dto.garageId } });
+    if (!garage) throw new NotFoundException('Garage introuvable.');
+
+    const user = await this.prisma.user.findUniqueOrThrow({ where: { id: userId } });
+    return {
+      contactMethod: garage.email ? ('email' as const) : ('voice' as const),
+      to: garage.email,
+      phone: garage.phone,
+      subject: this.buildSubject(user.language),
+      body: this.buildMessage(user.fullName, vehicle, user.language),
+    };
+  }
 
   async create(userId: string, dto: CreateQuoteRequestDto) {
     const vehicle = await this.prisma.vehicle.findUnique({ where: { id: dto.vehicleId } });
@@ -59,6 +81,10 @@ export class QuotesService {
     return quoteRequest;
   }
 
+  private buildSubject(language: string): string {
+    return language === 'fr' ? 'Demande de soumission — MekaMemo' : 'Quote request — MekaMemo';
+  }
+
   private buildMessage(
     fullName: string,
     vehicle: { make: string; model: string; year: number },
@@ -77,7 +103,7 @@ export class QuotesService {
     if (link.contactMethod === 'email' && link.garage.email) {
       await this.emailProvider.send({
         to: link.garage.email,
-        subject: user.language === 'fr' ? 'Demande de soumission — MekaMemo' : 'Quote request — MekaMemo',
+        subject: this.buildSubject(user.language),
         body: link.messageContent ?? '',
       });
       return;

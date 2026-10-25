@@ -44,3 +44,36 @@ export function createQuoteRequest(input: CreateQuoteRequestInput) {
 export function getQuoteRequest(id: string) {
   return apiGet(`/quote-requests/${id}`);
 }
+
+export interface QuoteEmailPreview {
+  /** "email" when the garage has an address on file; otherwise a voice call (MEKAMEMO+) would carry the message. */
+  contactMethod: 'email' | 'voice';
+  to: string | null;
+  phone: string | null;
+  subject: string;
+  body: string;
+}
+
+/** The message a quote request to this garage would send — nothing is sent or saved. */
+export function previewQuoteEmail(input: { vehicleId: string; garageId: string }): Promise<QuoteEmailPreview> {
+  return apiPost('/quote-requests/preview', input);
+}
+
+export interface AddGarageInput {
+  name: string;
+  street: string;
+  city: string;
+  postalCode?: string;
+  phone?: string;
+  email?: string;
+}
+
+export interface AddGarageResult {
+  garage: { id: string; name: string; address: string };
+  /** False when that garage was already listed: the existing one is returned. */
+  created: boolean;
+}
+
+export function addGarage(input: AddGarageInput): Promise<AddGarageResult> {
+  return apiPost('/garages', input);
+}

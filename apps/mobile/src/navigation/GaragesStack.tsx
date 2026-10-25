@@ -4,6 +4,7 @@ import { GaragesStackParamList } from './types';
 import { useVehicles } from '../hooks/useVehicles';
 import { GarageSearchContainer } from '../screens/11-GarageSearch/GarageSearchContainer';
 import { GarageProfileContainer } from '../screens/12-GarageProfile/GarageProfileContainer';
+import { AddGarageContainer } from '../screens/16-AddGarage/AddGarageContainer';
 import { BookingConfirmationContainer } from '../screens/13-BookingConfirmation/BookingConfirmationContainer';
 
 const Stack = createNativeStackNavigator<GaragesStackParamList>();
@@ -30,6 +31,7 @@ export function GaragesStack() {
                   diagnosisId: route.params?.diagnosisId,
                 })
               }
+              onAddGarage={() => navigation.navigate('AddGarage', { vehicleId })}
             />
           );
         }}
@@ -45,6 +47,19 @@ export function GaragesStack() {
             onBack={() => navigation.goBack()}
           />
         )}
+      </Stack.Screen>
+      <Stack.Screen name="AddGarage">
+        {({ route, navigation }) => {
+          const vehicleId = route.params?.vehicleId ?? primaryVehicleId;
+          return (
+            <AddGarageContainer
+              onBack={() => navigation.goBack()}
+              onOpenGarage={(garageId) =>
+                vehicleId ? navigation.replace('GarageProfile', { garageId, vehicleId }) : navigation.goBack()
+              }
+            />
+          );
+        }}
       </Stack.Screen>
       <Stack.Screen name="BookingConfirmation">
         {({ route, navigation }) => (

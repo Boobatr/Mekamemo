@@ -1,10 +1,13 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { randomUUID } from 'crypto';
+import { BadRequestException, HttpException, HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { GEOCODING_PROVIDER, distanceKm } from '../geocoding/geocoding-provider.interface';
+import { GEOCODING_PROVIDER, GeocodingError, distanceKm } from '../geocoding/geocoding-provider.interface';
 import type { GeocodingProvider, GeoPoint } from '../geocoding/geocoding-provider.interface';
 import { GARAGE_DISCOVERY } from '../garage-discovery/garage-discovery.interface';
 import type { GarageDiscovery } from '../garage-discovery/garage-discovery.interface';
 import { pickNearestDistinct } from './distinct-garages';
+import { formatPhone } from '../garage-import/overture-garage.mapper';
+import type { AddGarageDto } from './dto/add-garage.dto';
 
 export interface GarageWithDistance {
   id: string;
@@ -24,6 +27,16 @@ export interface GarageWithDistance {
 
 /** In a dense city a 50 km radius holds hundreds of garages; the nearest ones are what's useful. */
 const MAX_RESULTS = 30;
+
+export const USER_GARAGE_SOURCE = 'user';
+/** Garages one person may add per day: enough to fill gaps, too few to flood the search. */
+const MAX_ADDED_PER_DAY = 10;
+/** A garage this close to the typed one, with the same name or phone, is the same garage. */
+const SAME_GARAGE_KM = 0.15;
+
+const plain = (text: string) =>
+  text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '');
+const digits = (text: string | null | undefined) => (text ?? '').replace(/\D/g, '').slice(-10);
 
 @Injectable()
 export class GaragesService {
@@ -77,6 +90,61 @@ export class GaragesService {
       .sort((a, b) => a.distanceKm - b.distanceKm);
 
     return { origin, results: pickNearestDistinct(results, MAX_RESULTS) };
+  }
+
+  /**
+   * Lists a garage the open data is missing. The address is geocoded (so the pin is where the
+   * garage really is); if that place is already listed — same name or phone within 150 m —
+   * the existing garage is returned instead of a duplicate.
+   */
+  async addByUser(userId: string, dto: AddGarageDto) {
+    const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const addedToday = await this.prisma.garage.count({
+      where: { source: USER_GARAGE_SOURCE, externalPlaceId: { startsWith: `${userId}:` }, createdAt: { gte: since } },
+    });
+    if (addedToday >= MAX_ADDED_PER_DAY) {
+      throw new HttpException('Trop de garages ajoutés aujourd’hui. Réessayez demain.', HttpStatus.TOO_MANY_REQUESTS);
+    }
+
+    const postalCode = dto.postalCode?.trim().toUpperCase();
+    const address = [dto.street.trim(), [dto.city.trim(), postalCode].filter(Boolean).join(' ')].join(', ');
+    let point;
+    try {
+      point = await this.geocoding.geocode(`${dto.street.trim()}, ${dto.city.trim()}${postalCode ? ` ${postalCode}` : ''}, Canada`);
+    } catch (err) {
+      if (!(err instanceof GeocodingError)) throw err;
+      throw new BadRequestException('Adresse introuvable. Vérifiez le numéro, la rue et la ville.');
+    }
+
+    const phone = formatPhone(dto.phone);
+    const nearby = await this.prisma.garage.findMany({
+      where: {
+        lat: { gte: point.lat - 0.002, lte: point.lat + 0.002 },
+        lng: { gte: point.lng - 0.003, lte: point.lng + 0.003 },
+      },
+    });
+    const existing = nearby.find(
+      (g) =>
+        distanceKm(point, { lat: g.lat, lng: g.lng }) <= SAME_GARAGE_KM &&
+        (plain(g.name) === plain(dto.name) || (digits(phone) !== '' && digits(g.phone) === digits(phone))),
+    );
+    if (existing) return { garage: existing, created: false };
+
+    const garage = await this.prisma.garage.create({
+      data: {
+        name: dto.name.trim(),
+        address,
+        lat: point.lat,
+        lng: point.lng,
+        phone,
+        email: dto.email?.trim().toLowerCase() || null,
+        specialties: [],
+        certifications: [],
+        source: USER_GARAGE_SOURCE,
+        externalPlaceId: `${userId}:${randomUUID()}`,
+      },
+    });
+    return { garage, created: true };
   }
 
   async getById(id: string) {

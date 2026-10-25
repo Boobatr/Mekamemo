@@ -18,12 +18,13 @@ interface LeafletGarageMapProps {
   height?: number;
   /** Full-screen map: the page behind doesn't scroll, so one finger pans and the wheel zooms. */
   fullscreen?: boolean;
+  showOrigin?: boolean;
 }
 
 /** Real, pannable map for the web: OpenStreetMap tiles drawn by Leaflet (free, no API key).
  * Same props as the schematic GarageMap, which it falls back to if the map cannot start. */
 export function LeafletGarageMap(props: LeafletGarageMapProps) {
-  const { origin, garages, radiusKm, selectedId, onSelectGarage, height = MAP_HEIGHT, fullscreen = false } = props;
+  const { origin, garages, radiusKm, selectedId, onSelectGarage, height = MAP_HEIGHT, fullscreen = false, showOrigin = true } = props;
   const { colors } = useTheme();
   const [failed, setFailed] = useState(false);
   const container = useRef<HTMLDivElement>(null);
@@ -84,24 +85,26 @@ export function LeafletGarageMap(props: LeafletGarageMapProps) {
     try {
       group.clearLayers();
 
-      L.circle([origin.lat, origin.lng], {
-        radius: Math.max(radiusKm, 1) * 1000,
-        color: colors.accent,
-        weight: 1,
-        dashArray: '4 4',
-        fillOpacity: 0.05,
-        interactive: false,
-      }).addTo(group);
+      if (showOrigin) {
+        L.circle([origin.lat, origin.lng], {
+          radius: Math.max(radiusKm, 1) * 1000,
+          color: colors.accent,
+          weight: 1,
+          dashArray: '4 4',
+          fillOpacity: 0.05,
+          interactive: false,
+        }).addTo(group);
 
-      L.marker([origin.lat, origin.lng], {
-        interactive: false,
-        keyboard: false,
-        icon: L.divIcon({
-          className: '',
-          iconSize: [14, 14],
-          html: `<div data-testid="garage-map-origin" style="width:14px;height:14px;background:#ffffff;border:2px solid ${colors.accent};box-shadow:0 0 0 2px rgba(0,0,0,.35)"></div>`,
-        }),
-      }).addTo(group);
+        L.marker([origin.lat, origin.lng], {
+          interactive: false,
+          keyboard: false,
+          icon: L.divIcon({
+            className: '',
+            iconSize: [14, 14],
+            html: `<div data-testid="garage-map-origin" style="width:14px;height:14px;background:#ffffff;border:2px solid ${colors.accent};box-shadow:0 0 0 2px rgba(0,0,0,.35)"></div>`,
+          }),
+        }).addTo(group);
+      }
 
       for (const garage of garages) {
         const selected = garage.id === selectedId;
@@ -119,7 +122,7 @@ export function LeafletGarageMap(props: LeafletGarageMapProps) {
     } catch (error) {
       giveUp(error);
     }
-  },[origin.lat, origin.lng, radiusKm, garages, selectedId, colors.accent, markerFill]);
+  },[origin.lat, origin.lng, radiusKm, garages, selectedId, colors.accent, markerFill, showOrigin]);
 
   if (failed) return <GarageMap {...props} />;
 
