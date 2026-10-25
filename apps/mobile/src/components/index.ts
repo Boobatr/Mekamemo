@@ -1,6 +1,5 @@
 export * from './ScreenBackground';
 export * from './Screen';
-export * from './CrosshairMarks';
 export * from './Card';
 export * from './Button';
 export * from './Field';

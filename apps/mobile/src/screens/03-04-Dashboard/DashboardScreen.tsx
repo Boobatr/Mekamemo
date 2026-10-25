@@ -163,7 +163,7 @@ export function DashboardScreen({
           </TouchableOpacity>
         ))}
 
-        <Card withMarks={false}>
+        <Card>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <SummaryStat label={t('dashboard.vehiclesCount')} value={String(fleetSummary.vehiclesCount)} />
             <SummaryStat label={t('dashboard.upcoming30d')} value={String(fleetSummary.upcoming30d)} />

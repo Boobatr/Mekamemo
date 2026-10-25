@@ -62,7 +62,7 @@ export function GarageProfileScreen({
         {garage.openUntil ? <Tag label={`${t('garageProfile.open')} · ${garage.openUntil}`} /> : null}
       </View>
 
-      <Card withMarks={false} style={{ padding: 0, overflow: 'hidden' }}>
+      <Card style={{ padding: 0, overflow: 'hidden' }}>
         <View style={{ flexDirection: 'row' }}>
           <StatCell
             label={t('garageProfile.price')}

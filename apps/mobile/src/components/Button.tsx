@@ -10,7 +10,6 @@ import {
 import { useTheme } from '../theme';
 import { textStyles } from '../theme/typography';
 import { spacing, radius } from '../theme/spacing';
-import { CrosshairMarks } from './CrosshairMarks';
 
 interface ButtonProps {
   label: string;
@@ -65,7 +64,6 @@ export function Button({
           {label}
         </Text>
       )}
-      {isPrimary ? <CrosshairMarks /> : null}
     </Pressable>
   );
 }

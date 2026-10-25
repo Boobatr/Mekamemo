@@ -62,7 +62,7 @@ export function VehicleDetailScreen({
       />
 
       {isEditingVin ? (
-        <Card withMarks={false} testID="vin-edit-card">
+        <Card testID="vin-edit-card">
           <Field
             label={t('vehicleDetail.vinLabel')}
             value={vinDraft}
@@ -88,7 +88,7 @@ export function VehicleDetailScreen({
           </View>
         </Card>
       ) : (
-        <Card withMarks={false} testID="vin-card">
+        <Card testID="vin-card">
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.lg }}>
             <View style={{ flex: 1 }}>
               <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.xs }]}>

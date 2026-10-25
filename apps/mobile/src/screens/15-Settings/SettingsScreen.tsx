@@ -145,7 +145,7 @@ export function SettingsScreen({
       </Text>
 
       {isEditingProfile ? (
-        <Card withMarks={false} testID="profile-edit">
+        <Card testID="profile-edit">
           <Field
             label={t('onboarding.profile.fullName')}
             value={editFullName}
@@ -195,7 +195,7 @@ export function SettingsScreen({
           </View>
         </Card>
       ) : (
-        <Card withMarks={false} testID="profile-summary" style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Card testID="profile-summary" style={{ flexDirection: 'row', alignItems: 'center' }}>
           <View
             style={{
               width: 40,
@@ -223,7 +223,7 @@ export function SettingsScreen({
       )}
 
       {isChangingPassword ? (
-        <Card withMarks={false} testID="password-edit">
+        <Card testID="password-edit">
           {!hasChosenPassword ? (
             <Text style={[textStyles.bodySecondary, { color: colors.textSecondary, marginBottom: spacing.xl }]}>
               {t('settings.password.legacyNote')}

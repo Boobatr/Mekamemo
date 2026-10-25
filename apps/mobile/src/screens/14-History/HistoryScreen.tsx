@@ -37,7 +37,7 @@ export function HistoryScreen({
         }
       />
 
-      <Card withMarks={false}>
+      <Card>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <View>
             <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.xs }]}>

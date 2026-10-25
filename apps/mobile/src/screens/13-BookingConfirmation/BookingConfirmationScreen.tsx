@@ -44,7 +44,7 @@ export function BookingConfirmationScreen({
         {t('booking.title')}
       </Text>
 
-      <Card withMarks={false}>
+      <Card>
         <TimelineStep done>
           <Text style={[textStyles.body, { color: colors.textPrimary, marginBottom: spacing.xs }]}>
             {t('booking.garagesRetained', { count: booking.garagesRetainedCount })}
