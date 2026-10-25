@@ -25,8 +25,19 @@ export interface GarageWithDistance {
   hours: unknown;
 }
 
+export interface GarageSearch {
+  origin: GeoPoint;
+  /** The radius actually searched: larger than the one asked for when few garages were near. */
+  radiusKm: number;
+  results: GarageWithDistance[];
+}
+
 /** In a dense city a 50 km radius holds hundreds of garages; the nearest ones are what's useful. */
 const MAX_RESULTS = 30;
+
+/** Fewer garages than this within the radius: look further out instead of showing an empty screen. */
+const MIN_RESULTS = 5;
+const MAX_AUTO_RADIUS_KM = 100;
 
 export const USER_GARAGE_SOURCE = 'user';
 /** Garages one person may add per day: enough to fill gaps, too few to flood the search. */
@@ -46,12 +57,27 @@ export class GaragesService {
     @Inject(GARAGE_DISCOVERY) private readonly discovery: GarageDiscovery,
   ) {}
 
-  async searchNearPostalCode(
-    postalCode: string,
-    radiusKm: number,
-    specialtyKeyword?: string,
-  ): Promise<{ origin: GeoPoint; results: GarageWithDistance[] }> {
+  async searchNearPostalCode(postalCode: string, radiusKm: number, specialtyKeyword?: string): Promise<GarageSearch> {
     const origin = await this.geocoding.geocode(postalCode);
+    return this.searchNear(origin, radiusKm, specialtyKeyword);
+  }
+
+  /**
+   * The nearest garages around a point. Small towns and remote places may have none within the
+   * chosen radius: the radius is doubled (up to 100 km) until a few garages turn up, and the
+   * radius actually searched is returned so the app can say so.
+   */
+  async searchNear(origin: GeoPoint, radiusKm: number, specialtyKeyword?: string): Promise<GarageSearch> {
+    let searchedKm = radiusKm;
+    let found = await this.garagesWithin(origin, searchedKm, specialtyKeyword);
+    while (found.length < MIN_RESULTS && searchedKm < MAX_AUTO_RADIUS_KM) {
+      searchedKm = Math.min(searchedKm * 2, MAX_AUTO_RADIUS_KM);
+      found = await this.garagesWithin(origin, searchedKm, specialtyKeyword);
+    }
+    return { origin, radiusKm: searchedKm, results: pickNearestDistinct(found, MAX_RESULTS) };
+  }
+
+  private async garagesWithin(origin: GeoPoint, radiusKm: number, specialtyKeyword?: string): Promise<GarageWithDistance[]> {
     await this.discovery.ensureNear(origin, radiusKm);
 
     // Cheap bounding box in SQL first, exact distance in memory after.
@@ -89,7 +115,7 @@ export class GaragesService {
       .filter((g) => !keyword || g.specialties.length === 0 || g.specialties.some((s) => s.toLowerCase().includes(keyword)))
       .sort((a, b) => a.distanceKm - b.distanceKm);
 
-    return { origin, results: pickNearestDistinct(results, MAX_RESULTS) };
+    return results;
   }
 
   /**

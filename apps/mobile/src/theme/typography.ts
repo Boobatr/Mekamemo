@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 export const fontFamily = {
   condensedMedium: 'BarlowCondensed_500Medium',
   condensedSemiBold: 'BarlowCondensed_600SemiBold',
@@ -56,3 +58,9 @@ export const textStyles = {
     letterSpacing: 0,
   },
 } as const;
+
+/**
+ * Text fields on the web must use at least 16px type: iPhone browsers zoom the whole page in when a
+ * smaller field gets focus, and may stay zoomed afterwards, leaving the top bar and tab bar off screen.
+ */
+export const noZoomInput = Platform.OS === 'web' ? ({ fontSize: 16 } as const) : {};

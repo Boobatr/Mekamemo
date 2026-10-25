@@ -88,6 +88,7 @@ export function AddGarageScreen({
             <Text style={[textStyles.bodySecondary, { color: colors.textMuted }]}>{result.garage.address}</Text>
           </Card>
           <Button label={t('addGarage.view')} testID="add-garage-view" onPress={() => onOpenGarage(result.garage.id)} />
+          {onBack ? <Button label={t('common.back')} variant="secondary" testID="add-garage-back" onPress={onBack} /> : null}
         </>
       ) : (
         <>
@@ -145,6 +146,8 @@ export function AddGarageScreen({
             ) : null}
           </Card>
           <Button label={t('addGarage.submit')} disabled={!canSubmit} loading={busy} testID="add-garage-submit" onPress={submit} />
+          {/* A way out at the bottom too: the form is long, and the top bar scrolls out of sight. */}
+          {onBack ? <Button label={t('common.cancel')} variant="secondary" testID="add-garage-cancel" onPress={onBack} /> : null}
         </>
       )}
     </Screen>

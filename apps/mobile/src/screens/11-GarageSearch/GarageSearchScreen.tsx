@@ -20,6 +20,12 @@ interface GarageSearchScreenProps {
   onSendQuery?: (text: string) => void;
   /** Opens the form for a garage that is missing from the results. The link is hidden without it. */
   onAddGarage?: () => void;
+  /** Search from the device's current position (web only; the button is hidden without it). */
+  onUseMyPosition?: () => void;
+  /** Go back to searching from the postal code. Offered while a position is in use. */
+  onUsePostalCode?: () => void;
+  locating?: boolean;
+  locationFailed?: boolean;
 }
 
 export function GarageSearchScreen({
@@ -32,6 +38,10 @@ export function GarageSearchScreen({
   onSelectGarage = () => {},
   onSendQuery = () => {},
   onAddGarage,
+  onUseMyPosition,
+  onUsePostalCode,
+  locating = false,
+  locationFailed = false,
 }: GarageSearchScreenProps) {
   const { t } = useTranslation();
   const { colors } = useTheme();
@@ -54,6 +64,28 @@ export function GarageSearchScreen({
         onSelectGarage={setHighlightedId}
         onOpenGarage={onSelectGarage}
       />
+
+      {onUsePostalCode || onUseMyPosition ? (
+        <View style={{ marginBottom: spacing.lg }}>
+          <Text
+            accessibilityRole="button"
+            testID={onUsePostalCode ? 'use-postal-code' : 'use-my-position'}
+            onPress={onUsePostalCode ?? onUseMyPosition}
+            style={[textStyles.button, { color: colors.accentOnBackground, fontSize: 13 }]}
+          >
+            {onUsePostalCode
+              ? t('garageSearch.usePostalCode')
+              : locating
+                ? t('garageSearch.locating')
+                : t('garageSearch.useMyPosition')}
+          </Text>
+          {locationFailed ? (
+            <Text testID="location-error" style={[textStyles.bodySecondary, { color: colors.textMuted, marginTop: spacing.xs }]}>
+              {t('garageSearch.locationFailed')}
+            </Text>
+          ) : null}
+        </View>
+      ) : null}
 
       <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.xl }]}>
         {t('garageSearch.resultsNear', { count: results.length, radius: radiusKm }).toUpperCase()}

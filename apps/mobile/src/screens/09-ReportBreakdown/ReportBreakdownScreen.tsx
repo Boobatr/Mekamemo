@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Camera, Mic, Video } from 'lucide-react-native';
 import { Screen, Card, Button } from '../../components';
 import { useTheme } from '../../theme';
-import { textStyles } from '../../theme/typography';
+import { noZoomInput, textStyles } from '../../theme/typography';
 import { spacing } from '../../theme/spacing';
 import { mockBreakdownTags } from '../../mocks/mockData';
 
@@ -84,7 +84,7 @@ export function ReportBreakdownScreen({
           numberOfLines={4}
           placeholder={t('breakdown.descriptionPlaceholder')}
           placeholderTextColor={colors.textMuted}
-          style={[textStyles.body, { color: colors.textPrimary, minHeight: 90, textAlignVertical: 'top' }]}
+          style={[textStyles.body, noZoomInput, { color: colors.textPrimary, minHeight: 90, textAlignVertical: 'top' }]}
         />
       </Card>
 

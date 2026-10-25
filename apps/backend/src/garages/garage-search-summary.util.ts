@@ -21,14 +21,22 @@ export function buildFallbackSummary(
   results: GarageWithDistance[],
   radiusKm: number,
   language: 'fr' | 'en',
+  /** The radius actually searched, when it had to be widened beyond `radiusKm`. */
+  searchedKm: number = radiusKm,
 ): string {
   const isFr = language === 'fr';
+  const widened = searchedKm > radiusKm;
   if (results.length === 0) {
     return isFr
-      ? `Aucun garage trouvé dans ${radiusKm} km.`
-      : `No garage found within ${radiusKm} km.`;
+      ? `Aucun garage trouvé dans ${searchedKm} km.`
+      : `No garage found within ${searchedKm} km.`;
   }
   const count = results.length;
+  if (widened) {
+    return isFr
+      ? `Peu de garages dans ${radiusKm} km : j'ai élargi la recherche à ${searchedKm} km. ${count} garage${count > 1 ? 's' : ''} trouvé${count > 1 ? 's' : ''}, voici les plus proches.`
+      : `Few garages within ${radiusKm} km, so I widened the search to ${searchedKm} km. ${count} garage${count > 1 ? 's' : ''} found, here are the closest ones.`;
+  }
   return isFr
     ? `${count} garage${count > 1 ? 's' : ''} trouvé${count > 1 ? 's' : ''} dans ${radiusKm} km. Voici les plus proches.`
     : `${count} garage${count > 1 ? 's' : ''} found within ${radiusKm} km. Here are the closest ones.`;

@@ -19,11 +19,14 @@ export interface GarageSearchResult {
 export interface GarageSearchResponse {
   assistantSummary: string;
   origin: { lat: number; lng: number };
+  /** The radius actually searched: larger than the user's setting when few garages were near. */
+  radiusKm?: number;
   results: GarageSearchResult[];
 }
 
-export function searchGarages(query: string): Promise<GarageSearchResponse> {
-  return apiGet('/garages/search', { query });
+/** `position` replaces the postal code as the centre of the search (browser location). */
+export function searchGarages(query: string, position?: { lat: number; lng: number }): Promise<GarageSearchResponse> {
+  return apiGet('/garages/search', position ? { query, lat: String(position.lat), lng: String(position.lng) } : { query });
 }
 
 export function getGarage(id: string) {

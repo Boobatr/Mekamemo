@@ -95,4 +95,27 @@ describe('AddGarageScreen', () => {
 
     await waitFor(() => expect(screen.getByText(/déjà dans la liste/)).toBeTruthy());
   });
+
+  it('has a way out at the bottom of the form as well as at the top', async () => {
+    const onBack = jest.fn();
+    await renderWithProviders(<AddGarageScreen onBack={onBack} />, { withNavigationContainer: false });
+
+    await fireEvent.press(screen.getByTestId('add-garage-cancel'));
+    await fireEvent.press(screen.getByTestId('screen-back-button'));
+
+    expect(onBack).toHaveBeenCalledTimes(2);
+  });
+
+  it('can go back from the confirmation too', async () => {
+    const onBack = jest.fn();
+    const onSubmit = jest.fn().mockResolvedValue({ garage: { id: 'g1', name: 'Garage Test', address: 'x' }, created: true });
+    await renderWithProviders(<AddGarageScreen onBack={onBack} onSubmit={onSubmit} />, { withNavigationContainer: false });
+    await fillRequired();
+    await fireEvent.press(screen.getByTestId('add-garage-submit'));
+    await waitFor(() => expect(screen.getByTestId('add-garage-done')).toBeTruthy());
+
+    await fireEvent.press(screen.getByTestId('add-garage-back'));
+
+    expect(onBack).toHaveBeenCalledTimes(1);
+  });
 });

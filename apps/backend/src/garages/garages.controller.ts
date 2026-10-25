@@ -27,13 +27,13 @@ export class GaragesController {
     const profile = await this.prisma.user.findUniqueOrThrow({ where: { id: user.id } });
     const specialty = extractSpecialtyKeyword(dto.query);
 
+    const hasPosition = dto.lat !== undefined && dto.lng !== undefined;
+
     let search;
     try {
-      search = await this.garagesService.searchNearPostalCode(
-        profile.postalCode,
-        profile.searchRadiusKm,
-        specialty,
-      );
+      search = hasPosition
+        ? await this.garagesService.searchNear({ lat: dto.lat!, lng: dto.lng! }, profile.searchRadiusKm, specialty)
+        : await this.garagesService.searchNearPostalCode(profile.postalCode, profile.searchRadiusKm, specialty);
     } catch (err) {
       if (!(err instanceof GeocodingError)) throw err;
       // An unknown postal code isn't a server fault: say so in the chat instead of failing the screen.
@@ -43,11 +43,12 @@ export class GaragesController {
         results: [],
       };
     }
-    const { origin, results } = search;
+    const { origin, results, radiusKm } = search;
 
     return {
-      assistantSummary: buildFallbackSummary(results, profile.searchRadiusKm, profile.language),
+      assistantSummary: buildFallbackSummary(results, profile.searchRadiusKm, profile.language, radiusKm),
       origin,
+      radiusKm,
       results,
     };
   }

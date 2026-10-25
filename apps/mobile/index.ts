@@ -2,6 +2,7 @@ import { registerRootComponent } from 'expo';
 
 import './src/utils/installWebAlert';
 import './src/utils/installPageLanguage';
+import './src/utils/installViewportReset';
 import App from './App';
 
 // registerRootComponent calls AppRegistry.registerComponent('main', () => App);

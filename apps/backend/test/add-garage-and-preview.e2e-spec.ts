@@ -136,4 +136,40 @@ describe('Adding a garage and previewing the quote email (e2e)', () => {
       await request(app.getHttpServer()).post('/garages').send(body).expect(401);
     });
   });
+
+  describe('search around the current position', () => {
+    it('uses the given position instead of the postal code, and reports the radius searched', async () => {
+      const res = await request(app.getHttpServer())
+        .get('/garages/search')
+        .query({ query: 'garage', lat: 45.54, lng: -73.57 })
+        .set(auth())
+        .expect(200);
+
+      expect(res.body.origin).toEqual({ lat: 45.54, lng: -73.57 });
+      // Only the three sample garages exist near Montreal in the test database: fewer than five,
+      // so the radius is widened (the real search is covered by the unit tests).
+      expect(res.body.radiusKm).toBeGreaterThanOrEqual(15);
+      expect(res.body.results.length).toBeGreaterThan(0);
+    });
+
+    it('widens the radius in the middle of nowhere and says so', async () => {
+      const res = await request(app.getHttpServer())
+        .get('/garages/search')
+        .query({ query: 'garage', lat: 60, lng: -100 })
+        .set(auth())
+        .expect(200);
+
+      expect(res.body.radiusKm).toBe(100);
+      expect(res.body.results).toEqual([]);
+      expect(res.body.assistantSummary).toMatch(/100 km/);
+    });
+
+    it('rejects a position that is not a number', async () => {
+      await request(app.getHttpServer())
+        .get('/garages/search')
+        .query({ query: 'garage', lat: 'ici', lng: -73.57 })
+        .set(auth())
+        .expect(400);
+    });
+  });
 });

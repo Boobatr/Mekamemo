@@ -48,11 +48,12 @@ describe('GaragesService.searchNearPostalCode', () => {
   });
 
   it('keeps only garages within the radius, nearest first', async () => {
-    const { service } = setup([garageAt(12), garageAt(3), garageAt(40)], false);
+    const { service } = setup([garageAt(12), garageAt(3), garageAt(40), garageAt(1), garageAt(2), garageAt(4), garageAt(5)], false);
 
-    const { results } = await service.searchNearPostalCode('H2X 1Y4', 15);
+    const { results, radiusKm } = await service.searchNearPostalCode('H2X 1Y4', 15);
 
-    expect(results.map((r) => r.distanceKm)).toEqual([3, 12]);
+    expect(results.map((r) => r.distanceKm)).toEqual([1, 2, 3, 4, 5, 12]);
+    expect(radiusKm).toBe(15);
   });
 
   it('keeps garages that list no services when filtering by specialty, and drops mismatches', async () => {
@@ -79,6 +80,45 @@ describe('GaragesService.searchNearPostalCode', () => {
     expect(results).toHaveLength(30);
     expect(results[0].distanceKm).toBeLessThanOrEqual(results[29].distanceKm);
     expect(results[29].distanceKm).toBeLessThanOrEqual(6.1);
+  });
+});
+
+describe('GaragesService radius widening', () => {
+  it('doubles the radius until a few garages turn up, and reports the radius it used', async () => {
+    const { service, discovery } = setup([garageAt(20), garageAt(22), garageAt(25), garageAt(28), garageAt(33)], false);
+
+    const { results, radiusKm } = await service.searchNearPostalCode('G0A 1E0', 15);
+
+    expect(radiusKm).toBe(60); // 15 -> 30 (4 garages) -> 60 (5 garages)
+    expect(results).toHaveLength(5);
+    expect(discovery.ensureNear).toHaveBeenLastCalledWith(ORIGIN, 60);
+  });
+
+  it('stops at 100 km and says nothing was found rather than searching the whole country', async () => {
+    const { service } = setup([garageAt(400)], false);
+
+    const { results, radiusKm } = await service.searchNearPostalCode('X0A 0H0', 15);
+
+    expect(results).toEqual([]);
+    expect(radiusKm).toBe(100);
+  });
+
+  it('does not widen when enough garages are already close', async () => {
+    const { service, discovery } = setup([garageAt(1), garageAt(2), garageAt(3), garageAt(4), garageAt(5)], false);
+
+    const { radiusKm } = await service.searchNearPostalCode('H2X 1Y4', 15);
+
+    expect(radiusKm).toBe(15);
+    expect(discovery.ensureNear).toHaveBeenCalledTimes(1);
+  });
+
+  it('searches around a given position without geocoding anything', async () => {
+    const { service, geocoding } = setup([garageAt(1), garageAt(2), garageAt(3), garageAt(4), garageAt(5)], false);
+
+    const { origin } = await service.searchNear({ lat: 46.9, lng: -71.1 }, 15);
+
+    expect(origin).toEqual({ lat: 46.9, lng: -71.1 });
+    expect(geocoding.geocode).not.toHaveBeenCalled();
   });
 });
 

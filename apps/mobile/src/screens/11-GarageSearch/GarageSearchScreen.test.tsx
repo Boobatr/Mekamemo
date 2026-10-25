@@ -155,4 +155,41 @@ describe('GarageSearchScreen', () => {
       expect(screen.queryByTestId('add-garage-link')).toBeNull();
     });
   });
+
+  describe('search from my position', () => {
+    it('offers the button only where the position can be read', async () => {
+      await renderWithProviders(<GarageSearchScreen />, { withNavigationContainer: false });
+      expect(screen.queryByTestId('use-my-position')).toBeNull();
+
+      const onUseMyPosition = jest.fn();
+      await renderWithProviders(<GarageSearchScreen onUseMyPosition={onUseMyPosition} />, { withNavigationContainer: false });
+      await fireEvent.press(screen.getByTestId('use-my-position'));
+      expect(onUseMyPosition).toHaveBeenCalledTimes(1);
+    });
+
+    it('offers to go back to the postal code while a position is in use', async () => {
+      const onUsePostalCode = jest.fn();
+      await renderWithProviders(<GarageSearchScreen onUseMyPosition={jest.fn()} onUsePostalCode={onUsePostalCode} />, {
+        withNavigationContainer: false,
+      });
+
+      expect(screen.queryByTestId('use-my-position')).toBeNull();
+      await fireEvent.press(screen.getByTestId('use-postal-code'));
+      expect(onUsePostalCode).toHaveBeenCalledTimes(1);
+    });
+
+    it('says when the position could not be read', async () => {
+      await renderWithProviders(<GarageSearchScreen onUseMyPosition={jest.fn()} locationFailed />, { withNavigationContainer: false });
+
+      expect(screen.getByTestId('location-error')).toBeTruthy();
+    });
+  });
+
+  it('says "1 garage", not "1 garages"', async () => {
+    await renderWithProviders(<GarageSearchScreen results={[mockGarages[0]] as never} radiusKm={100} />, {
+      withNavigationContainer: false,
+    });
+
+    expect(screen.getByText('1 GARAGE DANS 100 KM')).toBeTruthy();
+  });
 });

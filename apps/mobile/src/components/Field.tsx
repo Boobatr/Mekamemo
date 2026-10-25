@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, TextInput, TextInputProps, View } from 'react-native';
 import { useTheme } from '../theme';
-import { textStyles } from '../theme/typography';
+import { noZoomInput, textStyles } from '../theme/typography';
 import { spacing } from '../theme/spacing';
 
 interface FieldProps extends TextInputProps {
@@ -21,6 +21,7 @@ export function Field({ label, style, ...inputProps }: FieldProps) {
         style={[
           styles.input,
           textStyles.body,
+          noZoomInput,
           {
             backgroundColor: colors.fieldBackground,
             borderColor: colors.hairlines[2],

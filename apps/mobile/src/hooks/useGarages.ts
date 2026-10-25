@@ -1,10 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as garagesApi from '../services/garages';
 
-export function useGarageSearch(query: string) {
+export function useGarageSearch(query: string, position?: { lat: number; lng: number }) {
   return useQuery({
-    queryKey: ['garage-search', query],
-    queryFn: () => garagesApi.searchGarages(query),
+    queryKey: ['garage-search', query, position?.lat, position?.lng],
+    queryFn: () => garagesApi.searchGarages(query, position),
     enabled: query.trim().length > 0,
   });
 }
