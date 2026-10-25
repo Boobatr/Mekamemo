@@ -166,6 +166,12 @@
     "placeholder": "Ask the assistant a question…",
     "resultsNear": "{{count}} garages within {{radius}} km",
     "mapCaption": "Map · {{count}} garages within {{radius}} km",
+    "mapGrow": "Enlarge",
+    "mapShrink": "Shrink",
+    "mapFullscreen": "Full screen",
+    "mapClose": "Close",
+    "mapOpenGarage": "View this garage",
+    "mapPickHint": "Tap a point on the map to see the garage.",
     "osmAttribution": "Garages: © Overture Maps Foundation and OpenStreetMap contributors"
   },
   "garageProfile": {

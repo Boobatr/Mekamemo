@@ -10,7 +10,7 @@ Run it a few times a year to refresh the data, then commit the new file:
 
     pip install duckdb
     python scripts/export-overture-garages.py                      # latest release below
-    python scripts/export-overture-garages.py --release 2026-12-17.0 --min-confidence 0.5
+    python scripts/export-overture-garages.py --release 2026-12-17.0
 
 Release list: https://overturemaps-us-west-2.s3.amazonaws.com/?prefix=release/&delimiter=/
 Data © Overture Maps Foundation (places: CDLA Permissive 2.0).
@@ -25,19 +25,45 @@ from pathlib import Path
 
 import duckdb
 
-DEFAULT_RELEASE = "2026-09-23.1"
+DEFAULT_RELEASE = "2026-10-21.0"
 DEFAULT_OUT = Path(__file__).resolve().parent.parent / "prisma" / "data" / "garages-ca.ndjson.gz"
 
 # Rough bounding box of Canada: lets DuckDB skip the parts of the file for the rest of the world.
 CANADA_BBOX = {"xmin": -141.1, "xmax": -52.5, "ymin": 41.6, "ymax": 83.3}
 
-GARAGE_FILTER = """
-  addresses[1].country = 'CA'
-  AND (array_to_string(taxonomy.hierarchy, ' > ') ILIKE '%automotive_repair%'
-       OR taxonomy.primary IN ('automotive_service', 'auto_body_shop', 'tire_shop', 'tire_dealer_and_repair'))
-  AND coalesce(operating_status, 'open') NOT IN ('closed', 'permanently_closed')
+REPAIR_CATEGORIES = """
+  (array_to_string(taxonomy.hierarchy, ' > ') ILIKE '%automotive_repair%'
+   OR taxonomy.primary IN ('automotive_service', 'auto_body_shop', 'tire_shop', 'tire_dealer_and_repair', 'oil_change_station'))
   AND taxonomy.primary NOT IN ('trailer_repair', 'motorsport_vehicle_repair')
+"""
+
+# In Québec a "garage" is often filed as a car dealer or a parts store ("Garage Christian Martel",
+# "Garage Milano Performance"), and Canadian Tire stores as department stores. Those are kept when
+# the name says they work on cars.
+GARAGE_LIKE_CATEGORIES = "('auto_dealer', 'used_auto_dealer', 'auto_parts_store', 'department_store')"
+GARAGE_LIKE_NAME = (
+    "(?i)(garage|m[ée]canique|mecanique|atelier|carrosserie|autopro|auto ?service|service ?auto"
+    "|pneus|mechanic|auto repair|r[ée]paration|muffler|silencieux|midas|speedy"
+    "|canadian tire|kal tire|fountain tire|jiffy|lube)"
+)
+
+# Sources rate small-town garages low even when they are real (a listing nobody has reviewed), so the
+# floor for real repair categories is lower than for the look-alike categories above.
+REPAIR_MIN_CONFIDENCE = 0.3
+GARAGE_LIKE_MIN_CONFIDENCE = 0.5
+
+
+def garage_filter(repair_min: float, garage_like_min: float) -> str:
+    return f"""
+  addresses[1].country = 'CA'
+  AND coalesce(operating_status, 'open') NOT IN ('closed', 'permanently_closed')
   AND names.primary IS NOT NULL
+  AND (
+    ({REPAIR_CATEGORIES} AND confidence >= {repair_min})
+    OR (taxonomy.primary IN {GARAGE_LIKE_CATEGORIES}
+        AND regexp_matches(names.primary, '{GARAGE_LIKE_NAME}')
+        AND confidence >= {garage_like_min})
+  )
 """
 
 
@@ -84,7 +110,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--release", default=DEFAULT_RELEASE)
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
-    parser.add_argument("--min-confidence", type=float, default=0.5)
+    parser.add_argument("--min-confidence", type=float, default=REPAIR_MIN_CONFIDENCE, help="floor for real repair categories")
+    parser.add_argument("--min-confidence-lookalike", type=float, default=GARAGE_LIKE_MIN_CONFIDENCE, help="floor for dealers / parts stores named like a garage")
     args = parser.parse_args()
 
     con = duckdb.connect()
@@ -101,8 +128,8 @@ def main() -> int:
         FROM read_parquet('{path}', hive_partitioning=1)
         WHERE bbox.xmin BETWEEN {box['xmin']} AND {box['xmax']}
           AND bbox.ymin BETWEEN {box['ymin']} AND {box['ymax']}
-          AND confidence >= {args.min_confidence}
-          AND {GARAGE_FILTER}
+          AND confidence >= {min(args.min_confidence, args.min_confidence_lookalike)}
+          AND {garage_filter(args.min_confidence, args.min_confidence_lookalike)}
         """
     ).fetchall()
 

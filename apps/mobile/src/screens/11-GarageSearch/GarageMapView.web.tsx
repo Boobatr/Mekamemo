@@ -8,6 +8,8 @@ interface GarageMapViewProps {
   radiusKm: number;
   selectedId?: string;
   onSelectGarage?: (garageId: string) => void;
+  height?: number;
+  fullscreen?: boolean;
 }
 
 /** The web gets a real map: OpenStreetMap tiles drawn by Leaflet (free, no API key).

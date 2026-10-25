@@ -15,12 +15,15 @@ interface LeafletGarageMapProps {
   radiusKm: number;
   selectedId?: string;
   onSelectGarage?: (garageId: string) => void;
+  height?: number;
+  /** Full-screen map: the page behind doesn't scroll, so one finger pans and the wheel zooms. */
+  fullscreen?: boolean;
 }
 
 /** Real, pannable map for the web: OpenStreetMap tiles drawn by Leaflet (free, no API key).
  * Same props as the schematic GarageMap, which it falls back to if the map cannot start. */
 export function LeafletGarageMap(props: LeafletGarageMapProps) {
-  const { origin, garages, radiusKm, selectedId, onSelectGarage } = props;
+  const { origin, garages, radiusKm, selectedId, onSelectGarage, height = MAP_HEIGHT, fullscreen = false } = props;
   const { colors } = useTheme();
   const [failed, setFailed] = useState(false);
   const container = useRef<HTMLDivElement>(null);
@@ -43,8 +46,8 @@ export function LeafletGarageMap(props: LeafletGarageMapProps) {
     try {
       const instance = L.map(container.current, {
         // One-finger drags must keep scrolling the page on phones; pinching still zooms.
-        dragging: !L.Browser.mobile,
-        scrollWheelZoom: false,
+        dragging: fullscreen || !L.Browser.mobile,
+        scrollWheelZoom: fullscreen,
         zoomSnap: 0.5,
       });
       instance.attributionControl.setPrefix(false);
@@ -62,16 +65,17 @@ export function LeafletGarageMap(props: LeafletGarageMapProps) {
     };
   }, []);
 
-  // Frame the search area whenever the search point or radius changes.
+  // Frame the search area whenever the search point, radius or map size changes.
   useEffect(() => {
     if (!map.current) return;
     try {
+      map.current.invalidateSize({ animate: false }); // the container may have just grown or shrunk
       const area = L.latLng(origin.lat, origin.lng).toBounds(Math.max(radiusKm, 1) * 2000);
       map.current.fitBounds(area, { padding: [12, 12], animate: false });
     } catch (error) {
       giveUp(error);
     }
-  }, [origin.lat, origin.lng, radiusKm]);
+  }, [origin.lat, origin.lng, radiusKm, height]);
 
   // Draw the search point, the radius and the garages.
   useEffect(() => {
@@ -125,7 +129,7 @@ export function LeafletGarageMap(props: LeafletGarageMapProps) {
       style={{
         position: 'relative',
         zIndex: 0, // keeps Leaflet's own layers (z-index up to 1000) from covering the tab bar
-        height: MAP_HEIGHT,
+        height,
         marginBottom: spacing.xl,
         border: `1px solid ${colors.hairlines[2]}`,
         boxSizing: 'border-box',

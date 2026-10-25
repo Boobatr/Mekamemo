@@ -14,6 +14,8 @@ export interface MapGarage {
   name: string;
   lat: number;
   lng: number;
+  /** Shown under the name when a garage is picked on the full-screen map. */
+  neighbourhood?: string;
 }
 
 interface GarageMapProps {
@@ -22,12 +24,14 @@ interface GarageMapProps {
   radiusKm: number;
   selectedId?: string;
   onSelectGarage?: (garageId: string) => void;
+  /** Defaults to the compact size; the expandable wrapper passes a taller one. */
+  height?: number;
 }
 
 /** Schematic map — a grid backdrop with pins placed by real relative lat/lng,
  * not a tile-based map. Keeps the mockup's "map with pins" idea without a
  * native maps SDK (which has no web renderer, so it can't be verified there). */
-export function GarageMap({ origin, garages, radiusKm, selectedId, onSelectGarage = () => {} }: GarageMapProps) {
+export function GarageMap({ origin, garages, radiusKm, selectedId, onSelectGarage = () => {}, height = MAP_HEIGHT }: GarageMapProps) {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const kmPerDegLng = KM_PER_DEG_LAT * Math.cos((origin.lat * Math.PI) / 180);
@@ -41,13 +45,13 @@ export function GarageMap({ origin, garages, radiusKm, selectedId, onSelectGarag
     return { left: `${Math.min(0.96, Math.max(0.04, x)) * 100}%`, top: `${Math.min(0.9, Math.max(0.1, y)) * 100}%` };
   }
 
-  const gridLines = Math.ceil(MAP_HEIGHT / GRID_STEP);
+  const gridLines = Math.ceil(height / GRID_STEP);
 
   return (
     <View
       testID="garage-map"
       style={{
-        height: MAP_HEIGHT,
+        height,
         borderWidth: 1,
         borderColor: colors.hairlines[2],
         backgroundColor: colors.fieldBackground,

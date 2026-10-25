@@ -1,5 +1,6 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react-native';
+import { StyleSheet } from 'react-native';
+import { fireEvent, screen, within } from '@testing-library/react-native';
 import { renderWithProviders } from '../../test-utils/renderWithProviders';
 import { GarageSearchScreen } from './GarageSearchScreen';
 import { mockGarages } from '../../mocks/mockData';
@@ -89,5 +90,52 @@ describe('GarageSearchScreen', () => {
     await fireEvent.press(screen.getByTestId('garage-pin-garage-rosemont'));
     // Tapping a pin highlights the matching result card without navigating away.
     expect(screen.getByText('Atelier Rosemont')).toBeTruthy();
+  });
+
+  describe('map size', () => {
+    const mapHeight = () => StyleSheet.flatten(screen.getByTestId('garage-map').props.style).height as number;
+
+    it('grows to half of the screen and shrinks back', async () => {
+      await renderWithProviders(<GarageSearchScreen />, { withNavigationContainer: false });
+      const compact = mapHeight();
+
+      await fireEvent.press(screen.getByTestId('map-resize'));
+      const half = mapHeight();
+      expect(half).toBeGreaterThan(compact);
+
+      await fireEvent.press(screen.getByTestId('map-resize'));
+      expect(mapHeight()).toBe(compact);
+    });
+
+    it('opens full screen, shows the garage picked on the map, and can open its profile', async () => {
+      const onSelectGarage = jest.fn();
+      await renderWithProviders(<GarageSearchScreen onSelectGarage={onSelectGarage} />, { withNavigationContainer: false });
+      expect(screen.queryByTestId('map-close')).toBeNull();
+
+      await fireEvent.press(screen.getByTestId('map-fullscreen'));
+      expect(screen.getByTestId('map-close')).toBeTruthy();
+      expect(screen.getByText(/Touchez un point/)).toBeTruthy();
+      expect(screen.queryByTestId('map-open-garage')).toBeNull();
+
+      // Two maps now exist (the one in the page and the full-screen one): tap a pin on the last.
+      const pins = screen.getAllByTestId('garage-pin-garage-rosemont');
+      await fireEvent.press(pins[pins.length - 1]);
+      expect(within(screen.getByTestId('map-selected-garage')).getByText('Atelier Rosemont')).toBeTruthy();
+
+      await fireEvent.press(screen.getByTestId('map-open-garage'));
+      expect(onSelectGarage).toHaveBeenCalledWith('garage-rosemont');
+      expect(screen.queryByTestId('map-close')).toBeNull();
+    });
+
+    it('closes the full-screen map without opening anything', async () => {
+      const onSelectGarage = jest.fn();
+      await renderWithProviders(<GarageSearchScreen onSelectGarage={onSelectGarage} />, { withNavigationContainer: false });
+
+      await fireEvent.press(screen.getByTestId('map-fullscreen'));
+      await fireEvent.press(screen.getByTestId('map-close'));
+
+      expect(screen.queryByTestId('map-close')).toBeNull();
+      expect(onSelectGarage).not.toHaveBeenCalled();
+    });
   });
 });

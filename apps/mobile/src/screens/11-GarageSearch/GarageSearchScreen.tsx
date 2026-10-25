@@ -7,7 +7,7 @@ import { useTheme } from '../../theme';
 import { textStyles } from '../../theme/typography';
 import { spacing } from '../../theme/spacing';
 import { mockGarages, mockUserLocation } from '../../mocks/mockData';
-import { GarageMapView } from './GarageMapView';
+import { ExpandableGarageMap } from './ExpandableGarageMap';
 
 interface GarageSearchScreenProps {
   userQuery?: string;
@@ -43,12 +43,13 @@ export function GarageSearchScreen({
 
   return (
     <Screen>
-      <GarageMapView
+      <ExpandableGarageMap
         origin={origin}
         radiusKm={radiusKm}
-        garages={results}
+        garages={results.map((g) => ({ id: g.id, name: g.name, lat: g.lat, lng: g.lng, neighbourhood: g.neighbourhood }))}
         selectedId={highlightedId}
         onSelectGarage={setHighlightedId}
+        onOpenGarage={onSelectGarage}
       />
 
       <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.xl }]}>

@@ -9,6 +9,8 @@ interface GarageMapViewProps {
   radiusKm: number;
   selectedId?: string;
   onSelectGarage?: (garageId: string) => void;
+  height?: number;
+  fullscreen?: boolean;
 }
 
 /** iOS gets a real interactive map (Apple Maps, no API key needed). Android

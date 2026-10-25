@@ -14,13 +14,14 @@ interface RealGarageMapProps {
   radiusKm: number;
   selectedId?: string;
   onSelectGarage?: (garageId: string) => void;
+  height?: number;
 }
 
 /** Real interactive map (Apple Maps via react-native-maps' default iOS provider —
  * no API key needed). Same props shape as the schematic GarageMap so
  * GarageMapView.native.tsx can swap between them by platform. Centered on the
  * profile's postal-code-derived origin, not live device GPS. */
-export function RealGarageMap({ origin, garages, radiusKm, selectedId, onSelectGarage = () => {} }: RealGarageMapProps) {
+export function RealGarageMap({ origin, garages, radiusKm, selectedId, onSelectGarage = () => {}, height = MAP_HEIGHT }: RealGarageMapProps) {
   const { colors } = useTheme();
   const spanDeg = (Math.max(radiusKm, 1) * 2.6) / KM_PER_DEG_LAT;
   const lngSpanDeg = spanDeg / Math.cos((origin.lat * Math.PI) / 180);
@@ -29,7 +30,7 @@ export function RealGarageMap({ origin, garages, radiusKm, selectedId, onSelectG
     <MapView
       testID="garage-map"
       key={`${origin.lat.toFixed(3)}-${origin.lng.toFixed(3)}-${radiusKm}`}
-      style={[styles.map, { borderColor: colors.hairlines[2] }]}
+      style={[styles.map, { borderColor: colors.hairlines[2], height }]}
       initialRegion={{
         latitude: origin.lat,
         longitude: origin.lng,
