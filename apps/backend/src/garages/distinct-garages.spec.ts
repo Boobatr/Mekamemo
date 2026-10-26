@@ -53,6 +53,33 @@ describe('pickNearestDistinct', () => {
     });
   });
 
+  it('shows the listing that holds the email, so what the list shows is what the garage page and the email use', () => {
+    const nearerNoEmail = garage({ id: 'near-no-email', name: 'Garage St-Jean Baptiste', distanceKm: 1.0 });
+    const fartherWithEmail = garage({ id: 'far-with-email', name: 'Garage St-Jean-Baptiste', email: 'info@garagesjb.com', distanceKm: 1.05 });
+
+    const [shown] = pickNearestDistinct([nearerNoEmail, fartherWithEmail], 10);
+
+    expect(shown.id).toBe('far-with-email');
+    expect(shown.email).toBe('info@garagesjb.com');
+  });
+
+  it('keeps the nearer listing when both are equally reachable', () => {
+    const near = garage({ id: 'near', name: 'Garage Laurier', email: 'a@laurier.ca', distanceKm: 1.0 });
+    const far = garage({ id: 'far', name: 'Garage Laurier', email: 'b@laurier.ca', distanceKm: 1.05 });
+
+    expect(pickNearestDistinct([near, far], 10).map((g) => g.id)).toEqual(['near']);
+  });
+
+  it('prefers a listing with an email over one with only a phone, and fills the phone from the other', () => {
+    const phoneOnly = garage({ id: 'phone', name: 'Garage Laurier', phone: '+1 418-555-0100', distanceKm: 1.0 });
+    const emailOnly = garage({ id: 'email', name: 'Garage Laurier', email: 'a@laurier.ca', distanceKm: 1.05 });
+
+    const [shown] = pickNearestDistinct([phoneOnly, emailOnly], 10);
+
+    expect(shown.id).toBe('email');
+    expect(shown.phone).toBe('+1 418-555-0100');
+  });
+
   it('treats an accent or a missing "Inc." as the same name', () => {
     const list = [
       garage({ name: 'Mécanique Rémy Ferland inc.', distanceKm: 1 }),

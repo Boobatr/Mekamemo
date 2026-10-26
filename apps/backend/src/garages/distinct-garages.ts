@@ -41,6 +41,13 @@ function isSameBusiness(a: GarageWithDistance, b: GarageWithDistance): boolean {
   return samePhone || sameName(a.name, b.name);
 }
 
+/**
+ * How reachable a listing is. Of two listings of one business, the one the app opens (and writes to)
+ * must be the one that really holds the email and phone shown in the list: the garage page and the
+ * quote request read that listing, not its twin.
+ */
+const reachability = (garage: GarageWithDistance) => (garage.email ? 2 : 0) + (garage.phone ? 1 : 0);
+
 /** Keeps `first` and fills what it lacks from `other` (e.g. OSM's services + Overture's phone). */
 function fillGaps(first: GarageWithDistance, other: GarageWithDistance): GarageWithDistance {
   return {
@@ -63,7 +70,8 @@ export function pickNearestDistinct(sortedByDistance: GarageWithDistance[], limi
   for (const garage of sortedByDistance) {
     const twin = kept.findIndex((existing) => isSameBusiness(existing, garage));
     if (twin >= 0) {
-      kept[twin] = fillGaps(kept[twin], garage);
+      const [base, other] = reachability(garage) > reachability(kept[twin]) ? [garage, kept[twin]] : [kept[twin], garage];
+      kept[twin] = fillGaps(base, other);
     } else if (kept.length < limit) {
       kept.push(garage);
     } else {

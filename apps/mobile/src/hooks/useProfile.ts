@@ -12,6 +12,8 @@ export function useUpdateProfile() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: usersApi.updateProfile,
+    // The garage search is keyed by the postal code and radius from this profile (see useGarageSearch):
+    // refreshing the profile is enough for a changed one to start a new search.
     onSuccess: () => queryClient.invalidateQueries({ queryKey: profileKey }),
   });
 }

@@ -1,11 +1,20 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as garagesApi from '../services/garages';
 
-export function useGarageSearch(query: string, position?: { lat: number; lng: number }) {
+/**
+ * `home` (postal code and radius) is only there to key the cache: the server reads them from the
+ * profile, so a search made for another postal code or radius must never be served from memory.
+ * Pass `undefined` to hold the search until the profile is known.
+ */
+export function useGarageSearch(
+  query: string,
+  position?: { lat: number; lng: number },
+  home?: { postalCode: string; searchRadiusKm: number },
+) {
   return useQuery({
-    queryKey: ['garage-search', query, position?.lat, position?.lng],
+    queryKey: ['garage-search', query, position?.lat, position?.lng, home?.postalCode, home?.searchRadiusKm],
     queryFn: () => garagesApi.searchGarages(query, position),
-    enabled: query.trim().length > 0,
+    enabled: query.trim().length > 0 && Boolean(home),
   });
 }
 

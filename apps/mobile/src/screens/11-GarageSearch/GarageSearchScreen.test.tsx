@@ -211,4 +211,86 @@ describe('GarageSearchScreen', () => {
       expect(screen.queryByTestId('search-context')).toBeNull();
     });
   });
+
+  describe('writing to several garages', () => {
+    const open = async (onWriteToGarages = jest.fn(), onSelectGarage = jest.fn()) => {
+      await renderWithProviders(<GarageSearchScreen onWriteToGarages={onWriteToGarages} onSelectGarage={onSelectGarage} />, {
+        withNavigationContainer: false,
+      });
+      await fireEvent.press(screen.getByTestId('multi-select-toggle'));
+      return { onWriteToGarages, onSelectGarage };
+    };
+
+    it('is offered only where writing is possible', async () => {
+      await renderWithProviders(<GarageSearchScreen />, { withNavigationContainer: false });
+
+      expect(screen.queryByTestId('multi-select-toggle')).toBeNull();
+    });
+
+    it('ticks garages instead of opening them, and sends the picked ones to the compose step', async () => {
+      const { onWriteToGarages, onSelectGarage } = await open();
+
+      await fireEvent.press(screen.getByTestId('garage-result-garage-precision'));
+      await fireEvent.press(screen.getByTestId('garage-result-garage-papineau'));
+
+      expect(onSelectGarage).not.toHaveBeenCalled();
+      expect(screen.getByTestId('garage-check-garage-precision').children.join('')).toBe('☑');
+      expect(screen.getByText('2 garages choisis')).toBeTruthy();
+
+      await fireEvent.press(screen.getByTestId('write-to-selected'));
+      expect(onWriteToGarages).toHaveBeenCalledWith(['garage-precision', 'garage-papineau']);
+      expect(screen.queryByTestId('selection-bar')).toBeNull(); // back to the normal list
+    });
+
+    it('unticks a garage tapped twice', async () => {
+      await open();
+
+      await fireEvent.press(screen.getByTestId('garage-result-garage-precision'));
+      await fireEvent.press(screen.getByTestId('garage-result-garage-precision'));
+
+      expect(screen.getByTestId('garage-check-garage-precision').children.join('')).toBe('☐');
+      expect(screen.getByText('0 garage choisi')).toBeTruthy();
+    });
+
+    it('cannot tick a garage with no known email', async () => {
+      await open();
+
+      await fireEvent.press(screen.getByTestId('garage-result-garage-rosemont'));
+
+      expect(screen.getByTestId('garage-check-garage-rosemont').children.join('')).toBe('☐');
+      expect(screen.getByText(/pas de courriel connu/)).toBeTruthy();
+    });
+
+    it('needs at least one garage before it can write', async () => {
+      const { onWriteToGarages } = await open();
+
+      await fireEvent.press(screen.getByTestId('write-to-selected'));
+
+      expect(onWriteToGarages).not.toHaveBeenCalled();
+    });
+
+    it('cancels the selection and goes back to opening garages', async () => {
+      const { onSelectGarage } = await open();
+      await fireEvent.press(screen.getByTestId('garage-result-garage-precision'));
+
+      await fireEvent.press(screen.getByTestId('cancel-selection'));
+      expect(screen.queryByTestId('selection-bar')).toBeNull();
+
+      await fireEvent.press(screen.getByTestId('garage-result-garage-precision'));
+      expect(onSelectGarage).toHaveBeenCalledWith('garage-precision');
+    });
+
+    it('stops at ten garages', async () => {
+      const many = Array.from({ length: 12 }, (_, i) => ({ ...mockGarages[0], id: `g${i}`, name: `Garage ${i}` }));
+      await renderWithProviders(<GarageSearchScreen results={many as never} onWriteToGarages={jest.fn()} />, {
+        withNavigationContainer: false,
+      });
+      await fireEvent.press(screen.getByTestId('multi-select-toggle'));
+
+      for (const garage of many) await fireEvent.press(screen.getByTestId(`garage-result-${garage.id}`));
+
+      expect(screen.getByText('10 garages choisis')).toBeTruthy();
+      expect(screen.getByTestId('garage-check-g11').children.join('')).toBe('☐');
+    });
+  });
 });

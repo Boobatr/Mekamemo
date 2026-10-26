@@ -174,6 +174,13 @@
     "mapClose": "Close",
     "mapOpenGarage": "View this garage",
     "useMyPosition": "Search from my location",
+    "positionInUse": "Garages are searched around your current location, not your postal code.",
+    "writeToSeveral": "Write to several garages at once",
+    "selectHint": "Tap the garages to write to (up to {{max}}). Only garages with a known email can be chosen.",
+    "selectedCount_one": "{{count}} garage chosen",
+    "selectedCount_other": "{{count}} garages chosen",
+    "writeToSelected": "Write the email",
+    "noEmailKnown": "no email known",
     "usePostalCode": "Back to my postal code",
     "locating": "Finding your location…",
     "locationFailed": "Couldn't get your location. Allow location access for this site in your browser.",
@@ -199,6 +206,15 @@
     "added": "Garage added: it now shows up in the search.",
     "alreadyListed": "This garage is already in the list.",
     "view": "View the garage"
+  },
+  "composeQuote": {
+    "title": "Write to several garages",
+    "intro": "The same email will be sent to each garage below. You can edit it and remove garages. Nothing is sent until you tap the send button.",
+    "recipients": "Recipients",
+    "noRecipients": "No garage chosen. Go back to pick some.",
+    "remove": "Remove {{name}}",
+    "send_one": "Send to {{count}} garage",
+    "send_other": "Send to {{count}} garages"
   },
   "garageProfile": {
     "certified": "CAA certified",

@@ -1,4 +1,4 @@
-import { ArrayMinSize, IsArray, IsOptional, IsString, IsUUID, MaxLength } from 'class-validator';
+import { ArrayMaxSize, ArrayMinSize, ArrayUnique, IsArray, IsOptional, IsString, IsUUID, MaxLength } from 'class-validator';
 
 export class CreateQuoteRequestDto {
   @IsUUID()
@@ -14,6 +14,8 @@ export class CreateQuoteRequestDto {
 
   @IsArray()
   @ArrayMinSize(1)
+  @ArrayMaxSize(10)
+  @ArrayUnique()
   @IsUUID('4', { each: true })
   garageIds!: string[];
 

@@ -1,5 +1,12 @@
 import type { MaintenanceTask } from '../services/maintenance';
 
+/** A garage picked to receive a quote request, with what the compose screen needs to show it. */
+export interface QuoteRecipient {
+  id: string;
+  name: string;
+  email: string;
+}
+
 export type RootStackParamList = {
   OnboardingProfile: undefined;
   Login: undefined;
@@ -44,5 +51,6 @@ export type GaragesStackParamList = {
   GarageList: { vehicleId?: string; taskId?: string; diagnosisId?: string } | undefined;
   GarageProfile: { garageId: string; vehicleId: string; taskId?: string; diagnosisId?: string };
   AddGarage: { vehicleId?: string };
+  ComposeQuote: { vehicleId: string; recipients: QuoteRecipient[]; taskId?: string; diagnosisId?: string };
   BookingConfirmation: { quoteRequestId: string };
 };

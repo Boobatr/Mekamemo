@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { GarageSearchScreen } from './GarageSearchScreen';
 import { useGarageSearch } from '../../hooks/useGarages';
 import { useProfile } from '../../hooks/useProfile';
 import { useMaintenanceTasks } from '../../hooks/useMaintenance';
 import { useTranslation } from 'react-i18next';
 import { canLocate, getCurrentPosition, Position } from '../../utils/currentPosition';
+import type { QuoteRecipient } from '../../navigation/types';
 
 interface GarageSearchContainerProps {
   onSelectGarage: (garageId: string) => void;
@@ -14,12 +15,14 @@ interface GarageSearchContainerProps {
   taskId?: string;
   diagnosisId?: string;
   onClearContext?: () => void;
+  /** Opens the screen that writes one email to the garages picked in the list. */
+  onWriteToGarages?: (recipients: QuoteRecipient[]) => void;
 }
 
 const DEFAULT_QUERY = 'Trouve un garage près de moi';
 const DEFAULT_ORIGIN = { lat: 45.5019, lng: -73.5674 };
 
-export function GarageSearchContainer({ onSelectGarage, onAddGarage, vehicleId, taskId, diagnosisId, onClearContext }: GarageSearchContainerProps) {
+export function GarageSearchContainer({ onSelectGarage, onAddGarage, vehicleId, taskId, diagnosisId, onClearContext, onWriteToGarages }: GarageSearchContainerProps) {
   const { t } = useTranslation();
   const { data: tasks } = useMaintenanceTasks(taskId && vehicleId ? vehicleId : '');
   const contextLabel = taskId
@@ -32,8 +35,20 @@ export function GarageSearchContainer({ onSelectGarage, onAddGarage, vehicleId, 
   const [position, setPosition] = useState<Position | undefined>(undefined);
   const [locating, setLocating] = useState(false);
   const [locationFailed, setLocationFailed] = useState(false);
-  const { data } = useGarageSearch(query, position);
   const { data: profile } = useProfile();
+  const { data } = useGarageSearch(
+    query,
+    position,
+    profile && { postalCode: profile.postalCode, searchRadiusKm: profile.searchRadiusKm },
+  );
+
+  // A new postal code in Settings means the user moved house: search around it again.
+  const knownPostalCode = useRef(profile?.postalCode);
+  useEffect(() => {
+    if (!profile) return;
+    if (knownPostalCode.current !== undefined && knownPostalCode.current !== profile.postalCode) setPosition(undefined);
+    knownPostalCode.current = profile.postalCode;
+  }, [profile]);
 
   async function searchFromMyPosition() {
     setLocating(true);
@@ -71,6 +86,16 @@ export function GarageSearchContainer({ onSelectGarage, onAddGarage, vehicleId, 
       quickFilters={[]}
       onSelectGarage={onSelectGarage}
       onAddGarage={onAddGarage}
+      onWriteToGarages={
+        onWriteToGarages
+          ? (garageIds) =>
+              onWriteToGarages(
+                (data?.results ?? [])
+                  .filter((g) => garageIds.includes(g.id) && g.email)
+                  .map((g) => ({ id: g.id, name: g.name, email: g.email as string })),
+              )
+          : undefined
+      }
       contextLabel={contextLabel}
       onClearContext={contextLabel ? onClearContext : undefined}
       onUseMyPosition={canLocate ? searchFromMyPosition : undefined}

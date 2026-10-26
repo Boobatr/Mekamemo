@@ -5,6 +5,7 @@ import { useVehicles } from '../hooks/useVehicles';
 import { GarageSearchContainer } from '../screens/11-GarageSearch/GarageSearchContainer';
 import { GarageProfileContainer } from '../screens/12-GarageProfile/GarageProfileContainer';
 import { AddGarageContainer } from '../screens/16-AddGarage/AddGarageContainer';
+import { ComposeQuoteContainer } from '../screens/17-ComposeQuote/ComposeQuoteContainer';
 import { BookingConfirmationContainer } from '../screens/13-BookingConfirmation/BookingConfirmationContainer';
 
 const Stack = createNativeStackNavigator<GaragesStackParamList>();
@@ -36,6 +37,17 @@ export function GaragesStack() {
                 })
               }
               onAddGarage={() => navigation.navigate('AddGarage', { vehicleId })}
+              onWriteToGarages={
+                vehicleId
+                  ? (recipients) =>
+                      navigation.navigate('ComposeQuote', {
+                        vehicleId,
+                        recipients,
+                        taskId: route.params?.taskId,
+                        diagnosisId: route.params?.diagnosisId,
+                      })
+                  : undefined
+              }
             />
           );
         }}
@@ -64,6 +76,18 @@ export function GaragesStack() {
             />
           );
         }}
+      </Stack.Screen>
+      <Stack.Screen name="ComposeQuote">
+        {({ route, navigation }) => (
+          <ComposeQuoteContainer
+            vehicleId={route.params.vehicleId}
+            recipients={route.params.recipients}
+            taskId={route.params.taskId}
+            diagnosisId={route.params.diagnosisId}
+            onSent={(quoteRequestId) => navigation.navigate('BookingConfirmation', { quoteRequestId })}
+            onBack={() => navigation.goBack()}
+          />
+        )}
       </Stack.Screen>
       <Stack.Screen name="BookingConfirmation">
         {({ route, navigation }) => (

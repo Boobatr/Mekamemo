@@ -160,6 +160,18 @@ describe('Quote requests carry the maintenance item and the user edits (e2e)', (
       expect(sent).toHaveLength(0);
     });
 
+    it('sends one message to several garages at once, and refuses more than ten or the same garage twice', async () => {
+      const res = await api().post('/quote-requests').set(auth()).send({ vehicleId, taskId, garageIds: [withEmailId, withoutEmailId] }).expect(201);
+
+      expect(res.body.garages).toHaveLength(2);
+      expect(sent).toHaveLength(1); // only the garage with an email gets an email
+      expect(res.body.garages[0].messageContent).toBe(res.body.garages[1].messageContent);
+
+      const ids = Array.from({ length: 11 }, (_, i) => `00000000-0000-4000-8000-0000000000${String(i).padStart(2, '0')}`);
+      await api().post('/quote-requests').set(auth()).send({ vehicleId, garageIds: ids }).expect(400);
+      await api().post('/quote-requests').set(auth()).send({ vehicleId, garageIds: [withEmailId, withEmailId] }).expect(400);
+    });
+
     it('limits how many garages one person can contact per day', async () => {
       // Two garages per request: 3 requests above sent 3 messages; fill up to 20, then the next is refused.
       const garageIds = [withEmailId, withoutEmailId];
