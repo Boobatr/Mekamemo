@@ -1,4 +1,4 @@
-import { ArrayMinSize, IsArray, IsOptional, IsUUID } from 'class-validator';
+import { ArrayMinSize, IsArray, IsOptional, IsString, IsUUID, MaxLength } from 'class-validator';
 
 export class CreateQuoteRequestDto {
   @IsUUID()
@@ -16,4 +16,16 @@ export class CreateQuoteRequestDto {
   @ArrayMinSize(1)
   @IsUUID('4', { each: true })
   garageIds!: string[];
+
+  /** The email subject as the user edited it. Left out: the standard one. */
+  @IsOptional()
+  @IsString()
+  @MaxLength(150)
+  subject?: string;
+
+  /** The message as the user edited it, sent as is to every garage. Left out: the standard one. */
+  @IsOptional()
+  @IsString()
+  @MaxLength(2000)
+  message?: string;
 }

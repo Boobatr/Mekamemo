@@ -2,17 +2,31 @@ import React, { useState } from 'react';
 import { GarageSearchScreen } from './GarageSearchScreen';
 import { useGarageSearch } from '../../hooks/useGarages';
 import { useProfile } from '../../hooks/useProfile';
+import { useMaintenanceTasks } from '../../hooks/useMaintenance';
+import { useTranslation } from 'react-i18next';
 import { canLocate, getCurrentPosition, Position } from '../../utils/currentPosition';
 
 interface GarageSearchContainerProps {
   onSelectGarage: (garageId: string) => void;
   onAddGarage?: () => void;
+  /** What the search is for, from the calendar or a diagnosis: it goes into the email to the garage. */
+  vehicleId?: string;
+  taskId?: string;
+  diagnosisId?: string;
+  onClearContext?: () => void;
 }
 
 const DEFAULT_QUERY = 'Trouve un garage près de moi';
 const DEFAULT_ORIGIN = { lat: 45.5019, lng: -73.5674 };
 
-export function GarageSearchContainer({ onSelectGarage, onAddGarage }: GarageSearchContainerProps) {
+export function GarageSearchContainer({ onSelectGarage, onAddGarage, vehicleId, taskId, diagnosisId, onClearContext }: GarageSearchContainerProps) {
+  const { t } = useTranslation();
+  const { data: tasks } = useMaintenanceTasks(taskId && vehicleId ? vehicleId : '');
+  const contextLabel = taskId
+    ? `${t('garageSearch.forTask')} : ${tasks?.find((task) => task.id === taskId)?.name ?? '…'}`
+    : diagnosisId
+      ? t('garageSearch.forDiagnosis')
+      : undefined;
   const [query, setQuery] = useState(DEFAULT_QUERY);
   // Where the user is right now, when they asked to search from there instead of their postal code.
   const [position, setPosition] = useState<Position | undefined>(undefined);
@@ -57,6 +71,8 @@ export function GarageSearchContainer({ onSelectGarage, onAddGarage }: GarageSea
       quickFilters={[]}
       onSelectGarage={onSelectGarage}
       onAddGarage={onAddGarage}
+      contextLabel={contextLabel}
+      onClearContext={contextLabel ? onClearContext : undefined}
       onUseMyPosition={canLocate ? searchFromMyPosition : undefined}
       onUsePostalCode={position ? () => setPosition(undefined) : undefined}
       locating={locating}

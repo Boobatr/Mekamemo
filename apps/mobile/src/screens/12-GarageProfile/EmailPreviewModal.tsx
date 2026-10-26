@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Screen, Card, Button } from '../../components';
+import { Screen, Card, Field, Button } from '../../components';
 import { useTheme } from '../../theme';
 import { textStyles } from '../../theme/typography';
 import { spacing } from '../../theme/spacing';
 import type { QuoteEmailPreview } from '../../services/garages';
+
+export interface EditedEmail {
+  subject: string;
+  message: string;
+}
 
 interface EmailPreviewModalProps {
   visible: boolean;
@@ -13,14 +18,30 @@ interface EmailPreviewModalProps {
   error?: string | null;
   preview?: QuoteEmailPreview | null;
   onClose: () => void;
-  /** Sends the request for real (the same action as the "request an appointment" button). */
-  onSend: () => void;
+  /** Sends the request for real, with the subject and message as they are now (edited or not). */
+  onSend: (edited: EditedEmail) => void;
 }
 
-/** Shows the message a quote request would send to the garage, before anything is sent. */
+const MAX_SUBJECT = 150;
+const MAX_MESSAGE = 2000;
+
+/** The message a quote request would send to the garage, which the user can rewrite before it goes out. */
 export function EmailPreviewModal({ visible, loading = false, error = null, preview = null, onClose, onSend }: EmailPreviewModalProps) {
   const { t } = useTranslation();
   const { colors } = useTheme();
+  const [subject, setSubject] = useState('');
+  const [message, setMessage] = useState('');
+
+  // A fresh preview (another garage, or a retry) starts from its standard text.
+  useEffect(() => {
+    if (preview) {
+      setSubject(preview.subject);
+      setMessage(preview.body);
+    }
+  }, [preview]);
+
+  const edited = preview !== null && (subject !== preview.subject || message !== preview.body);
+  const isEmail = preview?.contactMethod === 'email';
 
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
@@ -44,33 +65,62 @@ export function EmailPreviewModal({ visible, loading = false, error = null, prev
         {preview ? (
           <>
             <Text style={[textStyles.body, { color: colors.textSecondary, marginBottom: spacing.xl }]}>
-              {preview.contactMethod === 'email'
-                ? t('garageProfile.emailNotSentYet')
-                : t('garageProfile.emailVoiceOnly', { phone: preview.phone ?? '—' })}
+              {isEmail ? t('garageProfile.emailNotSentYet') : t('garageProfile.emailVoiceOnly', { phone: preview.phone ?? '—' })}
             </Text>
             <Card>
-              {preview.to ? <Row label={t('garageProfile.emailTo')} value={preview.to} testID="email-preview-to" /> : null}
-              <Row label={t('garageProfile.emailSubject')} value={preview.subject} testID="email-preview-subject" />
-              <Row label={t('garageProfile.emailMessage')} value={preview.body} testID="email-preview-body" />
+              {preview.to ? (
+                <View style={{ marginBottom: spacing.lg }}>
+                  <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.xs }]}>
+                    {t('garageProfile.emailTo')}
+                  </Text>
+                  <Text testID="email-preview-to" selectable style={[textStyles.body, { color: colors.textPrimary }]}>
+                    {preview.to}
+                  </Text>
+                </View>
+              ) : null}
+              {isEmail ? (
+                <Field
+                  label={t('garageProfile.emailSubject')}
+                  value={subject}
+                  onChangeText={setSubject}
+                  maxLength={MAX_SUBJECT}
+                  testID="email-preview-subject"
+                />
+              ) : null}
+              <Field
+                label={t('garageProfile.emailMessage')}
+                value={message}
+                onChangeText={setMessage}
+                multiline
+                maxLength={MAX_MESSAGE}
+                style={{ minHeight: 260, textAlignVertical: 'top' }}
+                testID="email-preview-body"
+              />
+              {edited ? (
+                <Text
+                  accessibilityRole="button"
+                  testID="email-preview-reset"
+                  onPress={() => {
+                    setSubject(preview.subject);
+                    setMessage(preview.body);
+                  }}
+                  style={[textStyles.button, { color: colors.accentOnBackground, fontSize: 13 }]}
+                >
+                  {t('garageProfile.emailReset')}
+                </Text>
+              ) : null}
             </Card>
-            <Button label={t('garageProfile.requestAppointment')} testID="email-preview-send" onPress={onSend} />
+            <Button
+              label={t('garageProfile.sendRequest')}
+              disabled={message.trim().length === 0}
+              testID="email-preview-send"
+              onPress={() => onSend({ subject, message })}
+            />
           </>
         ) : null}
 
         <Button label={t('common.close')} variant="secondary" testID="email-preview-close" onPress={onClose} />
       </Screen>
     </Modal>
-  );
-}
-
-function Row({ label, value, testID }: { label: string; value: string; testID: string }) {
-  const { colors } = useTheme();
-  return (
-    <View style={{ marginBottom: spacing.lg }}>
-      <Text style={[textStyles.sectionLabel, { color: colors.textTertiary, marginBottom: spacing.xs }]}>{label}</Text>
-      <Text testID={testID} selectable style={[textStyles.body, { color: colors.textPrimary }]}>
-        {value}
-      </Text>
-    </View>
   );
 }

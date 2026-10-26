@@ -98,7 +98,8 @@
     "nextDue": "Prochaine échéance",
     "dateUnknown": "À déterminer",
     "notesForGarage": "Notes pour le garage",
-    "groupWith": "Grouper avec la rotation des pneus"
+    "groupWith": "Grouper avec la rotation des pneus",
+    "findGarage": "Trouver un garage"
   },
   "mileage": {
     "title": "Kilométrage",
@@ -176,6 +177,9 @@
     "usePostalCode": "Revenir à mon code postal",
     "locating": "Recherche de votre position…",
     "locationFailed": "Impossible d'obtenir votre position. Autorisez la localisation pour ce site dans votre navigateur.",
+    "forTask": "Entretien",
+    "forDiagnosis": "Diagnostic de panne",
+    "clearContext": "Chercher sans cet entretien",
     "addGarageLink": "Un garage manque ? Ajoutez-le",
     "mapPickHint": "Touchez un point de la carte pour voir le garage.",
     "osmAttribution": "Garages : © Overture Maps Foundation et contributeurs OpenStreetMap"
@@ -213,8 +217,12 @@
     "directions": "Itinéraire",
     "directionsTitle": "Ouvrir l'itinéraire dans…",
     "emailPreviewTitle": "Aperçu du courriel",
-    "emailNotSentYet": "Voici le courriel qui sera envoyé à ce garage. Rien n'est envoyé tant que vous ne demandez pas le rendez-vous.",
-    "emailVoiceOnly": "Ce garage n'a pas de courriel connu : aucun courriel ne sera envoyé. Avec MEKAMEMO+ et l'appel vocal activé, ce message sera lu par téléphone au {{phone}}.",
+    "emailNotSentYet": "Voici le courriel qui sera envoyé à ce garage. Vous pouvez le modifier. Rien n'est envoyé tant que vous n'appuyez pas sur « Envoyer la demande ».",
+    "emailReset": "Rétablir le texte d'origine",
+    "sendRequest": "Envoyer la demande",
+    "forTask": "Entretien",
+    "forDiagnosis": "Diagnostic de panne",
+    "emailVoiceOnly": "Ce garage n'a pas de courriel connu : aucun courriel ne sera envoyé. Avec MEKAMEMO+ et l'appel vocal activé, ce message sera lu par téléphone au {{phone}}. Vous pouvez le modifier.",
     "emailTo": "À",
     "emailSubject": "Objet",
     "emailMessage": "Message",

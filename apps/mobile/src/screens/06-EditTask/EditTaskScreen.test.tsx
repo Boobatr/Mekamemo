@@ -58,4 +58,24 @@ describe('EditTaskScreen', () => {
     await fireEvent.press(screen.getByTestId('delete-task-button'));
     expect(onDelete).toHaveBeenCalledWith('task-oil-change');
   });
+
+  describe('find a garage for this item', () => {
+    it('is offered only where a garage search is possible', async () => {
+      await renderWithProviders(<EditTaskScreen task={task} />, { withNavigationContainer: false });
+      expect(screen.queryByTestId('find-garage-button')).toBeNull();
+
+      await renderWithProviders(<EditTaskScreen task={task} onFindGarage={jest.fn()} />, { withNavigationContainer: false });
+      expect(screen.getByText('Trouver un garage')).toBeTruthy();
+    });
+
+    it('hands over the notes as they are typed now, since they go into the email', async () => {
+      const onFindGarage = jest.fn();
+      await renderWithProviders(<EditTaskScreen task={task} onFindGarage={onFindGarage} />, { withNavigationContainer: false });
+
+      await fireEvent.changeText(screen.getByTestId('input-notes'), 'Pneus d’hiver aussi, svp.');
+      await fireEvent.press(screen.getByTestId('find-garage-button'));
+
+      expect(onFindGarage).toHaveBeenCalledWith(expect.objectContaining({ id: 'task-oil-change', notesForGarage: 'Pneus d’hiver aussi, svp.' }));
+    });
+  });
 });

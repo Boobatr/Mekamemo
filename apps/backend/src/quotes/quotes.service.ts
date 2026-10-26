@@ -1,4 +1,4 @@
-import { ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, HttpException, HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { BookingsService } from '../bookings/bookings.service';
@@ -12,6 +12,13 @@ import type { VoiceProvider } from './voice-provider.interface';
 import type { CreateQuoteRequestDto } from './dto/create-quote-request.dto';
 import type { PreviewQuoteEmailDto } from './dto/preview-quote-email.dto';
 import type { RecordGarageResponseDto } from './dto/record-garage-response.dto';
+import { buildQuoteMessage, buildQuoteSubject } from './quote-message';
+import type { Language } from './quote-message';
+
+/** Emails (or calls) one person can send to garages per day: a safety net, since the text is theirs. */
+const MAX_GARAGE_MESSAGES_PER_DAY = 20;
+
+const singleLine = (text: string) => text.replace(/\s+/g, ' ').trim();
 
 @Injectable()
 export class QuotesService {
@@ -36,13 +43,54 @@ export class QuotesService {
     if (!garage) throw new NotFoundException('Garage introuvable.');
 
     const user = await this.prisma.user.findUniqueOrThrow({ where: { id: userId } });
+    const { subject, body } = await this.compose(user, vehicle, dto.taskId, dto.diagnosisId);
     return {
       contactMethod: garage.email ? ('email' as const) : ('voice' as const),
       to: garage.email,
       phone: garage.phone,
-      subject: this.buildSubject(user.language),
-      body: this.buildMessage(user.fullName, vehicle, user.language),
+      subject,
+      body,
     };
+  }
+
+  /**
+   * The standard subject and message for this vehicle and, when given, the maintenance item or the
+   * reported breakdown it is about. Both must belong to the vehicle: someone else's can't be quoted.
+   */
+  private async compose(
+    user: { fullName: string; language: string },
+    vehicle: { id: string; make: string; model: string; year: number; trim: string | null; vin: string | null },
+    taskId?: string,
+    diagnosisId?: string,
+  ) {
+    const language: Language = user.language === 'en' ? 'en' : 'fr';
+    const [task, diagnosis, reading] = await Promise.all([
+      taskId
+        ? this.prisma.maintenanceTask.findFirst({ where: { id: taskId, vehicleId: vehicle.id }, include: { projection: true } })
+        : null,
+      diagnosisId
+        ? this.prisma.diagnosis.findFirst({ where: { id: diagnosisId, report: { vehicleId: vehicle.id } }, include: { report: true } })
+        : null,
+      this.prisma.mileageReading.findFirst({ where: { vehicleId: vehicle.id }, orderBy: { recordedAt: 'desc' } }),
+    ]);
+    if (taskId && !task) throw new NotFoundException('Entretien introuvable.');
+    if (diagnosisId && !diagnosis) throw new NotFoundException('Diagnostic introuvable.');
+
+    const input = {
+      language,
+      fullName: user.fullName,
+      vehicle,
+      odometerKm: reading?.valueKm,
+      task: task && {
+        name: task.name,
+        description: task.description,
+        notesForGarage: task.notesForGarage,
+        dueKm: task.projection?.projectedDueKm,
+        dueDate: task.projection?.projectedDueDate,
+      },
+      diagnosis: diagnosis && { description: diagnosis.report.descriptionText, primaryCause: diagnosis.primaryCause },
+    };
+    return { subject: buildQuoteSubject(input), body: buildQuoteMessage(input) };
   }
 
   async create(userId: string, dto: CreateQuoteRequestDto) {
@@ -52,6 +100,19 @@ export class QuotesService {
 
     const user = await this.prisma.user.findUniqueOrThrow({ where: { id: userId } });
     const garages = await this.prisma.garage.findMany({ where: { id: { in: dto.garageIds } } });
+
+    const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const sentToday = await this.prisma.quoteRequestGarage.count({
+      where: { quoteRequest: { userId }, sentAt: { gte: since } },
+    });
+    if (sentToday + garages.length > MAX_GARAGE_MESSAGES_PER_DAY) {
+      throw new HttpException('Trop de demandes envoyées aujourd’hui. Réessayez demain.', HttpStatus.TOO_MANY_REQUESTS);
+    }
+
+    // What the user saw and possibly edited wins over the standard text.
+    const standard = await this.compose(user, vehicle, dto.taskId, dto.diagnosisId);
+    const subject = singleLine(dto.subject ?? '') || standard.subject;
+    const message = dto.message?.trim() || standard.body;
 
     const quoteRequest = await this.prisma.quoteRequest.create({
       data: {
@@ -66,7 +127,7 @@ export class QuotesService {
             contactMethod: garage.email ? 'email' : 'voice',
             language: user.language,
             sentAt: new Date(),
-            messageContent: this.buildMessage(user.fullName, vehicle, user.language),
+            messageContent: message,
           })),
         },
       },
@@ -75,35 +136,22 @@ export class QuotesService {
 
     const isPlus = await this.subscriptionsService.isPlus(userId);
     for (const link of quoteRequest.garages) {
-      await this.dispatch(link, user, isPlus);
+      await this.dispatch(link, user, isPlus, subject);
     }
 
     return quoteRequest;
-  }
-
-  private buildSubject(language: string): string {
-    return language === 'fr' ? 'Demande de soumission — MekaMemo' : 'Quote request — MekaMemo';
-  }
-
-  private buildMessage(
-    fullName: string,
-    vehicle: { make: string; model: string; year: number },
-    language: 'fr' | 'en',
-  ): string {
-    return language === 'fr'
-      ? `Bonjour, je suis ${fullName}. Pourriez-vous me faire une soumission pour l'entretien de mon ${vehicle.make} ${vehicle.model} ${vehicle.year} ? Merci.`
-      : `Hello, I'm ${fullName}. Could you provide a quote for servicing my ${vehicle.make} ${vehicle.model} ${vehicle.year}? Thank you.`;
   }
 
   private async dispatch(
     link: { id: string; contactMethod: string; messageContent: string | null; garage: { email: string | null; phone: string | null; name: string } },
     user: { voiceFallbackEnabled: boolean; language: string; phone: string },
     isPlus: boolean,
+    subject: string,
   ) {
     if (link.contactMethod === 'email' && link.garage.email) {
       await this.emailProvider.send({
         to: link.garage.email,
-        subject: this.buildSubject(user.language),
+        subject,
         body: link.messageContent ?? '',
       });
       return;

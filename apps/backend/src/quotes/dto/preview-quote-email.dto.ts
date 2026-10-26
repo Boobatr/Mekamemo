@@ -1,4 +1,4 @@
-import { IsUUID } from 'class-validator';
+import { IsOptional, IsUUID } from 'class-validator';
 
 export class PreviewQuoteEmailDto {
   @IsUUID()
@@ -6,4 +6,13 @@ export class PreviewQuoteEmailDto {
 
   @IsUUID()
   garageId!: string;
+
+  /** The maintenance item the request is about: it goes into the message. */
+  @IsOptional()
+  @IsUUID()
+  taskId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  diagnosisId?: string;
 }

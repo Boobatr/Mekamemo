@@ -27,11 +27,13 @@ interface EditTaskScreenProps {
   onBack?: () => void;
   onDelete?: (taskId: string) => void;
   onSave?: (task: EditableTask) => void;
+  /** Saves what was typed (the notes go into the email), then looks for a garage for this item. */
+  onFindGarage?: (task: EditableTask) => void;
 }
 
 const PRIORITIES: TaskPriority[] = ['low', 'normal', 'critical'];
 
-export function EditTaskScreen({ task, onBack = () => {}, onDelete = () => {}, onSave = () => {} }: EditTaskScreenProps) {
+export function EditTaskScreen({ task, onBack = () => {}, onDelete = () => {}, onSave = () => {}, onFindGarage }: EditTaskScreenProps) {
   const { t } = useTranslation();
   const { colors } = useTheme();
 
@@ -40,6 +42,15 @@ export function EditTaskScreen({ task, onBack = () => {}, onDelete = () => {}, o
   const [priority, setPriority] = useState<TaskPriority>(task.priority);
   const [notes, setNotes] = useState(task.notesForGarage);
   const [groupWithTireRotation, setGroupWithTireRotation] = useState(task.groupWithTireRotation);
+
+  const edited = (): EditableTask => ({
+    ...task,
+    intervalKm: parseInt(intervalKm, 10) || task.intervalKm,
+    intervalMonths: parseInt(intervalMonths, 10) || task.intervalMonths,
+    priority,
+    notesForGarage: notes,
+    groupWithTireRotation,
+  });
 
   return (
     <Screen>
@@ -145,17 +156,16 @@ export function EditTaskScreen({ task, onBack = () => {}, onDelete = () => {}, o
       <Button
         label={t('common.save')}
         testID="save-task-button"
-        onPress={() =>
-          onSave({
-            ...task,
-            intervalKm: parseInt(intervalKm, 10) || task.intervalKm,
-            intervalMonths: parseInt(intervalMonths, 10) || task.intervalMonths,
-            priority,
-            notesForGarage: notes,
-            groupWithTireRotation,
-          })
-        }
+        onPress={() => onSave(edited())}
       />
+      {onFindGarage ? (
+        <Button
+          label={t('taskEdit.findGarage')}
+          variant="secondary"
+          testID="find-garage-button"
+          onPress={() => onFindGarage(edited())}
+        />
+      ) : null}
     </Screen>
   );
 }

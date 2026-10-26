@@ -38,6 +38,9 @@ export interface CreateQuoteRequestInput {
   taskId?: string;
   diagnosisId?: string;
   garageIds: string[];
+  /** The subject and message as the user edited them. Left out: the standard text. */
+  subject?: string;
+  message?: string;
 }
 
 export function createQuoteRequest(input: CreateQuoteRequestInput) {
@@ -58,7 +61,12 @@ export interface QuoteEmailPreview {
 }
 
 /** The message a quote request to this garage would send — nothing is sent or saved. */
-export function previewQuoteEmail(input: { vehicleId: string; garageId: string }): Promise<QuoteEmailPreview> {
+export function previewQuoteEmail(input: {
+  vehicleId: string;
+  garageId: string;
+  taskId?: string;
+  diagnosisId?: string;
+}): Promise<QuoteEmailPreview> {
   return apiPost('/quote-requests/preview', input);
 }
 

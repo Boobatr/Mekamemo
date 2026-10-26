@@ -11,6 +11,8 @@ interface EditTaskContainerProps {
   onBack: () => void;
   onDeleted: () => void;
   onSaved: () => void;
+  /** Opens the garage search for this item, once the edits are saved. */
+  onFindGarage?: (task: MaintenanceTask, vehicleId: string) => void;
 }
 
 function toEditable(task: MaintenanceTask, language: 'fr' | 'en', unknownDateLabel: string): EditableTask {
@@ -41,10 +43,28 @@ function toEditable(task: MaintenanceTask, language: 'fr' | 'en', unknownDateLab
   };
 }
 
-export function EditTaskContainer({ task, vehicleId, onBack, onDeleted, onSaved }: EditTaskContainerProps) {
+export function EditTaskContainer({ task, vehicleId, onBack, onDeleted, onSaved, onFindGarage }: EditTaskContainerProps) {
   const { t, i18n } = useTranslation();
   const updateTask = useUpdateTask(vehicleId);
   const deleteTask = useDeleteTask(vehicleId);
+
+  async function save(edited: EditableTask): Promise<boolean> {
+    try {
+      await updateTask.mutateAsync({
+        taskId: task.id,
+        input: {
+          intervalKm: edited.intervalKm,
+          intervalMonths: edited.intervalMonths,
+          priority: edited.priority,
+          notesForGarage: edited.notesForGarage,
+        },
+      });
+      return true;
+    } catch (err) {
+      Alert.alert('Erreur', err instanceof Error ? err.message : 'Une erreur est survenue.');
+      return false;
+    }
+  }
 
   return (
     <EditTaskScreen
@@ -59,21 +79,16 @@ export function EditTaskContainer({ task, vehicleId, onBack, onDeleted, onSaved 
         }
       }}
       onSave={async (edited) => {
-        try {
-          await updateTask.mutateAsync({
-            taskId: task.id,
-            input: {
-              intervalKm: edited.intervalKm,
-              intervalMonths: edited.intervalMonths,
-              priority: edited.priority,
-              notesForGarage: edited.notesForGarage,
-            },
-          });
-          onSaved();
-        } catch (err) {
-          Alert.alert('Erreur', err instanceof Error ? err.message : 'Une erreur est survenue.');
-        }
+        if (await save(edited)) onSaved();
       }}
+      onFindGarage={
+        onFindGarage
+          ? async (edited) => {
+              // The notes typed here are part of the email: save them before leaving.
+              if (await save(edited)) onFindGarage(task, vehicleId);
+            }
+          : undefined
+      }
     />
   );
 }

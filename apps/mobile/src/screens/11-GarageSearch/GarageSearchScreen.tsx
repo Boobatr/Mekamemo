@@ -26,6 +26,9 @@ interface GarageSearchScreenProps {
   onUsePostalCode?: () => void;
   locating?: boolean;
   locationFailed?: boolean;
+  /** "For: oil change": what the garage will be asked about. */
+  contextLabel?: string;
+  onClearContext?: () => void;
 }
 
 export function GarageSearchScreen({
@@ -42,6 +45,8 @@ export function GarageSearchScreen({
   onUsePostalCode,
   locating = false,
   locationFailed = false,
+  contextLabel,
+  onClearContext,
 }: GarageSearchScreenProps) {
   const { t } = useTranslation();
   const { colors } = useTheme();
@@ -56,6 +61,33 @@ export function GarageSearchScreen({
 
   return (
     <Screen>
+      {contextLabel ? (
+        <View
+          testID="search-context"
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            borderWidth: 1,
+            borderColor: colors.accent,
+            padding: spacing.md,
+            marginBottom: spacing.lg,
+          }}
+        >
+          <Text style={[textStyles.button, { color: colors.accentOnBackground, flexShrink: 1 }]}>{contextLabel}</Text>
+          {onClearContext ? (
+            <Text
+              accessibilityRole="button"
+              accessibilityLabel={t('garageSearch.clearContext')}
+              testID="clear-search-context"
+              onPress={onClearContext}
+              style={[textStyles.button, { color: colors.textSecondary, marginLeft: spacing.md }]}
+            >
+              ✕
+            </Text>
+          ) : null}
+        </View>
+      ) : null}
       <ExpandableGarageMap
         origin={origin}
         radiusKm={radiusKm}

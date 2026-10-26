@@ -28,6 +28,9 @@ export function CalendarStack() {
             onBack={() => navigation.goBack()}
             onDeleted={() => navigation.goBack()}
             onSaved={() => navigation.goBack()}
+            onFindGarage={(task, vehicleId) =>
+              navigation.navigate('Garages', { screen: 'GarageList', params: { vehicleId, taskId: task.id } } as never)
+            }
           />
         )}
       </Stack.Screen>

@@ -192,4 +192,23 @@ describe('GarageSearchScreen', () => {
 
     expect(screen.getByText('1 GARAGE DANS 100 KM')).toBeTruthy();
   });
+
+  describe('search context', () => {
+    it('shows what the garage will be asked about, and lets the user drop it', async () => {
+      const onClearContext = jest.fn();
+      await renderWithProviders(<GarageSearchScreen contextLabel="Entretien : Vidange" onClearContext={onClearContext} />, {
+        withNavigationContainer: false,
+      });
+
+      expect(screen.getByText('Entretien : Vidange')).toBeTruthy();
+      await fireEvent.press(screen.getByTestId('clear-search-context'));
+      expect(onClearContext).toHaveBeenCalledTimes(1);
+    });
+
+    it('shows nothing when the search is not about a maintenance item', async () => {
+      await renderWithProviders(<GarageSearchScreen />, { withNavigationContainer: false });
+
+      expect(screen.queryByTestId('search-context')).toBeNull();
+    });
+  });
 });

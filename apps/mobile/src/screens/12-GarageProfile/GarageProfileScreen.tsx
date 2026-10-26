@@ -10,7 +10,7 @@ import { MockGarage, mockGarages } from '../../mocks/mockData';
 import type { QuoteEmailPreview } from '../../services/garages';
 import { GarageMapView } from '../11-GarageSearch/GarageMapView';
 import { DirectionsSheet } from './DirectionsSheet';
-import { EmailPreviewModal } from './EmailPreviewModal';
+import { EditedEmail, EmailPreviewModal } from './EmailPreviewModal';
 
 type Garage = MockGarage & { phone?: string };
 
@@ -18,7 +18,10 @@ const UNKNOWN_ADDRESS = 'Adresse non disponible';
 
 interface GarageProfileScreenProps {
   garage?: Garage;
-  onRequestAppointment?: () => void;
+  /** Asks this garage for a quote and an appointment, with the standard text or the one the user edited. */
+  onRequestAppointment?: (edited?: EditedEmail) => void;
+  /** The maintenance item (or "breakdown") this request is about, shown so the user knows what the garage will read. */
+  forLabel?: string;
   onViewEmailBeforeSending?: () => void;
   onBack?: () => void;
   /** The "view the email before sending" window: open, still loading, failed, or showing the message. */
@@ -32,6 +35,7 @@ interface GarageProfileScreenProps {
 export function GarageProfileScreen({
   garage = mockGarages[0],
   onRequestAppointment = () => {},
+  forLabel,
   onViewEmailBeforeSending = () => {},
   onBack,
   emailPreviewOpen = false,
@@ -90,6 +94,7 @@ export function GarageProfileScreen({
         </TouchableOpacity>
       ) : null}
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: spacing.xxl }}>
+        {forLabel ? <Tag label={forLabel} tone="accent" /> : null}
         {garage.distanceKm > 0 ? <Tag label={`${garage.distanceKm} km`} /> : null}
         {garage.rating > 0 ? (
           <Tag label={`${garage.rating} ★ · ${garage.reviewCount} ${t('garageProfile.reviews')}`} tone="accent" />
@@ -157,7 +162,7 @@ export function GarageProfileScreen({
       <Button
         label={t('garageProfile.requestAppointment')}
         testID="request-appointment-button"
-        onPress={onRequestAppointment}
+        onPress={() => onRequestAppointment()}
       />
       <Button
         label={t('garageProfile.viewEmailBeforeSending')}
@@ -173,9 +178,9 @@ export function GarageProfileScreen({
         error={emailPreviewError}
         preview={emailPreview}
         onClose={onCloseEmailPreview}
-        onSend={() => {
+        onSend={(edited) => {
           onCloseEmailPreview();
-          onRequestAppointment();
+          onRequestAppointment(edited);
         }}
       />
     </Screen>

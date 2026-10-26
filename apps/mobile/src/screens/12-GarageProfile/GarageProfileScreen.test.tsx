@@ -123,6 +123,12 @@ describe('GarageProfileScreen', () => {
     });
   });
 
+  it('shows which maintenance item the request is about', async () => {
+    await renderWithProviders(<GarageProfileScreen forLabel="Entretien : Vidange d'huile" />, { withNavigationContainer: false });
+
+    expect(screen.getByText("Entretien : Vidange d'huile")).toBeTruthy();
+  });
+
   describe('email preview window', () => {
     const preview = {
       contactMethod: 'email' as const,
@@ -141,8 +147,8 @@ describe('GarageProfileScreen', () => {
       await renderWithProviders(<GarageProfileScreen emailPreviewOpen emailPreview={preview} />, { withNavigationContainer: false });
 
       expect(screen.getByTestId('email-preview-to').props.children).toBe('rendezvous@precision.ca');
-      expect(screen.getByTestId('email-preview-subject').props.children).toBe(preview.subject);
-      expect(screen.getByTestId('email-preview-body').props.children).toBe(preview.body);
+      expect(screen.getByTestId('email-preview-subject').props.value).toBe(preview.subject);
+      expect(screen.getByTestId('email-preview-body').props.value).toBe(preview.body);
     });
 
     it('explains that no email goes out when the garage has none', async () => {
@@ -185,6 +191,54 @@ describe('GarageProfileScreen', () => {
 
       await fireEvent.press(screen.getByTestId('email-preview-send'));
       expect(onRequestAppointment).toHaveBeenCalledTimes(1);
+      expect(onRequestAppointment).toHaveBeenCalledWith({ subject: preview.subject, message: preview.body });
+    });
+
+    it('lets the user rewrite the subject and the message, and sends exactly that', async () => {
+      const onRequestAppointment = jest.fn();
+      await renderWithProviders(
+        <GarageProfileScreen emailPreviewOpen emailPreview={preview} onRequestAppointment={onRequestAppointment} />,
+        { withNavigationContainer: false },
+      );
+
+      await fireEvent.changeText(screen.getByTestId('email-preview-subject'), 'Vidange samedi');
+      await fireEvent.changeText(screen.getByTestId('email-preview-body'), 'Bonjour, disponible samedi matin ?');
+      await fireEvent.press(screen.getByTestId('email-preview-send'));
+
+      expect(onRequestAppointment).toHaveBeenCalledWith({ subject: 'Vidange samedi', message: 'Bonjour, disponible samedi matin ?' });
+    });
+
+    it('offers to restore the original text only once it was changed', async () => {
+      await renderWithProviders(<GarageProfileScreen emailPreviewOpen emailPreview={preview} />, { withNavigationContainer: false });
+      expect(screen.queryByTestId('email-preview-reset')).toBeNull();
+
+      await fireEvent.changeText(screen.getByTestId('email-preview-body'), 'Autre texte');
+      expect(screen.getByTestId('email-preview-reset')).toBeTruthy();
+
+      await fireEvent.press(screen.getByTestId('email-preview-reset'));
+      expect(screen.getByTestId('email-preview-body').props.value).toBe(preview.body);
+      expect(screen.queryByTestId('email-preview-reset')).toBeNull();
+    });
+
+    it('does not send an empty message', async () => {
+      const onRequestAppointment = jest.fn();
+      await renderWithProviders(
+        <GarageProfileScreen emailPreviewOpen emailPreview={preview} onRequestAppointment={onRequestAppointment} />,
+        { withNavigationContainer: false },
+      );
+
+      await fireEvent.changeText(screen.getByTestId('email-preview-body'), '   ');
+      await fireEvent.press(screen.getByTestId('email-preview-send'));
+
+      expect(onRequestAppointment).not.toHaveBeenCalled();
+    });
+
+    it('has no subject field when the message would be read by phone, but still lets the user edit it', async () => {
+      const voice = { ...preview, contactMethod: 'voice' as const, to: null, phone: '+1 418-827-5939' };
+      await renderWithProviders(<GarageProfileScreen emailPreviewOpen emailPreview={voice} />, { withNavigationContainer: false });
+
+      expect(screen.queryByTestId('email-preview-subject')).toBeNull();
+      expect(screen.getByTestId('email-preview-body')).toBeTruthy();
     });
   });
 });

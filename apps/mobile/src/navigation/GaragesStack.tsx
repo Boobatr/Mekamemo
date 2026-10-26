@@ -22,6 +22,10 @@ export function GaragesStack() {
           const vehicleId = route.params?.vehicleId ?? primaryVehicleId;
           return (
             <GarageSearchContainer
+              vehicleId={vehicleId}
+              taskId={route.params?.taskId}
+              diagnosisId={route.params?.diagnosisId}
+              onClearContext={() => navigation.setParams({ taskId: undefined, diagnosisId: undefined })}
               onSelectGarage={(garageId) =>
                 vehicleId &&
                 navigation.navigate('GarageProfile', {
@@ -65,7 +69,7 @@ export function GaragesStack() {
         {({ route, navigation }) => (
           <BookingConfirmationContainer
             quoteRequestId={route.params.quoteRequestId}
-            onConfirmed={() => navigation.navigate('GarageList')}
+            onConfirmed={() => navigation.navigate('GarageList', {})} // new params: the next search starts without this request's context
             onBack={() => navigation.goBack()}
           />
         )}

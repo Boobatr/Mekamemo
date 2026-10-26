@@ -3,16 +3,19 @@ import { fireEvent, screen, waitFor } from '@testing-library/react-native';
 import { renderWithProviders } from '../../test-utils/renderWithProviders';
 import { GarageSearchContainer } from './GarageSearchContainer';
 import * as garagesApi from '../../services/garages';
+import * as maintenanceApiModule from '../../services/maintenance';
 import * as currentPosition from '../../utils/currentPosition';
 
 jest.mock('../../services/garages');
 jest.mock('../../services/users');
+jest.mock('../../services/maintenance');
 jest.mock('../../utils/currentPosition', () => ({
   canLocate: true,
   getCurrentPosition: jest.fn(),
 }));
 
 const api = jest.mocked(garagesApi);
+const maintenance = jest.mocked(maintenanceApiModule);
 const position = jest.mocked(currentPosition.getCurrentPosition);
 
 const response = (overrides = {}) => ({
@@ -69,5 +72,25 @@ describe('GarageSearchContainer', () => {
 
     await waitFor(() => expect(screen.getByText(/élargi la recherche à 60 km/)).toBeTruthy());
     expect(screen.getByText(/dans 60 km/i)).toBeTruthy();
+  });
+
+  it('names the maintenance item the search is for, with a way to drop it', async () => {
+    maintenance.listMaintenanceTasks.mockResolvedValue([{ id: 't1', vehicleId: 'v1', name: "Vidange d'huile" }] as never);
+    const onClearContext = jest.fn();
+    await renderWithProviders(
+      <GarageSearchContainer onSelectGarage={jest.fn()} vehicleId="v1" taskId="t1" onClearContext={onClearContext} />,
+      { withNavigationContainer: false },
+    );
+
+    await waitFor(() => expect(screen.getByText("Entretien : Vidange d'huile")).toBeTruthy());
+    await fireEvent.press(screen.getByTestId('clear-search-context'));
+    expect(onClearContext).toHaveBeenCalled();
+  });
+
+  it('has no context line without a maintenance item', async () => {
+    await renderWithProviders(<GarageSearchContainer onSelectGarage={jest.fn()} />, { withNavigationContainer: false });
+
+    await waitFor(() => expect(api.searchGarages).toHaveBeenCalled());
+    expect(screen.queryByTestId('search-context')).toBeNull();
   });
 });

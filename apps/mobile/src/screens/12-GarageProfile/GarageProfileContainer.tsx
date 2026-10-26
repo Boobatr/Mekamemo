@@ -3,6 +3,8 @@ import { ActivityIndicator, Alert, View } from 'react-native';
 import { GarageProfileScreen } from './GarageProfileScreen';
 import { useGarage } from '../../hooks/useGarages';
 import { useCreateQuoteRequest, usePreviewQuoteEmail } from '../../hooks/useGarages';
+import { useMaintenanceTasks } from '../../hooks/useMaintenance';
+import { useTranslation } from 'react-i18next';
 import { MockGarage } from '../../mocks/mockData';
 
 interface GarageProfileContainerProps {
@@ -25,6 +27,8 @@ export function GarageProfileContainer({
   const { data: garage, isLoading } = useGarage(garageId);
   const createQuoteRequest = useCreateQuoteRequest();
   const previewEmail = usePreviewQuoteEmail();
+  const { t } = useTranslation();
+  const { data: tasks } = useMaintenanceTasks(taskId ? vehicleId : '');
   const [previewOpen, setPreviewOpen] = useState(false);
 
   if (isLoading || !garage) {
@@ -57,13 +61,22 @@ export function GarageProfileContainer({
         email: g.email ?? undefined,
         phone: g.phone ?? undefined,
       }}
-      onRequestAppointment={async () => {
+      forLabel={
+        taskId
+          ? `${t('garageProfile.forTask')} : ${tasks?.find((task) => task.id === taskId)?.name ?? '…'}`
+          : diagnosisId
+            ? t('garageProfile.forDiagnosis')
+            : undefined
+      }
+      onRequestAppointment={async (edited) => {
         try {
           const quoteRequest = await createQuoteRequest.mutateAsync({
             vehicleId,
             garageIds: [garageId],
             taskId,
             diagnosisId,
+            subject: edited?.subject,
+            message: edited?.message,
           });
           onRequestedAppointment((quoteRequest as { id: string }).id);
         } catch (err) {
@@ -73,7 +86,7 @@ export function GarageProfileContainer({
       onViewEmailBeforeSending={() => {
         setPreviewOpen(true);
         previewEmail.reset();
-        previewEmail.mutate({ vehicleId, garageId });
+        previewEmail.mutate({ vehicleId, garageId, taskId, diagnosisId });
       }}
       emailPreviewOpen={previewOpen}
       emailPreviewLoading={previewEmail.isPending}

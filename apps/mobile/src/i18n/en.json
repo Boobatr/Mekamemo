@@ -98,7 +98,8 @@
     "nextDue": "Next due",
     "dateUnknown": "To be determined",
     "notesForGarage": "Notes for the garage",
-    "groupWith": "Group with tire rotation"
+    "groupWith": "Group with tire rotation",
+    "findGarage": "Find a garage"
   },
   "mileage": {
     "title": "Mileage",
@@ -176,6 +177,9 @@
     "usePostalCode": "Back to my postal code",
     "locating": "Finding your location…",
     "locationFailed": "Couldn't get your location. Allow location access for this site in your browser.",
+    "forTask": "Service",
+    "forDiagnosis": "Breakdown diagnosis",
+    "clearContext": "Search without this service",
     "addGarageLink": "Missing a garage? Add it",
     "mapPickHint": "Tap a point on the map to see the garage.",
     "osmAttribution": "Garages: © Overture Maps Foundation and OpenStreetMap contributors"
@@ -213,8 +217,12 @@
     "directions": "Directions",
     "directionsTitle": "Open directions in…",
     "emailPreviewTitle": "Email preview",
-    "emailNotSentYet": "This is the email that will be sent to this garage. Nothing is sent until you request the appointment.",
-    "emailVoiceOnly": "This garage has no known email, so no email will be sent. With MEKAMEMO+ and voice calls turned on, this message will be read by phone to {{phone}}.",
+    "emailNotSentYet": "This is the email that will be sent to this garage. You can edit it. Nothing is sent until you tap \"Send the request\".",
+    "emailReset": "Restore the original text",
+    "sendRequest": "Send the request",
+    "forTask": "Service",
+    "forDiagnosis": "Breakdown diagnosis",
+    "emailVoiceOnly": "This garage has no known email, so no email will be sent. With MEKAMEMO+ and voice calls turned on, this message will be read by phone to {{phone}}. You can edit it.",
     "emailTo": "To",
     "emailSubject": "Subject",
     "emailMessage": "Message",
